@@ -424,7 +424,92 @@ Clear
 
 </div>
 
+<!-- PRICE COMPARISON -->
 
+<div class="panel">
+
+<h2>💰 Price Comparison</h2>
+
+<p>
+Compare the current price information for your product.
+</p>
+
+<div class="form-grid">
+
+<div>
+<label>Cash Converters</label>
+<input id="priceCashConverters" type="number" step="0.01" placeholder="$0.00">
+</div>
+
+<div>
+<label>BIG W</label>
+<input id="priceBigW" type="number" step="0.01" placeholder="$0.00">
+</div>
+
+<div>
+<label>JB Hi-Fi</label>
+<input id="priceJBHiFi" type="number" step="0.01" placeholder="$0.00">
+</div>
+
+<div>
+<label>The Gamesmen</label>
+<input id="priceGamesmen" type="number" step="0.01" placeholder="$0.00">
+</div>
+
+<div>
+<label>eBay</label>
+<input id="priceEbay" type="number" step="0.01" placeholder="$0.00">
+</div>
+
+</div>
+
+<div class="price-box">
+
+<div class="price-row">
+<span>Lowest Price</span>
+<strong id="lowestMarketPrice">$0.00</strong>
+</div>
+
+<div class="price-row">
+<span>Highest Price</span>
+<strong id="highestMarketPrice">$0.00</strong>
+</div>
+
+<div class="price-row">
+<span>Average Price</span>
+<strong id="averageMarketPrice">$0.00</strong>
+</div>
+
+<div class="price-row">
+<span>Recommended Maximum Buy</span>
+<strong id="recommendedBuy">$0.00</strong>
+</div>
+
+<div class="price-row">
+<span>Recommended Resale</span>
+<strong id="recommendedResale">$0.00</strong>
+</div>
+
+<div class="price-row">
+<span>Estimated Profit</span>
+<strong id="estimatedProfit">$0.00</strong>
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="primary" onclick="calculateMarketPrices()">
+📊 Calculate Prices
+</button>
+
+<button class="secondary" onclick="clearMarketPrices()">
+Clear Prices
+</button>
+
+</div>
+
+</div>
 <!-- INVENTORY -->
 
 <div class="panel">
