@@ -2,368 +2,209 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Beau's Seller List</title>
+<title>Beau's Reseller Inventory</title>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    min-height:100%;
 }
 
-html {
-    overflow-y: auto;
-    min-height: 100%;
+body{
+    font-family:Arial,sans-serif;
+    background:#f3f4f6;
+    color:#111827;
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    font-family: Arial, sans-serif;
-    background: #f3f4f6;
-    color: #111827;
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
 }
 
-header {
-    background: #111827;
-    color: white;
-    padding: 20px;
+header h1{margin:0 0 5px}
+header p{margin:0;opacity:.8}
+
+.container{
+    width:100%;
+    max-width:1100px;
+    margin:auto;
+    padding:15px;
 }
 
-header h1 {
-    margin: 0 0 5px;
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:20px;
 }
 
-header p {
-    margin: 0;
-    opacity: .8;
+.card,.panel{
+    background:white;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.container {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 15px;
+.card{padding:18px}
+
+.card h3{
+    margin:0 0 8px;
+    font-size:13px;
+    color:#6b7280;
 }
 
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+.card strong{font-size:21px}
+
+.panel{
+    padding:18px;
+    margin-bottom:20px;
 }
 
-.card {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+.panel h2{margin-top:0}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
 }
 
-.card h3 {
-    margin: 0 0 8px;
-    font-size: 13px;
-    color: #6b7280;
+label{
+    font-weight:bold;
+    font-size:14px;
 }
 
-.card strong {
-    font-size: 21px;
+input,select{
+    width:100%;
+    padding:12px;
+    margin-top:5px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    font-size:16px;
+    background:white;
 }
 
-.panel {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+button{
+    border:0;
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    touch-action:manipulation;
 }
 
-.panel h2 {
-    margin-top: 0;
+.primary{background:#2563eb;color:white}
+.success{background:#16a34a;color:white}
+.secondary{background:#e5e7eb;color:#111827}
+.danger{background:#dc2626;color:white}
+
+.actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:15px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+.scanner-box{
+    display:none;
+    margin-top:15px;
+    border:2px solid #2563eb;
+    border-radius:12px;
+    padding:10px;
+    overflow:hidden;
 }
 
-label {
-    display: block;
-    font-weight: bold;
-    font-size: 14px;
+#reader{
+    width:100%!important;
 }
 
-input,
-select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
-    background: white;
+#reader video{
+    width:100%!important;
+    height:auto!important;
 }
 
-button {
-   header h1 {
-    margin: 0 0 5px;
+.item{
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:12px;
 }
 
-header p {
-    margin: 0;
-    opacity: .8;
+.item-name{
+    font-size:19px;
+    font-weight:bold;
 }
 
-.container {
-    width: 100%;
-    max-width: 1100px;
-    margin: auto;
-    padding: 15px;
+.badge{
+    display:inline-block;
+    padding:4px 8px;
+    background:#e5e7eb;
+    border-radius:20px;
+    font-size:12px;
+    margin:5px 4px 0 0;
 }
 
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+.price-box{
+    margin-top:15px;
+    padding:15px;
+    background:#f9fafb;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
 }
 
-.card {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+.price-row{
+    display:flex;
+    justify-content:space-between;
+    padding:6px 0;
+    gap:10px;
 }
 
-.card h3 {
-    margin: 0 0 8px;
-    font-size: 13px;
-    color: #6b7280;
+.good{color:#16a34a;font-weight:bold}
+.warning{color:#d97706;font-weight:bold}
+.bad{color:#dc2626;font-weight:bold}
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:30px;
 }
 
-.card strong {
-    font-size: 21px;
+.result-box{margin-top:15px}
+
+.sale-profit{
+    font-size:20px;
+    font-weight:bold;
+    color:#16a34a;
 }
 
-.panel {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+@media(max-width:700px){
+    .dashboard{grid-template-columns:repeat(2,1fr)}
+    .form-grid{grid-template-columns:1fr}
 }
 
-.panel h2 {
-    margin-top: 0;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-label {
-    font-weight: bold;
-    font-size: 14px;
-}
-
-input,
-select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
-    background: white;
-}
-
-button {
-    border: 0;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    touch-action: manipulation;
-}
-
-.primary {
-    background: #2563eb;
-    color: white;
-}
-
-.success {
-    background: #16a34a;
-    color: white;
-}
-
-.secondary {
-    background: #e5e7eb;
-    color: #111827;
-}
-
-.danger {
-    background: #dc2626;
-    color: white;
-}
-
-.actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 15px;
-}
-
-.scanner-box {
-    display: none;
-    width: 100%;
-    margin-top: 15px;
-    border: 2px solid #2563eb;
-    border-radius: 12px;
-    padding: 10px;
-    overflow: hidden;
-    position: relative;
-}
-
-#reader {
-    width: 100% !important;
-    max-width: 100%;
-}
-
-#reader video {
-    width: 100% !important;
-    max-width: 100%;
-    height: auto !important;
-    display: block;
-}
-
-#reader__scan_region {
-    width: 100% !important;
-}
-
-#reader__dashboard {
-    width: 100% !important;
-}
-
-.item {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 12px;
-}
-
-.item-name {
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.badge {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #e5e7eb;
-    border-radius: 20px;
-    font-size: 12px;
-    margin: 5px 4px 0 0;
-}
-
-.price-box {
-    margin-top: 15px;
-    padding: 15px;
-    background: #f9fafb;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-}
-
-.price-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    gap: 10px;
-}
-
-.barcode {
-    font-family: monospace;
-    font-size: 14px;
-    color: #374151;
-}
-
-.good {
-    color: #16a34a;
-    font-weight: bold;
-}
-
-.warning {
-    color: #d97706;
-    font-weight: bold;
-}
-
-.bad {
-    color: #dc2626;
-    font-weight: bold;
-}
-
-.sale-profit {
-    font-size: 20px;
-    font-weight: bold;
-    color: #16a34a;
-}
-
-.empty {
-    text-align: center;
-    color: #777;
-    padding: 30px;
-}
-
-.result-box {
-    margin-top: 15px;
-}
-
-@media(max-width:700px) {
-
-    .dashboard {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-@media(max-width:400px) {
-
-    .dashboard {
-        grid-template-columns: 1fr;
-    }
-
-    .container {
-        padding: 10px;
-    }
-
-    .panel {
-        padding: 14px;
-    }
-
+@media(max-width:400px){
+    .dashboard{grid-template-columns:1fr}
+    .container{padding:10px}
+    .panel{padding:14px}
 }
 </style>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
-
 </head>
 
 <body>
 
 <header>
-    <h1>📦 Reseller Inventory</h1>
-    <p>Inventory • Barcode • Pricing • Sales • Profit</p>
+<h1>📦 Beau's Reseller Inventory</h1>
+<p>Inventory • Barcode • Pricing • Sales • Profit</p>
 </header>
 
 <div class="container">
@@ -372,94 +213,68 @@ button {
 
 <div class="dashboard">
 
-    <div class="card">
-        <h3>STOCK UNITS</h3>
-        <strong id="totalItems">0</strong>
-    </div>
+<div class="card">
+<h3>STOCK UNITS</h3>
+<strong id="totalItems">0</strong>
+</div>
 
-    <div class="card">
-        <h3>STOCK COST</h3>
-        <strong id="totalCost">$0.00</strong>
-    </div>
+<div class="card">
+<h3>STOCK COST</h3>
+<strong id="totalCost">$0.00</strong>
+</div>
 
-    <div class="card">
-        <h3>POTENTIAL SALES</h3>
-        <strong id="totalSales">$0.00</strong>
-    </div>
+<div class="card">
+<h3>POTENTIAL SALES</h3>
+<strong id="totalSales">$0.00</strong>
+</div>
 
-    <div class="card">
-        <h3>POTENTIAL PROFIT</h3>
-        <strong id="totalProfit">$0.00</strong>
-    </div>
+<div class="card">
+<h3>POTENTIAL PROFIT</h3>
+<strong id="totalProfit">$0.00</strong>
+</div>
 
 </div>
 
 
-<!-- BARCODE -->
+<!-- SCANNER -->
 
 <div class="panel">
 
-    <h2>📷 Barcode Scanner</h2>
+<h2>📷 Barcode Scanner</h2>
 
-    <p>
-        Scan a barcode to find existing stock or look up a product.
-    </p>
+<p>Scan a barcode to find existing stock.</p>
 
-    <div class="actions">
+<div class="actions">
 
-        <button
-            class="primary"
-            onclick="startScanner()">
+<button class="primary" onclick="startScanner()">
+📷 Start Scanner
+</button>
 
-            📷 Start Scanner
+<button class="secondary" onclick="stopScanner()">
+Stop Scanner
+</button>
 
-        </button>
+</div>
 
-        <button
-            class="secondary"
-            onclick="stopScanner()">
+<div id="scannerBox" class="scanner-box">
+<div id="reader"></div>
+</div>
 
-            Stop Scanner
+<label style="display:block;margin-top:15px">
+Manual Barcode Lookup
+</label>
 
-        </button>
+<input id="barcodeSearch" placeholder="Enter barcode">
 
-    </div>
+<div class="actions">
 
-    <div
-        class="scanner-box"
-        id="scannerBox">
+<button class="success" onclick="lookupBarcode()">
+🔎 Find Product
+</button>
 
-        <div id="reader"></div>
+</div>
 
-    </div>
-
-    <label
-        style="display:block;margin-top:15px;">
-
-        Manual Barcode Lookup
-
-    </label>
-
-    <input
-        id="barcodeSearch"
-        placeholder="Enter barcode">
-
-    <div class="actions">
-
-        <button
-            class="success"
-            onclick="lookupBarcode()">
-
-            🔎 Find Product
-
-        </button>
-
-    </div>
-
-    <div
-        id="barcodeResult"
-        class="result-box">
-    </div>
+<div id="barcodeResult" class="result-box"></div>
 
 </div>
 
@@ -468,203 +283,144 @@ button {
 
 <div class="panel">
 
-    <h2>➕ Add / Edit Item</h2>
+<h2>➕ Add Item</h2>
 
-    <div class="form-grid">
+<div class="form-grid">
 
-        <div>
-            <label>Item Name</label>
-            <input
-                id="name"
-                placeholder="Product name">
-        </div>
+<div>
+<label>Item Name</label>
+<input id="name" placeholder="Product name">
+</div>
 
-        <div>
-            <label>Barcode</label>
-            <input
-                id="barcode"
-                placeholder="Barcode">
-        </div>
+<div>
+<label>Barcode</label>
+<input id="barcode" placeholder="Barcode">
+</div>
 
-        <div>
-            <label>Category</label>
+<div>
+<label>Category</label>
+<select id="category">
+<option>Console</option>
+<option>Game</option>
+<option>Controller</option>
+<option>Accessory</option>
+<option>Other</option>
+</select>
+</div>
 
-            <select id="category">
+<div>
+<label>Platform</label>
+<select id="platform">
+<option>PlayStation 5</option>
+<option>PlayStation 4</option>
+<option>Xbox</option>
+<option>Nintendo Switch</option>
+<option>Wii</option>
+<option>Other</option>
+</select>
+</div>
 
-                <option>Console</option>
-                <option>Game</option>
-                <option>Controller</option>
-                <option>Accessory</option>
-                <option>Other</option>
+<div>
+<label>Condition</label>
+<select id="condition">
+<option>New</option>
+<option>Like New</option>
+<option>Used - Good</option>
+<option>Used - Fair</option>
+<option>For Parts</option>
+</select>
+</div>
 
-            </select>
-        </div>
+<div>
+<label>Quantity</label>
+<input id="quantity" type="number" min="1" value="1">
+</div>
 
-        <div>
-            <label>Platform</label>
+<div>
+<label>Your Cost ($)</label>
+<input id="cost" type="number" min="0" step="0.01">
+</div>
 
-            <select id="platform">
+<div>
+<label>Current RRP ($)</label>
+<input id="rrp" type="number" min="0" step="0.01">
+</div>
 
-                <option>PlayStation 5</option>
-                <option>PlayStation 4</option>
-                <option>Xbox</option>
-                <option>Nintendo Switch</option>
-                <option>Wii</option>
-                <option>Other</option>
+<div>
+<label>Market Price ($)</label>
+<input id="marketPrice" type="number" min="0" step="0.01">
+</div>
 
-            </select>
-        </div>
+<div>
+<label>Your Selling Price ($)</label>
+<input id="selling" type="number" min="0" step="0.01">
+</div>
 
-        <div>
-            <label>Condition</label>
+<div>
+<label>Price Source</label>
+<input id="priceSource" placeholder="Retailer / website">
+</div>
 
-            <select id="condition">
+<div>
+<label>Price Checked</label>
+<input id="priceChecked" type="date">
+</div>
 
-                <option>New</option>
-                <option>Like New</option>
-                <option>Used - Good</option>
-                <option>Used - Fair</option>
-                <option>For Parts</option>
-
-            </select>
-        </div>
-
-        <div>
-            <label>Quantity</label>
-
-            <input
-                id="quantity"
-                type="number"
-                min="1"
-                value="1">
-
-        </div>
-
-        <div>
-            <label>Your Cost ($)</label>
-
-            <input
-                id="cost"
-                type="number"
-                min="0"
-                step="0.01">
-
-        </div>
-
-        <div>
-            <label>Current RRP ($)</label>
-
-            <input
-                id="rrp"
-                type="number"
-                min="0"
-                step="0.01">
-
-        </div>
-
-        <div>
-            <label>Market Price ($)</label>
-
-            <input
-                id="marketPrice"
-                type="number"
-                min="0"
-                step="0.01">
-
-        </div>
-
-        <div>
-            <label>Your Selling Price ($)</label>
-
-            <input
-                id="selling"
-                type="number"
-                min="0"
-                step="0.01">
-
-        </div>
-
-        <div>
-            <label>Price Source</label>
-
-            <input
-                id="priceSource"
-                placeholder="e.g. Retailer">
-        </div>
-
-        <div>
-            <label>Price Checked</label>
-
-            <input
-                id="priceChecked"
-                type="date">
-
-        </div>
-
-    </div>
+</div>
 
 
-    <div class="price-box">
+<div class="price-box">
 
-        <h3>💰 Pricing Calculator</h3>
+<h3>💰 Pricing Calculator</h3>
 
-        <div class="price-row">
-            <span>Cost</span>
-            <strong id="calcCost">$0.00</strong>
-        </div>
+<div class="price-row">
+<span>Cost</span>
+<strong id="calcCost">$0.00</strong>
+</div>
 
-        <div class="price-row">
-            <span>RRP</span>
-            <strong id="calcRrp">$0.00</strong>
-        </div>
+<div class="price-row">
+<span>RRP</span>
+<strong id="calcRrp">$0.00</strong>
+</div>
 
-        <div class="price-row">
-            <span>Market price</span>
-            <strong id="calcMarket">$0.00</strong>
-        </div>
+<div class="price-row">
+<span>Market Price</span>
+<strong id="calcMarket">$0.00</strong>
+</div>
 
-        <div class="price-row">
-            <span>Suggested maximum buy</span>
-            <strong id="calcBuy">$0.00</strong>
-        </div>
+<div class="price-row">
+<span>Suggested Maximum Buy</span>
+<strong id="calcBuy">$0.00</strong>
+</div>
 
-        <div class="price-row">
-            <span>Suggested resale</span>
-            <strong id="calcResale">$0.00</strong>
-        </div>
+<div class="price-row">
+<span>Suggested Resale</span>
+<strong id="calcResale">$0.00</strong>
+</div>
 
-        <div class="price-row">
-            <span>Profit per item</span>
-            <strong id="calcProfit">$0.00</strong>
-        </div>
+<div class="price-row">
+<span>Profit Per Item</span>
+<strong id="calcProfit">$0.00</strong>
+</div>
 
-        <div class="price-row">
-            <span>Profit margin</span>
-            <strong id="calcMargin">0%</strong>
-        </div>
+<div class="price-row">
+<span>Profit Margin</span>
+<strong id="calcMargin">0%</strong>
+</div>
 
-    </div>
+</div>
 
+<div class="actions">
 
-    <div class="actions">
+<button class="primary" onclick="addItem()">
+➕ Add Item
+</button>
 
-        <button
-            class="primary"
-            onclick="addItem()">
+<button class="secondary" onclick="clearForm()">
+Clear
+</button>
 
-            ➕ Add Item
-
-        </button>
-
-        <button
-            class="secondary"
-            onclick="clearForm()">
-
-            Clear
-
-        </button>
-
-    </div>
+</div>
 
 </div>
 
@@ -673,14 +429,14 @@ button {
 
 <div class="panel">
 
-    <h2>📦 Inventory</h2>
+<h2>📦 Inventory</h2>
 
-    <input
-        id="search"
-        placeholder="🔎 Search inventory..."
-        oninput="displayItems()">
+<input
+id="search"
+placeholder="🔎 Search inventory..."
+oninput="displayItems()">
 
-    <div id="inventoryList"></div>
+<div id="inventoryList"></div>
 
 </div>
 
@@ -689,38 +445,38 @@ button {
 
 <div class="panel">
 
-    <h2>🧾 Sales History</h2>
+<h2>🧾 Sales History</h2>
 
-    <div class="dashboard">
+<div class="dashboard">
 
-        <div class="card">
-            <h3>REVENUE</h3>
-            <strong id="salesRevenue">$0.00</strong>
-        </div>
+<div class="card">
+<h3>REVENUE</h3>
+<strong id="salesRevenue">$0.00</strong>
+</div>
 
-        <div class="card">
-            <h3>FEES</h3>
-            <strong id="salesFees">$0.00</strong>
-        </div>
+<div class="card">
+<h3>FEES</h3>
+<strong id="salesFees">$0.00</strong>
+</div>
 
-        <div class="card">
-            <h3>POSTAGE</h3>
-            <strong id="salesPostage">$0.00</strong>
-        </div>
+<div class="card">
+<h3>POSTAGE</h3>
+<strong id="salesPostage">$0.00</strong>
+</div>
 
-        <div class="card">
-            <h3>ACTUAL PROFIT</h3>
-            <strong id="salesProfit">$0.00</strong>
-        </div>
+<div class="card">
+<h3>ACTUAL PROFIT</h3>
+<strong id="salesProfit">$0.00</strong>
+</div>
 
-    </div>
+</div>
 
-    <input
-        id="salesSearch"
-        placeholder="🔎 Search sales..."
-        oninput="displaySalesHistory()">
+<input
+id="salesSearch"
+placeholder="🔎 Search sales..."
+oninput="displaySalesHistory()">
 
-    <div id="salesHistory"></div>
+<div id="salesHistory"></div>
 
 </div>
 
@@ -729,39 +485,25 @@ button {
 
 <div class="panel">
 
-    <h2>💾 Backup</h2>
+<h2>💾 Backup</h2>
 
-    <p>
-        Export your inventory regularly.
-    </p>
+<p>Export your inventory regularly.</p>
 
-    <div class="actions">
+<div class="actions">
 
-        <button
-            class="secondary"
-            onclick="exportData()">
+<button class="secondary" onclick="exportData()">
+📤 Export Inventory
+</button>
 
-            📤 Export Inventory
+<button class="secondary" onclick="importData()">
+📥 Import Inventory
+</button>
 
-        </button>
+<button class="danger" onclick="deleteAll()">
+🗑️ Delete Everything
+</button>
 
-        <button
-            class="secondary"
-            onclick="importData()">
-
-            📥 Import Inventory
-
-        </button>
-
-        <button
-            class="danger"
-            onclick="deleteAll()">
-
-            🗑️ Delete Everything
-
-        </button>
-
-    </div>
+</div>
 
 </div>
 
@@ -771,801 +513,753 @@ button {
 <script>
 
 let inventory =
-    JSON.parse(
-        localStorage.getItem(
-            "resellerInventory"
-        ) || "[]"
-    );
+JSON.parse(localStorage.getItem("resellerInventory") || "[]");
 
 let scanner = null;
+let scannerRunning = false;
 
 
-/* =========================
-   STORAGE
-========================= */
+/* MONEY */
 
-function saveData() {
+function money(value){
+return "$" + Number(value || 0).toFixed(2);
+}
 
-    localStorage.setItem(
-        "resellerInventory",
-        JSON.stringify(inventory)
-    );
+
+/* SAVE */
+
+function saveData(){
+localStorage.setItem(
+"resellerInventory",
+JSON.stringify(inventory)
+);
+}
+
+
+/* PRICING */
+
+function calculatePricing(){
+
+const cost=Number(document.getElementById("cost").value||0);
+const rrp=Number(document.getElementById("rrp").value||0);
+const market=Number(document.getElementById("marketPrice").value||0);
+const selling=Number(document.getElementById("selling").value||0);
+
+let resale=0;
+
+if(market>0){
+resale=market;
+}else if(rrp>0){
+resale=rrp*0.75;
+}
+
+const buy=resale*0.70;
+const actual=selling>0?selling:resale;
+const profit=actual-cost;
+const margin=actual>0?(profit/actual)*100:0;
+
+document.getElementById("calcCost").textContent=money(cost);
+document.getElementById("calcRrp").textContent=money(rrp);
+document.getElementById("calcMarket").textContent=money(market);
+document.getElementById("calcBuy").textContent=money(buy);
+document.getElementById("calcResale").textContent=money(resale);
+document.getElementById("calcProfit").textContent=money(profit);
+document.getElementById("calcMargin").textContent=margin.toFixed(1)+"%";
+}
+
+
+/* ADD ITEM */
+
+function addItem(){
+
+const name=document.getElementById("name").value.trim();
+const barcode=document.getElementById("barcode").value.trim();
+const category=document.getElementById("category").value;
+const platform=document.getElementById("platform").value;
+const condition=document.getElementById("condition").value;
+const quantity=Math.max(1,Number(document.getElementById("quantity").value||1));
+const cost=Number(document.getElementById("cost").value||0);
+const rrp=Number(document.getElementById("rrp").value||0);
+const marketPrice=Number(document.getElementById("marketPrice").value||0);
+const selling=Number(document.getElementById("selling").value||0);
+const priceSource=document.getElementById("priceSource").value.trim();
+const priceChecked=document.getElementById("priceChecked").value;
+
+if(!name){
+alert("Please enter an item name.");
+return;
+}
+
+if(barcode){
+
+const existing=inventory.find(
+item=>String(item.barcode)===String(barcode)
+);
+
+if(existing){
+alert("That barcode already exists for: "+existing.name);
+return;
+}
+
+}
+
+inventory.push({
+
+id:Date.now(),
+name:name,
+barcode:barcode,
+category:category,
+platform:platform,
+condition:condition,
+quantity:quantity,
+cost:cost,
+rrp:rrp,
+marketPrice:marketPrice,
+selling:selling,
+priceSource:priceSource,
+priceChecked:priceChecked,
+sales:[],
+dateAdded:new Date().toISOString()
+
+});
+
+saveData();
+
+clearForm();
+displayItems();
+updateDashboard();
+displaySalesHistory();
+
+alert("Item added successfully.");
+}
+
+
+/* CLEAR FORM */
+
+function clearForm(){
+
+document.getElementById("name").value="";
+document.getElementById("barcode").value="";
+document.getElementById("quantity").value=1;
+document.getElementById("cost").value="";
+document.getElementById("rrp").value="";
+document.getElementById("marketPrice").value="";
+document.getElementById("selling").value="";
+document.getElementById("priceSource").value="";
+document.getElementById("priceChecked").value="";
+
+calculatePricing();
+}
+
+
+/* SCANNER */
+
+async function startScanner(){
+
+if(scannerRunning){
+return;
+}
+
+if(typeof Html5Qrcode==="undefined"){
+alert("The barcode scanner library has not loaded. Check your internet connection and refresh the app.");
+return;
+}
+
+const box=document.getElementById("scannerBox");
+
+box.style.display="block";
+
+try{
+
+scanner=new Html5Qrcode("reader");
+
+await scanner.start(
+{facingMode:"environment"},
+{
+fps:10,
+qrbox:{width:250,height:150}
+},
+async function(decodedText){
+
+document.getElementById("barcodeSearch").value=decodedText;
+
+await stopScanner();
+
+lookupBarcode();
+
+},
+function(errorMessage){
+/* Normal scanning errors are ignored */
+}
+);
+
+scannerRunning=true;
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Camera could not start. Please make sure Chrome has camera permission for this website."
+);
+
+box.style.display="none";
+scanner=null;
+scannerRunning=false;
+
+}
 
 }
 
 
-/* =========================
-   MONEY
-========================= */
+/* STOP SCANNER */
 
-function money(value) {
+async function stopScanner(){
 
-    return "$" +
-        Number(value || 0)
-        .toFixed(2);
+if(scanner){
+
+try{
+
+if(scannerRunning){
+await scanner.stop();
+}
+
+}catch(error){
+console.log(error);
+}
+
+try{
+scanner.clear();
+}catch(error){
+console.log(error);
+}
+
+}
+
+scanner=null;
+scannerRunning=false;
+
+document.getElementById("scannerBox").style.display="none";
+document.getElementById("reader").innerHTML="";
+}
+
+
+/* BARCODE LOOKUP */
+
+function lookupBarcode(){
+
+const barcode=document.getElementById("barcodeSearch").value.trim();
+
+const result=document.getElementById("barcodeResult");
+
+if(!barcode){
+
+result.innerHTML="<p class='warning'>Enter or scan a barcode first.</p>";
+return;
+
+}
+
+const item=inventory.find(
+x=>String(x.barcode)===String(barcode)
+);
+
+if(item){
+
+result.innerHTML=`
+
+<div class="item">
+
+<div class="item-name">${escapeHtml(item.name)}</div>
+
+<div class="badge">${escapeHtml(item.platform)}</div>
+<div class="badge">${escapeHtml(item.condition)}</div>
+
+<p class="barcode">Barcode: ${escapeHtml(item.barcode)}</p>
+
+<div class="price-box">
+
+<div class="price-row">
+<span>Quantity</span>
+<strong>${item.quantity}</strong>
+</div>
+
+<div class="price-row">
+<span>Your Cost</span>
+<strong>${money(item.cost)}</strong>
+</div>
+
+<div class="price-row">
+<span>RRP</span>
+<strong>${money(item.rrp)}</strong>
+</div>
+
+<div class="price-row">
+<span>Selling Price</span>
+<strong>${money(item.selling)}</strong>
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}else{
+
+result.innerHTML=`
+
+<div class="item">
+
+<div class="item-name">New Barcode</div>
+
+<p>No existing inventory item was found.</p>
+
+<p class="barcode">${escapeHtml(barcode)}</p>
+
+<button
+class="primary"
+onclick="useScannedBarcode('${escapeJs(barcode)}')">
+➕ Add This Product
+</button>
+
+</div>
+
+`;
+
+}
 
 }
 
 
-/* =========================
-   PRICING
-========================= */
+/* USE SCANNED BARCODE */
 
-function calculatePricing() {
+function useScannedBarcode(barcode){
 
-    const cost =
-        Number(
-            document.getElementById(
-                "cost"
-            ).value || 0
-        );
+document.getElementById("barcode").value=barcode;
 
-    const rrp =
-        Number(
-            document.getElementById(
-                "rrp"
-            ).value || 0
-        );
+document.getElementById("name").focus();
 
-    const market =
-        Number(
-            document.getElementById(
-                "marketPrice"
-            ).value || 0
-        );
-
-    const selling =
-        Number(
-            document.getElementById(
-                "selling"
-            ).value || 0
-        );
-
-
-    let resale = 0;
-
-
-    if (market > 0) {
-
-        resale = market;
-
-    }
-
-    else if (rrp > 0) {
-
-        resale = rrp * .75;
-
-    }
-
-
-    const buy =
-        resale * .70;
-
-
-    const actual =
-        selling > 0
-        ? selling
-        : resale;
-
-
-    const profit =
-        actual - cost;
-
-
-    const margin =
-        actual > 0
-        ? profit / actual * 100
-        : 0;
-
-
-    document.getElementById(
-        "calcCost"
-    ).textContent = money(cost);
-
-
-    document.getElementById(
-        "calcRrp"
-    ).textContent = money(rrp);
-
-
-    document.getElementById(
-        "calcMarket"
-    ).textContent = money(market);
-
-
-    document.getElementById(
-        "calcBuy"
-    ).textContent = money(buy);
-
-
-    document.getElementById(
-        "calcResale"
-    ).textContent = money(resale);
-
-
-    document.getElementById(
-        "calcProfit"
-    ).textContent = money(profit);
-
-
-    document.getElementById(
-        "calcMargin"
-    ).textContent =
-        margin.toFixed(1) + "%";
+window.scrollTo({
+top:document.getElementById("name").getBoundingClientRect().top+
+window.scrollY-100,
+behavior:"smooth"
+});
 
 }
 
 
-[
-    "cost",
-    "rrp",
-    "marketPrice",
-    "selling"
-].forEach(function(id) {
+/* DISPLAY INVENTORY */
 
-    document.getElementById(id)
-        .addEventListener(
-            "input",
-            calculatePricing
-        );
+function displayItems(){
+
+const list=document.getElementById("inventoryList");
+
+const search=
+document.getElementById("search").value.toLowerCase().trim();
+
+const filtered=inventory.filter(item=>
+
+item.name.toLowerCase().includes(search) ||
+String(item.barcode).toLowerCase().includes(search) ||
+item.platform.toLowerCase().includes(search) ||
+item.category.toLowerCase().includes(search)
+
+);
+
+if(filtered.length===0){
+
+list.innerHTML="<div class='empty'>No inventory found.</div>";
+return;
+
+}
+
+list.innerHTML=filtered.map(item=>{
+
+const resale=item.selling>0
+?item.selling
+:(item.marketPrice>0
+?item.marketPrice
+:item.rrp*0.75);
+
+const profit=(resale-item.cost)*item.quantity;
+
+return `
+
+<div class="item">
+
+<div class="item-name">
+${escapeHtml(item.name)}
+</div>
+
+<div>
+<span class="badge">${escapeHtml(item.category)}</span>
+<span class="badge">${escapeHtml(item.platform)}</span>
+<span class="badge">${escapeHtml(item.condition)}</span>
+</div>
+
+<p class="barcode">
+Barcode: ${escapeHtml(item.barcode||"None")}
+</p>
+
+<div class="price-box">
+
+<div class="price-row">
+<span>Quantity</span>
+<strong>${item.quantity}</strong>
+</div>
+
+<div class="price-row">
+<span>Total Cost</span>
+<strong>${money(item.cost*item.quantity)}</strong>
+</div>
+
+<div class="price-row">
+<span>RRP</span>
+<strong>${money(item.rrp)}</strong>
+</div>
+
+<div class="price-row">
+<span>Selling Price</span>
+<strong>${money(resale)}</strong>
+</div>
+
+<div class="price-row">
+<span>Potential Profit</span>
+<strong class="${profit>=0?'good':'bad'}">
+${money(profit)}
+</strong>
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="danger"
+onclick="deleteItem(${item.id})">
+🗑️ Delete
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+/* DELETE ITEM */
+
+function deleteItem(id){
+
+if(!confirm("Delete this inventory item?")){
+return;
+}
+
+inventory=inventory.filter(item=>item.id!==id);
+
+saveData();
+displayItems();
+updateDashboard();
+displaySalesHistory();
+
+}
+
+
+/* DASHBOARD */
+
+function updateDashboard(){
+
+let units=0;
+let cost=0;
+let sales=0;
+
+inventory.forEach(item=>{
+
+const quantity=Number(item.quantity||0);
+
+units+=quantity;
+
+cost+=Number(item.cost||0)*quantity;
+
+const resale=
+Number(item.selling||0)>0
+?Number(item.selling)
+:Number(item.marketPrice||0)>0
+?Number(item.marketPrice)
+:Number(item.rrp||0)*0.75;
+
+sales+=resale*quantity;
+
+});
+
+const profit=sales-cost;
+
+document.getElementById("totalItems").textContent=units;
+document.getElementById("totalCost").textContent=money(cost);
+document.getElementById("totalSales").textContent=money(sales);
+document.getElementById("totalProfit").textContent=money(profit);
+
+}
+
+
+/* SALES */
+
+function displaySalesHistory(){
+
+const history=document.getElementById("salesHistory");
+
+let allSales=[];
+
+inventory.forEach(item=>{
+
+if(Array.isArray(item.sales)){
+
+item.sales.forEach(sale=>{
+
+allSales.push({
+...sale,
+itemName:item.name
+});
+
+});
+
+}
+
+});
+
+const search=
+document.getElementById("salesSearch").value.toLowerCase().trim();
+
+const filtered=allSales.filter(sale=>
+sale.itemName.toLowerCase().includes(search)
+);
+
+let revenue=0;
+let fees=0;
+let postage=0;
+let profit=0;
+
+filtered.forEach(sale=>{
+
+revenue+=Number(sale.price||0);
+fees+=Number(sale.fees||0);
+postage+=Number(sale.postage||0);
+
+profit+=
+Number(sale.price||0)-
+Number(sale.cost||0)-
+Number(sale.fees||0)-
+Number(sale.postage||0);
+
+});
+
+document.getElementById("salesRevenue").textContent=money(revenue);
+document.getElementById("salesFees").textContent=money(fees);
+document.getElementById("salesPostage").textContent=money(postage);
+document.getElementById("salesProfit").textContent=money(profit);
+
+if(filtered.length===0){
+
+history.innerHTML="<div class='empty'>No sales recorded.</div>";
+return;
+
+}
+
+history.innerHTML=filtered.map(sale=>`
+
+<div class="item">
+
+<div class="item-name">
+${escapeHtml(sale.itemName)}
+</div>
+
+<div class="price-row">
+<span>Sale Price</span>
+<strong>${money(sale.price)}</strong>
+</div>
+
+<div class="price-row">
+<span>Profit</span>
+<strong class="sale-profit">
+${money(
+Number(sale.price||0)-
+Number(sale.cost||0)-
+Number(sale.fees||0)-
+Number(sale.postage||0)
+)}
+</strong>
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* EXPORT */
+
+function exportData(){
+
+const data=JSON.stringify(inventory,null,2);
+
+const blob=new Blob(
+[data],
+{type:"application/json"}
+);
+
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement("a");
+
+a.href=url;
+a.download="reseller-inventory-backup.json";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+URL.revokeObjectURL(url);
+
+}
+
+
+/* IMPORT */
+
+function importData(){
+
+const input=document.createElement("input");
+
+input.type="file";
+input.accept=".json,application/json";
+
+input.onchange=function(event){
+
+const file=event.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+try{
+
+const imported=JSON.parse(e.target.result);
+
+if(!Array.isArray(imported)){
+throw new Error("Invalid backup");
+}
+
+inventory=imported;
+
+saveData();
+
+displayItems();
+updateDashboard();
+displaySalesHistory();
+
+alert("Inventory imported successfully.");
+
+}catch(error){
+
+alert("That file is not a valid inventory backup.");
+
+}
+
+};
+
+reader.readAsText(file);
+
+};
+
+input.click();
+
+}
+
+
+/* DELETE EVERYTHING */
+
+function deleteAll(){
+
+if(!confirm(
+"Are you sure you want to delete ALL inventory?"
+)){
+return;
+}
+
+if(!confirm(
+"This cannot be undone unless you have an exported backup."
+)){
+return;
+}
+
+inventory=[];
+
+saveData();
+
+displayItems();
+updateDashboard();
+displaySalesHistory();
+
+}
+
+
+/* SECURITY HELPERS */
+
+function escapeHtml(value){
+
+return String(value||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+function escapeJs(value){
+
+return String(value||"")
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'")
+.replace(/"/g,'\\"')
+.replace(/\n/g,"\\n")
+.replace(/\r/g,"\\r");
+
+}
+
+
+/* PRICE INPUT EVENTS */
+
+["cost","rrp","marketPrice","selling"].forEach(id=>{
+
+document.getElementById(id).addEventListener(
+"input",
+calculatePricing
+);
 
 });
 
 
-/* =========================
-   ADD ITEM
-========================= */
+/* START APP */
 
-function addItem() {
+document.addEventListener("DOMContentLoaded",function(){
 
-    const name =
-        document.getElementById(
-            "name"
-        ).value.trim();
+calculatePricing();
+displayItems();
+updateDashboard();
+displaySalesHistory();
 
+});
 
-    const barcode =
-        document.getElementById(
-            "barcode"
-        ).value.trim();
+</script>
 
-
-    const category =
-        document.getElementById(
-            "category"
-        ).value;
-
-
-    const platform =
-        document.getElementById(
-            "platform"
-        ).value;
-
-
-    const condition =
-        document.getElementById(
-            "condition"
-        ).value;
-
-
-    const quantity =
-        Number(
-            document.getElementById(
-                "quantity"
-            ).value || 1
-        );
-
-
-    const cost =
-        Number(
-            document.getElementById(
-                "cost"
-            ).value || 0
-        );
-
-
-    const rrp =
-        Number(
-            document.getElementById(
-                "rrp"
-            ).value || 0
-        );
-
-
-    const marketPrice =
-        Number(
-            document.getElementById(
-                "marketPrice"
-            ).value || 0
-        );
-
-
-    const selling =
-        Number(
-            document.getElementById(
-                "selling"
-            ).value || 0
-        );
-
-
-    const priceSource =
-        document.getElementById(
-            "priceSource"
-        ).value.trim();
-
-
-    const priceChecked =
-        document.getElementById(
-            "priceChecked"
-        ).value;
-
-
-    if (!name) {
-
-        alert(
-            "Please enter an item name."
-        );
-
-        return;
-    }
-
-
-    if (quantity < 1) {
-
-        alert(
-            "Quantity must be at least 1."
-        );
-
-        return;
-    }
-
-
-    if (barcode) {
-
-        const existing =
-            inventory.find(
-                item =>
-                    item.barcode === barcode
-            );
-
-
-        if (existing) {
-
-            alert(
-                "This barcode already exists for " +
-                existing.name
-            );
-
-            return;
-        }
-
-    }
-
-
-    inventory.push({
-
-        id: Date.now(),
-
-        name,
-
-        barcode,
-
-        category,
-
-        platform,
-
-        condition,
-
-        quantity,
-
-        cost,
-
-        rrp,
-
-        marketPrice,
-
-        selling,
-
-        priceSource,
-
-        priceChecked,
-
-        sales: [],
-
-        dateAdded:
-            new Date().toISOString()
-
-    });
-
-
-    saveData();
-
-    clearForm();
-
-    displayItems();
-
-    updateDashboard();
-
-    displaySalesHistory();
-
-
-    alert(
-        "Item added successfully."
-    );
-
-}
-
-
-/* =========================
-   CLEAR
-========================= */
-
-function clearForm() {
-
-    document.getElementById(
-        "name"
-    ).value = "";
-
-    document.getElementById(
-        "barcode"
-    ).value = "";
-
-    document.getElementById(
-        "quantity"
-    ).value = 1;
-
-    document.getElementById(
-        "cost"
-    ).value = "";
-
-    document.getElementById(
-        "rrp"
-    ).value = "";
-
-    document.getElementById(
-        "marketPrice"
-    ).value = "";
-
-    document.getElementById(
-        "selling"
-    ).value = "";
-
-    document.getElementById(
-        "priceSource"
-    ).value = "";
-
-    document.getElementById(
-        "priceChecked"
-    ).value = "";
-
-    calculatePricing();
-
-}
-
-
-/* =========================
-   SCANNER
-========================= */
-
-function startScanner() {
-
-    const box =
-        document.getElementById(
-            "scannerBox"
-        );
-
-
-    const reader =
-        document.getElementById(
-            "reader"
-        );
-
-
-    box.style.display = "block";
-
-    reader.innerHTML = "";
-
-
-    if (
-        typeof Html5Qrcode ===
-        "undefined"
-    ) {
-
-        alert(
-            "Scanner library failed to load. Check your internet connection and refresh the app."
-        );
-
-        return;
-    }
-
-
-    scanner =
-        new Html5Qrcode(
-            "reader"
-        );
-
-
-    const config = {
-
-        fps: 10,
-
-        qrbox: {
-            width: 250,
-            height: 150
-        },
-
-        aspectRatio: 1.7777778
-
-    };
-
-
-    scanner.start(
-
-        {
-            facingMode:
-                "environment"
-        },
-
-        config,
-
-        function(decodedText) {
-
-            document.getElementById(
-                "barcodeSearch"
-            ).value =
-                decodedText;
-
-
-            document.getElementById(
-                "barcode    margin: auto;
-    padding: 15px;
-}
-
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.card {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-.card h3 {
-    margin: 0 0 8px;
-    font-size: 13px;
-    color: #6b7280;
-}
-
-.card strong {
-    font-size: 21px;
-}
-
-.panel {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-.panel h2 {
-    margin-top: 0;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-label {
-    font-weight: bold;
-    font-size: 14px;
-}
-
-input,
-select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-button {
-    border: 0;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.primary {
-    background: #2563eb;
-    color: white;
-}
-
-.success {
-    background: #16a34a;
-    color: white;
-}
-
-.secondary {
-    background: #e5e7eb;
-    color: #111827;
-}
-
-.danger {
-    background: #dc2626;
-    color: white;
-}
-
-.actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 15px;
-}
-
-.scanner-box {
-    display: none;
-    margin-top: 15px;
-    border: 2px solid #2563eb;
-    border-radius: 12px;
-    padding: 10px;
-}
-
-#reader {
-    width: 100%;
-}
-
-.item {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 12px;
-}
-
-.item-name {
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.badge {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #e5e7eb;
-    border-radius: 20px;
-    font-size: 12px;
-    margin: 5px 4px 0 0;
-}
-
-.price-box {
-    margin-top: 15px;
-    padding: 15px;
-    background: #f9fafb;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-}
-
-.price-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    gap: 10px;
-}
-
-.highlight {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.barcode {
-    font-family: monospace;
-    font-size: 14px;
-    color: #374151;
-}
-
-.good {
-    color: #16a34a;
-    font-weight: bold;
-}
-
-.warning {
-    color: #d97706;
-    font-weight: bold;
-}
-
-.bad {
-    color: #dc2626;
-    font-weight: bold;
-}
-
-.empty {
-    text-align: center;
-    color: #777;
-    padding: 30px;
-}
-
-.sale-profit {
-    font-size: 20px;
-    font-weight: bold;
-    color: #16a34a;
-}
-
-@media(max-width:700px) {
-    .dashboard {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media(max-width:400px) {
-    .dashboard {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-</head>
-
-<body>
-
-<header>
-    <h1>📦 Reseller Inventory</h1>
-    <p>Inventory • Barcode • Pricing • Sales • Profit</p>
-</header>
-
-<div class="container">
-
-<!-- DASHBOARD -->
-
-<div class="dashboard">
-
-    <div class="card">
-        <h3>STOCK UNITS</h3>
-        <strong id="totalItems">0</strong>
-    </div>
-
-    <div class="card">
-        <h3>STOCK COST</h3>
-        <strong id="totalCost">$0.00</strong>
-    </div>
-
-    <div class="card">
-        <h3>POTENTIAL SALES</h3>
-        <strong id="totalSales">$0.00</strong>
-    </div>
-
-    <div class="card">
-        <h3>POTENTIAL PROFIT</h3>
-        <strong id="totalProfit">$0.00</strong>
-    </div>
-
-</div>
-
-
-<!-- BARCODE SCANNER -->
-
-<div class="panel">
-
-    <h2>📷 Barcode Scanner</h2>
-
-    <p>
-        Scan a barcode to find existing stock or identify a new product.
-    </p>
-
-    <div class="actions">
-
-        <button class="primary" onclick="startScanner()">
-            📷 Start Scanner
-        </button>
-
-        <button class="secondary" onclick="stopScanner()">
-            Stop Scanner
-        </button>
-
-    </div>
-
-    <div class="scanner-box" id="scannerBox">
-        <div id="reader"></div>
-    </div>
-
-    <label style="display:block;margin-top:15px;">
-        Manual Barcode Lookup
-    </label>
-
-    <input
-        id="barcodeSearch"
-        placeholder="Enter barcode">
-
-    <div class="actions">
-
-        <button class="success" onclick="lookupBarcode()">
-            🔎 Find Product
-        </button>
-
-    </div>
-
-    <div id="barcodeResult"></div>
-
-</div>
-
-
-<!-- ADD ITEM -->
-
-<div class="panel">
-
-    <h2>➕ Add / Edit Item</h2>
-
-    <div class="form-grid">
-
-        <div>
-            <label>Item Name</label>
-            <input id="name" placeholder="Product name">
-        </div>
-
-        <div>
-            <label>Barcode</label>
-            <input id="barcode" placeholder="Barcode">
-        </div>
-
-        <div>
-            <label>Category</label>
-
-            <select id="category">
-                <option>Console</option>
-                <option>Game</option>
-                <option>Controller</option>
-                <option>Accessory</option>
-                <option>Other</option>
-            </select>
-        </div>
-
-        <div>
-            <label>Platform</label>
-
-            <select id="platform">
-                <option>PlayStation 5</option>
-                <option>PlayStation 4</option>
-                <option>Xbox</option>
-                <option>Nintendo Switch</option>
-                <option>Wii</option>
-                <option>Other</option>
-            </select>
-        </div>
-
-        <div>
-            <label>Condition</label>
+</body>
+</html>
