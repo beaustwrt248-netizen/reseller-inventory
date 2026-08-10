@@ -1343,7 +1343,146 @@ updateDashboard();
 displaySalesHistory();
 
 });
+/* =========================
+   MARKET PRICE CALCULATOR
+========================= */
 
+function calculateMarketPrices() {
+
+    const fields = [
+        "priceCashConverters",
+        "priceBigW",
+        "priceJBHiFi",
+        "priceGamesmen",
+        "priceEbay"
+    ];
+
+    const prices = [];
+
+    fields.forEach(function(id) {
+
+        const value = Number(
+            document.getElementById(id).value || 0
+        );
+
+        if (value > 0) {
+            prices.push(value);
+        }
+
+    });
+
+    if (prices.length === 0) {
+
+        document.getElementById("lowestMarketPrice").textContent = "$0.00";
+        document.getElementById("highestMarketPrice").textContent = "$0.00";
+        document.getElementById("averageMarketPrice").textContent = "$0.00";
+        document.getElementById("recommendedBuy").textContent = "$0.00";
+        document.getElementById("recommendedResale").textContent = "$0.00";
+        document.getElementById("estimatedProfit").textContent = "$0.00";
+
+        alert("Enter at least one price first.");
+
+        return;
+    }
+
+    const lowest = Math.min(...prices);
+    const highest = Math.max(...prices);
+
+    const total = prices.reduce(
+        function(sum, price) {
+            return sum + price;
+        },
+        0
+    );
+
+    const average = total / prices.length;
+
+    /*
+       Recommended resale:
+       90% of average market price.
+    */
+
+    const resale = average * 0.90;
+
+    /*
+       Recommended maximum buy:
+       70% of recommended resale.
+    */
+
+    const buy = resale * 0.70;
+
+    /*
+       Estimated profit.
+    */
+
+    const profit = resale - buy;
+
+    document.getElementById(
+        "lowestMarketPrice"
+    ).textContent = money(lowest);
+
+    document.getElementById(
+        "highestMarketPrice"
+    ).textContent = money(highest);
+
+    document.getElementById(
+        "averageMarketPrice"
+    ).textContent = money(average);
+
+    document.getElementById(
+        "recommendedBuy"
+    ).textContent = money(buy);
+
+    document.getElementById(
+        "recommendedResale"
+    ).textContent = money(resale);
+
+    document.getElementById(
+        "estimatedProfit"
+    ).textContent = money(profit);
+}
+
+
+/* CLEAR MARKET PRICES */
+
+function clearMarketPrices() {
+
+    const fields = [
+        "priceCashConverters",
+        "priceBigW",
+        "priceJBHiFi",
+        "priceGamesmen",
+        "priceEbay"
+    ];
+
+    fields.forEach(function(id) {
+        document.getElementById(id).value = "";
+    });
+
+    document.getElementById(
+        "lowestMarketPrice"
+    ).textContent = "$0.00";
+
+    document.getElementById(
+        "highestMarketPrice"
+    ).textContent = "$0.00";
+
+    document.getElementById(
+        "averageMarketPrice"
+    ).textContent = "$0.00";
+
+    document.getElementById(
+        "recommendedBuy"
+    ).textContent = "$0.00";
+
+    document.getElementById(
+        "recommendedResale"
+    ).textContent = "$0.00";
+
+    document.getElementById(
+        "estimatedProfit"
+    ).textContent = "$0.00";
+}
 </script>
 
 </body>
