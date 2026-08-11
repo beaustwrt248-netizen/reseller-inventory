@@ -1,19 +1,29 @@
-/* Keep the app's bottom navigation above Android's system navigation bar. */
+/* Beau's Game Inventory — Android/Samsung navigation-bar safe area */
 (function(){
+  var STYLE_ID='beau-native-nav-safe-style';
   function apply(){
     var nativeApp=!!(window.Capacitor && typeof window.Capacitor.isNativePlatform==='function' && window.Capacitor.isNativePlatform());
-    var inset=0;
-    if(nativeApp){
-      /* Samsung 3-button navigation commonly occupies ~48dp. Keep a safe minimum. */
-      var visualInset=0;
-      if(window.visualViewport){
-        visualInset=Math.max(0,window.innerHeight-window.visualViewport.height);
-      }
-      inset=Math.max(48,Math.round(visualInset));
-    }
+    var inset=nativeApp ? 52 : 0;
     document.documentElement.style.setProperty('--app-nav-bottom', inset+'px');
+    var style=document.getElementById(STYLE_ID);
+    if(!style){
+      style=document.createElement('style');
+      style.id=STYLE_ID;
+      document.head.appendChild(style);
+    }
+    style.textContent=nativeApp ? `
+      html { scroll-padding-bottom: calc(68px + 52px + 16px) !important; }
+      body { padding-bottom: max(82px, calc(68px + 52px + 16px)) !important; }
+      .mobile-nav, .nav, .app-shell-nav {
+        position: fixed !important;
+        bottom: 52px !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 2147483000 !important;
+      }
+    ` : '';
   }
-  apply();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true});
+  else apply();
   window.addEventListener('resize',apply,{passive:true});
-  if(window.visualViewport) window.visualViewport.addEventListener('resize',apply,{passive:true});
 })();
