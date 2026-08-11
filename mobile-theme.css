@@ -1,4 +1,4 @@
-/* Beau's Reseller Inventory — mobile-first theme layer */
+/* Beau's Game Inventory — mobile-first theme layer */
 @media (max-width: 700px) {
   :root { --nav-h: 68px; }
   html { scroll-padding-bottom: calc(var(--nav-h) + 12px); }
@@ -47,3 +47,6 @@
 @media (min-width: 701px) {
   .mobile-nav { display: none; }
 }
+
+/* App branding */
+document-title { display: none; }
