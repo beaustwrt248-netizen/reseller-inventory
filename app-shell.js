@@ -1,0 +1,6 @@
+/* Shared navigation + scanner/pricing hand-off for Beau's Game Inventory */
+(function(){
+ const links=[['📊','Dashboard','./dashboard.html'],['📦','Inventory','./'],['📷','Scanner','./scanner.html'],['💰','Pricing','./pricing.html'],['🧾','Sales','./sales.html'],['⚙️','Settings','./settings.html']];
+ const nav=document.createElement('nav');nav.className='app-shell-nav';nav.innerHTML=links.map(x=>`<a href="${x[2]}"><span>${x[0]}</span>${x[1]}</a>`).join('');document.body.appendChild(nav);
+ const s=document.createElement('style');s.textContent='.app-shell-nav{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:grid;grid-template-columns:repeat(6,1fr);gap:3px;padding:6px 5px calc(6px + env(safe-area-inset-bottom));background:#111827;box-shadow:0 -3px 14px rgba(0,0,0,.2)}.app-shell-nav a{color:#fff;text-decoration:none;text-align:center;font-size:10px;font-weight:700;padding:5px 2px;border-radius:9px}.app-shell-nav a span{display:block;font-size:19px;line-height:22px}.app-shell-nav a:hover{background:rgba(255,255,255,.12)}body{padding-bottom:82px}@media(min-width:701px){.app-shell-nav{max-width:700px;left:50%;transform:translateX(-50%);border-radius:14px 14px 0 0}}';document.head.appendChild(s);
+})();
