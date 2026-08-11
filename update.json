@@ -1,9 +1,9 @@
 {
-  "version": "1.7.2",
-  "webVersion": "2026-08-12.5",
+  "version": "1.7.3",
+  "webVersion": "2026-08-12.6",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Settings recovery: restores sectioned navigation and Admin Panel while preserving inventory data.",
+  "message": "First-launch welcome page with guided tutorial for Dashboard, Inventory, Scanner, Pricing, Sales, Settings and Admin.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
