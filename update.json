@@ -1,9 +1,9 @@
 {
-  "version": "1.7.0",
-  "webVersion": "2026-08-12.3",
+  "version": "1.7.1",
+  "webVersion": "2026-08-12.4",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Pro release: stock health, 30+ day stock tracking, quick sale recording with automatic stock reduction, and business snapshot reporting.",
+  "message": "Admin Panel: local PIN protection, system overview, pricing rules, backup and diagnostics.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
