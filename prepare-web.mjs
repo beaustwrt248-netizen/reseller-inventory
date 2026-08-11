@@ -4,7 +4,7 @@ const files=fs.readdirSync(root).filter(f=>/\.(html|css|js|json)$/.test(f)&&!['p
 for(const f of files){
   let content=fs.readFileSync(path.join(root,f),'utf8');
   if(/\.html$/i.test(f)){
-    for(const script of ['nav-safe-area.js','page-transitions.js','app-update.js','smart-buy.js','analytics.js','backup.js','app-tools.js']){
+    for(const script of ['nav-safe-area.js','page-transitions.js','app-update.js','smart-buy.js','analytics.js','backup.js','app-tools.js','mobile-layout.js']){
       if(!content.includes(script)) content=content.replace('</head>',`<script src="./${script}"></script></head>`);
     }
   }
