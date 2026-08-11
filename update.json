@@ -4,6 +4,6 @@
   "minimumNativeVersion": "1.1.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed OTA loading so the current screen is preserved instead of returning to Home.",
+  "message": "Fixed OTA cache busting so web updates actually load while preserving the current screen.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
