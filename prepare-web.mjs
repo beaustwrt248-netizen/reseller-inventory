@@ -8,6 +8,8 @@ for(const f of files){
     if(!content.includes('page-transitions.js')) content=content.replace('</head>','<script src="./page-transitions.js"></script></head>');
     if(!content.includes('app-update.js')) content=content.replace('</head>','<script src="./app-update.js"></script></head>');
     if(!content.includes('smart-buy.js')) content=content.replace('</head>','<script src="./smart-buy.js"></script></head>');
+    if(!content.includes('analytics.js')) content=content.replace('</head>','<script src="./analytics.js"></script></head>');
+    if(!content.includes('backup.js')) content=content.replace('</head>','<script src="./backup.js"></script></head>');
   }
   fs.writeFileSync(path.join(out,f),content);
 }
