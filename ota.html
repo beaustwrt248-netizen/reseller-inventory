@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Updating Beau's Game Inventory…</title></head>
+<body style="font-family:Arial,sans-serif;background:#111827;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0"><div style="text-align:center"><div style="font-size:42px">🔄</div><h2>Loading latest version…</h2><p>Please wait.</p></div>
+<script>
+(async function(){
+  try{
+    const stamp=Date.now();
+    const root='./index.html?ota='+stamp;
+    const r=await fetch(root,{cache:'no-store'});
+    if(!r.ok)throw new Error('Could not load latest app');
+    let html=await r.text();
+    html=html.replace(/(mobile-theme\.css)(?:\?[^"']*)?/g,'$1?v='+stamp);
+    html=html.replace(/(app-nav\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
+    html=html.replace(/(app-update\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
+    const hash=location.hash||localStorage.getItem('beauLastScreenHash')||'#dashboard';
+    document.open();document.write(html);document.close();
+    setTimeout(function(){if(hash)location.hash=hash;},50);
+  }catch(e){document.body.innerHTML='<div style="padding:24px;font-family:Arial;color:#111"><h2>Update could not be loaded</h2><p>'+String(e.message||e)+'</p><button onclick="location.reload()">Try again</button></div>';}
+})();
+</script></body></html>
