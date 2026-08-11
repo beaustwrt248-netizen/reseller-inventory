@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reseller Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif}header{background:#111827;color:#fff;padding:22px}.wrap{max-width:1200px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.back{color:#fff;text-decoration:none;background:#2563eb;padding:10px 14px;border-radius:8px;font-weight:bold}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.card,.panel{background:#fff;border-radius:14px;box-shadow:0 2px 9px rgba(0,0,0,.08)}.card{padding:18px}.label{font-size:12px;color:#6b7280;font-weight:bold}.value{font-size:25px;font-weight:bold;margin-top:7px}.sub{font-size:13px;color:#6b7280;margin-top:6px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{padding:18px;margin-bottom:16px}.panel h2{margin:0 0 14px}.bar{display:flex;align-items:center;gap:10px;margin:10px 0}.bar span:first-child{width:130px;font-size:13px}.track{height:12px;background:#e5e7eb;border-radius:20px;overflow:hidden;flex:1}.fill{height:100%;background:#2563eb;border-radius:20px}.bar strong{width:80px;text-align:right;font-size:13px}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:9px;border-bottom:1px solid #e5e7eb;font-size:13px}.table th{color:#6b7280}.profit{font-weight:bold}.good{color:#15803d}.bad{color:#dc2626}.empty{text-align:center;padding:25px;color:#6b7280}.notice{padding:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;color:#1e40af;margin-bottom:16px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini .card{box-shadow:none;border:1px solid #e5e7eb}.refresh{border:0;background:#e5e7eb;padding:9px 12px;border-radius:8px;font-weight:bold}@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:450px){.cards{grid-template-columns:1fr}.wrap{padding:10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><div><h1 style="margin:0 0 5px">📊 Reseller Dashboard</h1><div style="opacity:.8">Beau's Reseller Inventory</div></div><a class="back" href="./">📦 Inventory</a></div></header>
+<main class="wrap">
+<div class="notice">Dashboard data is calculated from the inventory stored on this device. Use the Inventory page's backup function regularly.</div>
+<div class="top"><h2 style="margin:5px 0">Overview</h2><button class="refresh" onclick="render()">↻ Refresh</button></div>
+<section class="cards">
+<div class="card"><div class="label">STOCK UNITS</div><div class="value" id="units">0</div><div class="sub" id="sku">0 products</div></div>
+<div class="card"><div class="label">INVENTORY COST</div><div class="value" id="cost">$0.00</div><div class="sub">Money invested in stock</div></div>
+<div class="card"><div class="label">POTENTIAL SALES</div><div class="value" id="sales">$0.00</div><div class="sub">At current selling prices</div></div>
+<div class="card"><div class="label">POTENTIAL PROFIT</div><div class="value good" id="profit">$0.00</div><div class="sub" id="margin">0% margin</div></div>
+</section>
+<div class="grid">
+<section class="panel"><h2>📦 Stock by Platform</h2><div id="platforms"></div></section>
+<section class="panel"><h2>🏷️ Stock by Category</h2><div id="categories"></div></section>
+</div>
+<div class="grid">
+<section class="panel"><h2>💰 Best Profit Opportunities</h2><div id="best"></div></section>
+<section class="panel"><h2>⚠️ Stock to Review</h2><div id="review"></div></section>
+</div>
+<section class="panel"><h2>📋 Inventory Summary</h2><div style="overflow:auto"><table class="table"><thead><tr><th>Product</th><th>Platform</th><th>Qty</th><th>Cost</th><th>Selling</th><th>Profit</th></tr></thead><tbody id="table"></tbody></table></div></section>
+</main>
+<script>
+"use strict";
+function money(v){return "$"+Number(v||0).toFixed(2)}
+function data(){try{const x=JSON.parse(localStorage.getItem("resellerInventory")||"[]");return Array.isArray(x)?x:[]}catch(e){return []}}
+function group(items,key){const out={};items.forEach(i=>{const k=i[key]||"Other";out[k]=(out[k]||0)+Number(i.quantity||0)});return out}
+function bars(target,obj){const el=document.getElementById(target),vals=Object.entries(obj).sort((a,b)=>b[1]-a[1]);if(!vals.length){el.innerHTML='<div class="empty">No inventory data yet.</div>';return}const max=Math.max(...vals.map(x=>x[1]),1);el.innerHTML=vals.map(([k,v])=>`<div class="bar"><span>${esc(k)}</span><div class="track"><div class="fill" style="width:${Math.max(3,v/max*100)}%"></div></div><strong>${v} units</strong></div>`).join("")}
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function render(){const items=data();let units=0,cost=0,sales=0;const rows=items.map(i=>{const q=Number(i.quantity||0),c=Number(i.cost||0),s=Number(i.selling||i.marketPrice||0),p=(s-c)*q;units+=q;cost+=c*q;sales+=s*q;return {...i,q,c,s,p,unitProfit:s-c}});const profit=sales-cost;document.getElementById("units").textContent=units;document.getElementById("sku").textContent=items.length+" products";document.getElementById("cost").textContent=money(cost);document.getElementById("sales").textContent=money(sales);document.getElementById("profit").textContent=money(profit);document.getElementById("margin").textContent=(sales?profit/sales*100:0).toFixed(1)+"% margin";bars("platforms",group(items,"platform"));bars("categories",group(items,"category"));const best=[...rows].sort((a,b)=>b.unitProfit-a.unitProfit).slice(0,5);document.getElementById("best").innerHTML=best.length?best.map(i=>`<div class="bar"><span>${esc(i.name)}</span><div class="track"><div class="fill" style="width:${Math.min(100,Math.max(4,(i.unitProfit/Math.max(...best.map(x=>x.unitProfit),1))*100))}%"></div></div><strong>${money(i.unitProfit)} ea</strong></div>`).join(""):'<div class="empty">Add inventory to see opportunities.</div>';const review=rows.filter(i=>i.s<=0||i.c<=0||i.unitProfit<0).slice(0,8);document.getElementById("review").innerHTML=review.length?review.map(i=>`<div class="offer"><strong>${esc(i.name)}</strong><div class="sub">${i.c<=0?'Missing cost • ':''}${i.s<=0?'Missing selling price • ':''}${i.unitProfit<0?'Selling below cost':''}</div></div>`).join(""):'<div class="empty">Nothing needs review 🎉</div>';document.getElementById("table").innerHTML=rows.length?rows.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.platform||'Other')}</td><td>${i.q}</td><td>${money(i.c)}</td><td>${money(i.s)}</td><td class="profit ${i.unitProfit>=0?'good':'bad'}">${money(i.unitProfit*i.q)}</td></tr>`).join(""):'<tr><td colspan="6" class="empty">No inventory yet.</td></tr>'}
+render();window.addEventListener("storage",render);
+</script>
+</body>
+</html>
