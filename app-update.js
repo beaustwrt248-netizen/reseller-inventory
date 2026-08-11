@@ -1,7 +1,7 @@
 /* Beau's Game Inventory — controlled web OTA updater */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='1.4.0';
+  const CURRENT='1.5.0';
   const UPDATE_URL='./update.json';
   function compare(a,b){const aa=String(a).replace(/^v/,'').split('.').map(Number),bb=String(b).replace(/^v/,'').split('.').map(Number);for(let i=0;i<Math.max(aa.length,bb.length);i++){const x=aa[i]||0,y=bb[i]||0;if(x!==y)return x-y;}return 0;}
   function isNative(){return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}
