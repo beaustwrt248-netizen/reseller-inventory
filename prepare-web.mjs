@@ -3,8 +3,10 @@ const root=process.cwd(),out=path.join(root,'www');fs.rmSync(out,{recursive:true
 const files=fs.readdirSync(root).filter(f=>/\.(html|css|js|json)$/.test(f)&&!['package.json','capacitor.config.ts'].includes(f));
 for(const f of files){
   let content=fs.readFileSync(path.join(root,f),'utf8');
-  if(/\.html$/i.test(f)&&!content.includes('nav-safe-area.js')){
-    content=content.replace('</head>','<script src="./nav-safe-area.js"></script></head>');
+  if(/\.html$/i.test(f)){
+    if(!content.includes('nav-safe-area.js')) content=content.replace('</head>','<script src="./nav-safe-area.js"></script></head>');
+    if(!content.includes('app-update.js')) content=content.replace('</head>','<script src="./app-update.js"></script></head>');
+    if(!content.includes('smart-buy.js')) content=content.replace('</head>','<script src="./smart-buy.js"></script></head>');
   }
   fs.writeFileSync(path.join(out,f),content);
 }
