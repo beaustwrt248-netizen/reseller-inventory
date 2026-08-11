@@ -1,6 +1,6 @@
-/* Beau's Game Inventory — v1.6.5 reliable OTA updater */
+/* Beau's Game Inventory — v1.6.6 reliable OTA updater */
 (function(){
-  const KEY='beauGameInventoryBuild',CURRENT='1.6.5',UPDATE_URL='./update.json',OTA_URL='./ota.html';
+  const KEY='beauGameInventoryBuild',CURRENT='1.6.6',UPDATE_URL='./update.json',OTA_URL='./ota.html';
   function compare(a,b){const aa=String(a).replace(/^v/,'').split('.').map(Number),bb=String(b).replace(/^v/,'').split('.').map(Number);for(let i=0;i<Math.max(aa.length,bb.length);i++){const x=aa[i]||0,y=bb[i]||0;if(x!==y)return x-y}return 0}
   function isNative(){return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform())}
   async function check(){const r=await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('Update information unavailable');const d=await r.json();return{current:CURRENT,latest:String(d.version||CURRENT),available:compare(d.version||CURRENT,CURRENT)>0,notes:d.message||'',url:d.url||OTA_URL}}
