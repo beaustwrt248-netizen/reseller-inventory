@@ -1,9 +1,9 @@
 {
-  "version": "1.6.9",
-  "webVersion": "2026-08-12.2",
+  "version": "1.7.0",
+  "webVersion": "2026-08-12.3",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Removed Cash Converters from price comparisons and excluded it from market-price calculations.",
+  "message": "Reseller Pro release: stock health, 30+ day stock tracking, quick sale recording with automatic stock reduction, and business snapshot reporting.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
