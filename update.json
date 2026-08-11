@@ -1,9 +1,9 @@
 {
   "version": "1.7.2",
-  "webVersion": "2026-08-12.4",
+  "webVersion": "2026-08-12.5",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed Settings navigation while preserving the local Admin Panel.",
+  "message": "Settings recovery: restores sectioned navigation and Admin Panel while preserving inventory data.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
