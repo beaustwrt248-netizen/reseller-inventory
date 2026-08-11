@@ -1,0 +1,6 @@
+/* Beau's Game Inventory — local analytics */
+(function(){
+function all(){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);try{const v=JSON.parse(localStorage.getItem(k));if(Array.isArray(v))a.push(...v.map(x=>({...x,_source:k})));}catch(e){}}return a}
+function n(v){const x=parseFloat(String(v??'').replace(/[^0-9.-]/g,''));return Number.isFinite(x)?x:0}
+function get(){const a=all(),inv=a.filter(x=>x&&('name'in x||'title'in x||'game'in x||'product'in x)&&('cost'in x||'buyPrice'in x||'purchasePrice'in x||'price'in x||'sellPrice'in x||'sellingPrice'in x)),sales=a.filter(x=>x&&('salePrice'in x||'soldPrice'in x||'revenue'in x)&&('date'in x||'soldAt'in x||'saleDate'in x));let stockCost=0,stockValue=0,revenue=0,profit=0;inv.forEach(x=>{stockCost+=n(x.cost??x.buyPrice??x.purchasePrice);stockValue+=n(x.sellPrice??x.sellingPrice??x.price)});sales.forEach(x=>{const r=n(x.salePrice??x.soldPrice??x.revenue),c=n(x.cost??x.buyPrice??x.purchasePrice);revenue+=r;profit+=n(x.profit)||r-c});return{inventoryCount:inv.length,stockCost,stockValue,salesCount:sales.length,salesRevenue:revenue,salesProfit:profit,estimatedTotalProfit:profit+stockValue-stockCost}}
+window.BeauAnalytics={get};})();
