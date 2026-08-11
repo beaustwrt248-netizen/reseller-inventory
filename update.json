@@ -1,9 +1,9 @@
 {
-  "version": "1.6.8",
-  "webVersion": "2026-08-12.1",
+  "version": "1.6.9",
+  "webVersion": "2026-08-12.2",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Smart reseller release: barcode inventory lookup, deal calculator, BUY/MAYBE/PASS signal, inventory CSV and sales CSV reports, with local-only pricing calculations and existing OTA support.",
+  "message": "Removed Cash Converters from price comparisons and excluded it from market-price calculations.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
