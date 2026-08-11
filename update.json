@@ -1,9 +1,9 @@
 {
-  "version": "1.6.2",
-  "webVersion": "2026-08-11.9",
+  "version": "1.6.3",
+  "webVersion": "2026-08-11.10",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed OTA loading the old root page. Updates now load the matching app screen and keep the current screen instead of switching to the older Reseller Inventory layout.",
+  "message": "Fixed OTA and mobile navigation. The app is a single-page app, so updates now return to the real app root and preserve the selected section. Navigation no longer links to nonexistent pages.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
