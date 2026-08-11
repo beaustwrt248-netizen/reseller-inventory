@@ -1,9 +1,9 @@
 {
-  "version": "1.6.7",
+  "version": "1.6.8",
   "webVersion": "2026-08-12.1",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Professional reseller tools: advanced dashboard metrics, platform/category/condition filters, stock-age tracking, CSV export, configurable pricing rules, and improved business analytics.",
+  "message": "Smart reseller release: barcode inventory lookup, deal calculator, BUY/MAYBE/PASS signal, inventory CSV and sales CSV reports, with local-only pricing calculations and existing OTA support.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
