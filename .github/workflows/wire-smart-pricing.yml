@@ -1,0 +1,52 @@
+name: Wire Smart Pricing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'smart-pricing.js'
+      - 'smart-pricing-integration.js'
+      - '.github/workflows/wire-smart-pricing.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add Smart Pricing scripts to index
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          tags = ['<script src="./smart-pricing.js"></script>', '<script src="./smart-pricing-integration.js"></script>']
+          missing = [t for t in tags if t not in s]
+          if missing:
+              marker = '</body>'
+              if marker not in s:
+                  raise SystemExit('index.html does not contain </body>')
+              s = s.replace(marker, '\n' + '\n'.join(missing) + '\n' + marker, 1)
+              p.write_text(s, encoding='utf-8')
+          else:
+              print('Smart Pricing scripts already wired.')
+          PY
+
+      - name: Commit wiring change
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then
+            echo 'No wiring change needed.'
+          else
+            git commit -m 'Wire Smart Reseller Pricing into app'
+            git push
+          fi
