@@ -1,11 +1,11 @@
 /* Beau's Game Inventory — controlled web OTA updater */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='1.3.0';
+  const CURRENT='1.4.0';
   const UPDATE_URL='./update.json';
   function compare(a,b){const aa=String(a).replace(/^v/,'').split('.').map(Number),bb=String(b).replace(/^v/,'').split('.').map(Number);for(let i=0;i<Math.max(aa.length,bb.length);i++){const x=aa[i]||0,y=bb[i]||0;if(x!==y)return x-y;}return 0;}
   function isNative(){return !!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());}
-  async function check(){const r=await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('Update information unavailable');const d=await r.json();return {current:CURRENT,latest:String(d.version||CURRENT),available:compare(d.version||CURRENT,CURRENT)>0,notes:d.notes||'',url:d.url||null};}
+  async function check(){const r=await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('Update information unavailable');const d=await r.json();return {current:CURRENT,latest:String(d.version||CURRENT),available:compare(d.version||CURRENT,CURRENT)>0,notes:d.message||'',url:d.url||null};}
   function reloadLatest(){const u=new URL(location.href);u.searchParams.set('ota',Date.now());location.replace(u.toString());}
   window.BeauUpdate={version:CURRENT,isNative,check,reloadLatest};
   window.dispatchEvent(new CustomEvent('beau:update-ready',{detail:{version:CURRENT}}));
