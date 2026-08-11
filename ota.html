@@ -3,18 +3,19 @@
 <body style="font-family:Arial,sans-serif;background:#111827;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0"><div style="text-align:center"><div style="font-size:42px">🔄</div><h2>Loading latest version…</h2><p>Please wait.</p></div>
 <script>
 (async function(){
-  try{
-    const stamp=Date.now();
-    const root='./index.html?ota='+stamp;
-    const r=await fetch(root,{cache:'no-store'});
-    if(!r.ok)throw new Error('Could not load latest app');
-    let html=await r.text();
-    html=html.replace(/(mobile-theme\.css)(?:\?[^"']*)?/g,'$1?v='+stamp);
-    html=html.replace(/(app-nav\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
-    html=html.replace(/(app-update\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
-    const hash=location.hash||localStorage.getItem('beauLastScreenHash')||'#dashboard';
-    document.open();document.write(html);document.close();
-    setTimeout(function(){if(hash)location.hash=hash;},50);
-  }catch(e){document.body.innerHTML='<div style="padding:24px;font-family:Arial;color:#111"><h2>Update could not be loaded</h2><p>'+String(e.message||e)+'</p><button onclick="location.reload()">Try again</button></div>';}
+ try{
+  const stamp=Date.now(),root='./index.html?ota='+stamp;
+  const r=await fetch(root,{cache:'no-store'});if(!r.ok)throw new Error('Could not load latest app');
+  let html=await r.text();
+  html=html.replace(/(mobile-theme\.css)(?:\?[^"']*)?/g,'$1?v='+stamp);
+  html=html.replace(/(app-nav\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
+  html=html.replace(/(app-update\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
+  const pro='<script src="./app-pro.js?v='+stamp+'"><\\/script>';
+  const enh='<script src="./app-enhancements.js?v='+stamp+'"><\\/script>';
+  html=html.replace('</body>',enh+pro+'</body>');
+  const hash=location.hash||localStorage.getItem('beauLastScreenHash')||'#dashboard';
+  document.open();document.write(html);document.close();
+  setTimeout(()=>{if(hash)location.hash=hash},50);
+ }catch(e){document.body.innerHTML='<div style="padding:24px;font-family:Arial;color:#111"><h2>Update could not be loaded</h2><p>'+String(e.message||e)+'</p><button onclick="location.reload()">Try again</button></div>'}
 })();
 </script></body></html>
