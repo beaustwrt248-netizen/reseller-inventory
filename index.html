@@ -51,5 +51,8 @@ function processImport(e){let f=e.target.files[0];if(!f)return;let r=new FileRea
 function deleteAll(){if(!confirm("Delete all inventory from this device?"))return;if(!confirm("Are you absolutely sure?"))return;inventory=[];saveData();displayItems();updateDashboard();clearForm()}
 document.getElementById("startScannerButton").onclick=startScanner;document.getElementById("stopScannerButton").onclick=stopScanner;document.getElementById("lookupButton").onclick=()=>lookupBarcode();document.getElementById("saveItemButton").onclick=saveItem;document.getElementById("clearFormButton").onclick=clearForm;document.getElementById("inventorySearch").oninput=displayItems;document.getElementById("calculateMarketButton").onclick=calculateMarketPrices;document.getElementById("clearMarketButton").onclick=clearMarketPrices;document.getElementById("exportButton").onclick=exportData;document.getElementById("importButton").onclick=importData;document.getElementById("importFile").onchange=processImport;document.getElementById("deleteAllButton").onclick=deleteAll;["cost","rrp","marketPrice","selling"].forEach(id=>document.getElementById(id).oninput=calculatePricing);document.getElementById("zoomSlider").oninput=e=>setZoom(e.target.value);document.querySelectorAll(".zoomButton").forEach(b=>b.onclick=()=>setZoom(b.dataset.zoom));calculatePricing();displayItems();updateDashboard();resetZoom();
 </script>
+
+<script src="./smart-pricing.js"></script>
+<script src="./smart-pricing-integration.js"></script>
 </body>
 </html>
