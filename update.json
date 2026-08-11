@@ -1,9 +1,9 @@
 {
-  "version": "1.6.4",
-  "webVersion": "2026-08-11.12",
+  "version": "1.6.5",
+  "webVersion": "2026-08-11.13",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Added a real Settings screen with working OTA update controls, appearance controls and app information. Fixed Settings navigation from the Backup panel.",
+  "message": "Redesigned the app into separate Dashboard, Inventory, Scanner, Pricing, Sales and Settings pages with smooth transitions and persistent bottom navigation.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
