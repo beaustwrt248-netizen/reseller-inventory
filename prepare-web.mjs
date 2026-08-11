@@ -5,6 +5,7 @@ for(const f of files){
   let content=fs.readFileSync(path.join(root,f),'utf8');
   if(/\.html$/i.test(f)){
     if(!content.includes('nav-safe-area.js')) content=content.replace('</head>','<script src="./nav-safe-area.js"></script></head>');
+    if(!content.includes('page-transitions.js')) content=content.replace('</head>','<script src="./page-transitions.js"></script></head>');
     if(!content.includes('app-update.js')) content=content.replace('</head>','<script src="./app-update.js"></script></head>');
     if(!content.includes('smart-buy.js')) content=content.replace('</head>','<script src="./smart-buy.js"></script></head>');
   }
