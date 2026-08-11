@@ -4,12 +4,9 @@ const files=fs.readdirSync(root).filter(f=>/\.(html|css|js|json)$/.test(f)&&!['p
 for(const f of files){
   let content=fs.readFileSync(path.join(root,f),'utf8');
   if(/\.html$/i.test(f)){
-    if(!content.includes('nav-safe-area.js')) content=content.replace('</head>','<script src="./nav-safe-area.js"></script></head>');
-    if(!content.includes('page-transitions.js')) content=content.replace('</head>','<script src="./page-transitions.js"></script></head>');
-    if(!content.includes('app-update.js')) content=content.replace('</head>','<script src="./app-update.js"></script></head>');
-    if(!content.includes('smart-buy.js')) content=content.replace('</head>','<script src="./smart-buy.js"></script></head>');
-    if(!content.includes('analytics.js')) content=content.replace('</head>','<script src="./analytics.js"></script></head>');
-    if(!content.includes('backup.js')) content=content.replace('</head>','<script src="./backup.js"></script></head>');
+    for(const script of ['nav-safe-area.js','page-transitions.js','app-update.js','smart-buy.js','analytics.js','backup.js','app-tools.js']){
+      if(!content.includes(script)) content=content.replace('</head>',`<script src="./${script}"></script></head>`);
+    }
   }
   fs.writeFileSync(path.join(out,f),content);
 }
