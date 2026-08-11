@@ -1,9 +1,9 @@
 {
   "version": "1.6.1",
   "webVersion": "2026-08-11.8",
-  "minimumNativeVersion": "1.1.0",
+  "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed bottom navigation so it stays in one position on every screen and remains above the Samsung system navigation bar.",
+  "message": "Fixed mobile navigation so all six buttons stay consistent, visible and above the Samsung system navigation area. Updated app title to Beau's Game Inventory.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
