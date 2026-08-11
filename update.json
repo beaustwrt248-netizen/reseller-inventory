@@ -1,9 +1,9 @@
 {
-  "version": "1.7.1",
+  "version": "1.7.2",
   "webVersion": "2026-08-12.4",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Admin Panel: local PIN protection, system overview, pricing rules, backup and diagnostics.",
+  "message": "Fixed Settings navigation while preserving the local Admin Panel.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
