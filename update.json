@@ -1,9 +1,9 @@
 {
-  "version": "1.5.1",
-  "webVersion": "2026-08-11.6",
+  "version": "1.5.2",
+  "webVersion": "2026-08-11.7",
   "minimumNativeVersion": "1.1.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Mobile navigation and the More/Tools menu have been made visible and reliable.",
+  "message": "Fixed OTA loading so the current screen is preserved instead of returning to Home.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
