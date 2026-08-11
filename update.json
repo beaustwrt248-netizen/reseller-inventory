@@ -1,9 +1,9 @@
 {
-  "version": "1.6.5",
-  "webVersion": "2026-08-11.13",
+  "version": "1.6.6",
+  "webVersion": "2026-08-11.14",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Redesigned the app into separate Dashboard, Inventory, Scanner, Pricing, Sales and Settings pages with smooth transitions and persistent bottom navigation.",
+  "message": "Added full reseller workflow enhancements: sales recording with stock reduction and profit, inventory tools, dashboard business snapshot, pricing Buy/Pass signal, barcode Enter-to-lookup, safer backup/restore and improved dark mode.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
