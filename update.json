@@ -1,9 +1,9 @@
 {
   "version": "1.6.3",
-  "webVersion": "2026-08-11.10",
+  "webVersion": "2026-08-11.11",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed OTA and mobile navigation. The app is a single-page app, so updates now return to the real app root and preserve the selected section. Navigation no longer links to nonexistent pages.",
-  "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
+  "message": "Fixed OTA loading and mobile navigation. The updater now uses a cache-busting loader so the latest single-page app, navigation and styles are fetched instead of cached older files.",
+  "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
