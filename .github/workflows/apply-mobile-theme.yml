@@ -1,0 +1,51 @@
+name: Apply Mobile App Theme
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mobile-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply mobile theme and navigation
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          css = '<link rel="stylesheet" href="./mobile-theme.css">'
+          if css not in text:
+              text = text.replace('</head>', '  ' + css + '\n</head>', 1)
+
+          nav = '''<nav class="mobile-nav" aria-label="Main navigation">
+            <a href="./"><span class="icon">📦</span><span>Inventory</span></a>
+            <a href="./dashboard.html"><span class="icon">📊</span><span>Dashboard</span></a>
+            <a href="#scannerBox" onclick="document.getElementById('scannerBox')?.scrollIntoView({behavior:'smooth'}); return true;"><span class="icon">📷</span><span>Scanner</span></a>
+            <a href="#pricing" onclick="document.getElementById('marketPrice')?.scrollIntoView({behavior:'smooth'}); return true;"><span class="icon">💰</span><span>Pricing</span></a>
+          </nav>'''
+          if 'class="mobile-nav"' not in text:
+              text = text.replace('</body>', nav + '\n</body>', 1)
+
+          p.write_text(text, encoding='utf-8')
+
+      - name: Commit changes if needed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes needed."
+          else
+            git commit -m "Apply mobile-first theme and navigation"
+            git push
+          fi
