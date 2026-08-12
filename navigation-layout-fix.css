@@ -1,0 +1,6 @@
+/* v1.8.2 navigation-safe layout */
+:root{--nav-safe-gap:calc(var(--app-nav-total,78px) + 28px)}
+.app-page{padding-bottom:var(--nav-safe-gap)!important;scroll-margin-bottom:var(--nav-safe-gap)!important}
+.app-page>.panel:last-child{margin-bottom:0!important}
+body{padding-bottom:var(--nav-safe-gap)!important}
+@media(max-width:700px){.app-page{padding-bottom:calc(var(--app-nav-total,78px) + 44px)!important}.container{padding-bottom:0!important}}
