@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Local environment / credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.keystore
+
+# Generated Android project/build output
+android/
+
+# Local IDE / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build artifacts
+*.apk
+*.aab
+*.log
