@@ -27,7 +27,7 @@ function normalise(data,barcode){
  return{title,platform,image,barcode,retail:r,market:m,resale,maxBuy,existing,sources};
 }
 async function lookup(barcode){
- const r=await fetch(WORKER+'/price?barcode='+encodeURIComponent(barcode),{cache:'no-store',mode:'cors'});
+ const r=await fetch(WORKER+'/price?barcode='+encodeURIComponent(barcode),{cache:'no-store'});
  if(!r.ok){let msg='Pricing service unavailable';try{const e=await r.json();msg=e?.message||e?.error||msg}catch(_){}throw Error(msg)}
  return r.json();
 }
