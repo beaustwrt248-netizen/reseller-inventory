@@ -1,9 +1,9 @@
 {
-  "version": "1.8.9",
-  "webVersion": "2026-08-12.14",
+  "version": "1.8.10",
+  "webVersion": "2026-08-12.15",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Scanner lifecycle hardening: fully releases camera tracks and prevents overlapping starts/stops.",
+  "message": "Fix scanner start race and make the scanner lifecycle authoritative. Camera can be started and stopped repeatedly without competing handlers.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
