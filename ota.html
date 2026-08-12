@@ -7,12 +7,13 @@
   const stamp=Date.now(),root='./index.html?ota='+stamp;
   const r=await fetch(root,{cache:'no-store'});if(!r.ok)throw new Error('Could not load latest app');
   let html=await r.text();
-  html=html.replace(/(mobile-theme\.css)(?:\?[^"']*)?/g,'$1?v='+stamp);
-  html=html.replace(/(app-nav\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
-  html=html.replace(/(app-update\.js)(?:\?[^"']*)?/g,'$1?v='+stamp);
+  html=html.replace(/(mobile-theme\\.css)(?:\\?[^"']*)?/g,'$1?v='+stamp);
+  html=html.replace(/(app-nav\\.js)(?:\\?[^"']*)?/g,'$1?v='+stamp);
+  html=html.replace(/(app-update\\.js)(?:\\?[^"']*)?/g,'$1?v='+stamp);
+  const fix='<script src="./scanner-fix.js?v='+stamp+'"><\\/script>';
   const pro='<script src="./app-pro.js?v='+stamp+'"><\\/script>';
   const enh='<script src="./app-enhancements.js?v='+stamp+'"><\\/script>';
-  html=html.replace('</body>',enh+pro+'</body>');
+  html=html.replace('</body>',fix+enh+pro+'</body>');
   const hash=location.hash||localStorage.getItem('beauLastScreenHash')||'#dashboard';
   document.open();document.write(html);document.close();
   setTimeout(()=>{if(hash)location.hash=hash},50);
