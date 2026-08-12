@@ -16,7 +16,10 @@ fs.writeFileSync(activity, `package com.beausgames.inventory;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.webkit.PermissionRequest;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import com.getcapacitor.BridgeActivity;
@@ -26,28 +29,38 @@ public class MainActivity extends BridgeActivity {
     private static final int CAMERA_PERMISSION_REQUEST = 4001;
 
     @Override
-    public void onPermissionRequest(final PermissionRequest request) {
-        runOnUiThread(() -> {
-            boolean wantsCamera = false;
-            for (String resource : request.getResources()) {
-                if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)) {
-                    wantsCamera = true;
-                    break;
-                }
-            }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-            if (!wantsCamera) {
-                request.deny();
-                return;
-            }
-
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
-            } else {
-                pendingPermissionRequest = request;
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+        WebView webView = getBridge().getWebView();
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onPermissionRequest(final PermissionRequest request) {
+                runOnUiThread(() -> handleCameraPermissionRequest(request));
             }
         });
+    }
+
+    private void handleCameraPermissionRequest(final PermissionRequest request) {
+        boolean wantsCamera = false;
+        for (String resource : request.getResources()) {
+            if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)) {
+                wantsCamera = true;
+                break;
+            }
+        }
+
+        if (!wantsCamera) {
+            request.deny();
+            return;
+        }
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+        } else {
+            pendingPermissionRequest = request;
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+        }
     }
 
     @Override
@@ -67,7 +80,7 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if (pendingPermissionRequest != null) {
             pendingPermissionRequest.deny();
             pendingPermissionRequest = null;
@@ -76,4 +89,4 @@ public class MainActivity extends BridgeActivity {
     }
 }
 `);
-console.log('Applied Android WebView camera permission handling.');
+console.log('Applied compiling Android WebView camera permission handling.');
