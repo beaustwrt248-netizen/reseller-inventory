@@ -1,9 +1,9 @@
 {
-  "version": "1.9.3",
-  "webVersion": "2026-08-12.19",
+  "version": "2.0.0",
+  "webVersion": "2026-08-12.20",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-and-android-fix",
-  "message": "Fixed Android camera startup, rear-camera selection, camera permission handling, and clearer camera error messages. A new APK build is required for the Android permission fix.",
+  "type": "web-and-library-update",
+  "message": "New barcode workflow: online new and second-hand pricing, estimated buy price, estimated second-hand value, scan result popup, and persistent Game Library. Sales navigation removed.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
