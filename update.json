@@ -1,9 +1,9 @@
 {
-  "version": "1.7.3",
-  "webVersion": "2026-08-12.6",
+  "version": "1.8.0",
+  "webVersion": "2026-08-12.7",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "First-launch Welcome and step-by-step tutorial added, with sectioned navigation, Settings and Admin preserved.",
+  "message": "Smart Scan: identify games from barcodes, confirm the title, calculate pricing and suggested maximum buy before adding to inventory. Cash Converters remains excluded.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
