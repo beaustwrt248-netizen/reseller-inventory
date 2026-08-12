@@ -1,9 +1,9 @@
 {
-  "version": "2.0.0",
-  "webVersion": "2026-08-12.20",
+  "version": "2.0.1",
+  "webVersion": "2026-08-12.21",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-and-library-update",
-  "message": "New barcode workflow: online new and second-hand pricing, estimated buy price, estimated second-hand value, scan result popup, and persistent Game Library. Sales navigation removed.",
+  "message": "Improved scanned-game library sync. Games found by barcode pricing lookup are now automatically saved with thumbnail, new price, second-hand price, estimated buy price, and estimated second-hand value.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
