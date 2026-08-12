@@ -1,9 +1,9 @@
 {
-  "version": "1.8.1",
-  "webVersion": "2026-08-12.8",
+  "version": "1.8.2",
+  "webVersion": "2026-08-12.9",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Full-screen first-launch Welcome and tutorial. The app opens only after the tutorial is completed or skipped.",
+  "message": "Fixed section pages extending underneath the fixed bottom navigation bar. Added safe bottom spacing to every app section and preserved smooth navigation.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
