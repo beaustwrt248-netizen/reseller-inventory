@@ -1,9 +1,9 @@
 {
-  "version": "1.9.2",
-  "webVersion": "2026-08-12.18",
-  "minimumNativeVersion": "1.6.0",
+  "version": "1.9.3",
+  "webVersion": "2026-08-12.19",
+  "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-ota",
-  "message": "Unified all navigation routes into one app shell, removed duplicate legacy navigation, fixed Android safe-area handling, corrected stale service-worker caching, and fixed route/version inconsistencies.",
+  "type": "web-and-android-fix",
+  "message": "Fixed Android camera startup, rear-camera selection, camera permission handling, and clearer camera error messages. A new APK build is required for the Android permission fix.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
