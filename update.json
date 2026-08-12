@@ -1,9 +1,9 @@
 {
-  "version": "1.8.2",
+  "version": "1.8.3",
   "webVersion": "2026-08-12.9",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed section pages extending underneath the fixed bottom navigation bar. Added safe bottom spacing to every app section and preserved smooth navigation.",
+  "message": "Complete Smart Scan workflow: identify game, show available retail and second-hand pricing, calculate maximum buy, show BUY/MAYBE/PASS, require actual purchase price confirmation, then add to inventory. Cash Converters excluded.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
