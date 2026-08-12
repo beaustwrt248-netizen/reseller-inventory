@@ -1,9 +1,9 @@
 {
-  "version": "1.9.0",
-  "webVersion": "2026-08-12.16",
+  "version": "1.9.1",
+  "webVersion": "2026-08-12.17",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Scanner now opens on a fresh dedicated page for every scan. Closing and reopening fully resets the camera/WebView context.",
+  "message": "Fixed screen navigation, dynamic panel placement, smooth-scroll glitches, and made the Scanner tab use the fresh-page scanner.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
