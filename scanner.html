@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111827">
 <title>Beau's Game Inventory — Scanner</title>
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-<link rel="stylesheet" href="./mobile-theme.css?v=1.9.2">
+<link rel="stylesheet" href="./mobile-theme.css?v=1.9.3">
 <style>
 :root{--nav-h:68px}
 body{margin:0;background:#111827;color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding-bottom:calc(var(--nav-h) + 28px)!important}
@@ -18,24 +18,17 @@ main{padding:16px;max-width:700px;margin:auto}.panel{background:#1f2937;border-r
 .mobile-nav{position:fixed!important;left:0!important;right:0!important;bottom:var(--app-safe-bottom,0px)!important;width:100%!important;height:var(--nav-h)!important;z-index:2147483647!important;display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px!important;padding:5px 4px!important;background:#111827!important;border-top:1px solid #374151!important;box-shadow:0 -2px 10px rgba(0,0,0,.35)!important}.mobile-nav a{color:#fff;text-decoration:none;text-align:center;font-size:9px;font-weight:bold;padding:5px 1px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;min-width:0}.mobile-nav span{display:block;font-size:19px;line-height:20px}.mobile-nav a.active{color:#60a5fa;background:#1f2937;border-radius:8px}
 @media(max-width:480px){main{padding:10px}header{padding:15px}.panel{padding:12px}}
 </style>
-<script src="./nav-safe-area.js?v=1.9.2"></script>
+<script src="./nav-safe-area.js?v=1.9.3"></script>
 </head>
 <body>
 <header><h1>📷 Beau's Game Inventory — Scanner</h1><p>Scan a game barcode to open its product and pricing lookup.</p></header>
-<main>
-<section class="panel">
+<main><section class="panel">
 <div id="reader"></div>
 <div id="status" class="status">Tap Start Camera, then allow camera access when Android asks.</div>
 <div class="actions"><button id="start" class="primary">📷 Start Camera</button><button id="stop" class="secondary" disabled>⏹ Stop Camera</button></div>
-</section>
-</main>
+</section></main>
 <nav class="mobile-nav" aria-label="App navigation">
-<a href="./#dashboard"><span>📊</span>Dashboard</a>
-<a href="./#inventory"><span>📦</span>Inventory</a>
-<a href="./scanner.html" class="active"><span>📷</span>Scanner</a>
-<a href="./#pricing"><span>💰</span>Pricing</a>
-<a href="./#sales"><span>🧾</span>Sales</a>
-<a href="./#settings"><span>⚙️</span>Settings</a>
+<a href="./#dashboard"><span>📊</span>Dashboard</a><a href="./#inventory"><span>📦</span>Inventory</a><a href="./scanner.html" class="active"><span>📷</span>Scanner</a><a href="./#pricing"><span>💰</span>Pricing</a><a href="./#sales"><span>🧾</span>Sales</a><a href="./#settings"><span>⚙️</span>Settings</a>
 </nav>
 <script>
 'use strict';
@@ -44,7 +37,11 @@ const $=id=>document.getElementById(id);
 function setStatus(text,cls=''){ $('status').textContent=text; $('status').className='status '+cls; }
 function releaseTracks(){document.querySelectorAll('video').forEach(v=>{try{v.pause();if(v.srcObject){v.srcObject.getTracks().forEach(t=>{try{t.stop()}catch(e){}});v.srcObject=null}}catch(e){}})}
 async function cleanup(){session++;const s=scanner;scanner=null;running=false;starting=false;$('stop').disabled=true;if(s){try{await s.stop()}catch(e){}try{await s.clear()}catch(e){}}releaseTracks();$('reader').innerHTML='';}
-async function start(){if(starting||running)return;if(typeof Html5Qrcode==='undefined'){setStatus('Scanner library did not load. Check your internet connection and try again.','warning');return}await cleanup();const my=++session;starting=true;$('start').disabled=true;setStatus('Starting camera…');try{const s=new Html5Qrcode('reader');scanner=s;await s.start({facingMode:{ideal:'environment'}},{fps:10,qrbox:{width:250,height:150},aspectRatio:1.7777778},async code=>{if(!running||my!==session||scanner!==s)return;running=false;starting=false;setStatus('Barcode found — opening product lookup…','success');try{await s.stop()}catch(e){}try{await s.clear()}catch(e){}scanner=null;releaseTracks();location.replace('./?scanned='+encodeURIComponent(String(code).trim()));});if(my!==session){try{await s.stop()}catch(e){}try{await s.clear()}catch(e){}return}starting=false;running=true;$('stop').disabled=false;$('start').disabled=false;setStatus('Camera ready — point it at a barcode.','success')}catch(e){starting=false;running=false;scanner=null;$('start').disabled=false;$('stop').disabled=true;releaseTracks();$('reader').innerHTML='';const msg=String(e?.message||e||'').toLowerCase();setStatus(msg.includes('permission')||msg.includes('notallowed')?'Camera permission was denied. Allow camera access in Android settings/browser permissions, then try again.':'Camera could not be started. Check that no other app is using the camera, then try again.','warning')}}
+function cameraError(e){const name=String(e?.name||'').toLowerCase(),msg=String(e?.message||e||'').toLowerCase();if(name.includes('notallowed')||msg.includes('permission')||msg.includes('notallowed'))return'Camera permission was denied. Allow Camera permission for Beau\'s Game Inventory in Android Settings, then try again.';if(name.includes('notfound')||msg.includes('notfound'))return'No camera was found on this device.';if(name.includes('notreadable')||msg.includes('notreadable')||msg.includes('trackstart'))return'The camera is busy or unavailable. Close Camera, WhatsApp, Instagram or other apps using the camera, then try again.';if(name.includes('security'))return'Camera access is blocked by the current WebView/browser. Reopen the app after installing the latest APK.';return'Camera could not be started. Tap Start Camera again. If it still fails, reinstall the latest APK so the Android camera permission fix is installed.';}
+async function getRearCamera(){if(!window.Html5Qrcode||typeof Html5Qrcode.getCameras!=='function')return null;try{const cams=await Html5Qrcode.getCameras();if(!cams?.length)return null;const rear=cams.find(c=>/back|rear|environment|facing back/i.test(c.label||''));return (rear||cams[0]).id||null}catch(e){return null}}
+async function start(){if(starting||running)return;if(typeof Html5Qrcode==='undefined'){setStatus('Scanner library did not load. Check your internet connection and try again.','warning');return}await cleanup();const my=++session;starting=true;$('start').disabled=true;setStatus('Requesting camera access…');try{
+const cameraId=await getRearCamera();if(my!==session)return;const s=new Html5Qrcode('reader');scanner=s;const cameraConfig=cameraId?cameraId:{facingMode:'environment'};setStatus('Starting rear camera…');await s.start(cameraConfig,{fps:10,qrbox:{width:250,height:150},aspectRatio:1.7777778,disableFlip:true},async code=>{if(!running||my!==session||scanner!==s)return;running=false;starting=false;setStatus('Barcode found — opening product lookup…','success');try{await s.stop()}catch(e){}try{await s.clear()}catch(e){}scanner=null;releaseTracks();location.replace('./?scanned='+encodeURIComponent(String(code).trim()));});if(my!==session){try{await s.stop()}catch(e){}try{await s.clear()}catch(e){}return}starting=false;running=true;$('stop').disabled=false;$('start').disabled=false;setStatus('Camera ready — point it at a barcode.','success');
+}catch(e){starting=false;running=false;scanner=null;$('start').disabled=false;$('stop').disabled=true;releaseTracks();$('reader').innerHTML='';setStatus(cameraError(e),'warning');}}
 async function stop(){await cleanup();setStatus('Camera stopped. Tap Start Camera to scan again.');$('start').disabled=false;}
 $('start').addEventListener('click',start);$('stop').addEventListener('click',stop);window.addEventListener('pagehide',cleanup);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)cleanup()});
 </script>
