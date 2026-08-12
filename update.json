@@ -1,9 +1,9 @@
 {
-  "version": "1.8.7",
-  "webVersion": "2026-08-12.12",
+  "version": "1.8.8",
+  "webVersion": "2026-08-12.13",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "OTA updates enabled. Web app fixes and UI improvements can now be delivered without reinstalling the APK.",
+  "message": "Fix scanner restart after closing. Camera scanner can now be opened repeatedly without reinstalling the APK.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
