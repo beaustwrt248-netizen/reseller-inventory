@@ -1,9 +1,9 @@
 {
-  "version": "1.8.8",
-  "webVersion": "2026-08-12.13",
+  "version": "1.8.9",
+  "webVersion": "2026-08-12.14",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fix scanner restart after closing. Camera scanner can now be opened repeatedly without reinstalling the APK.",
+  "message": "Scanner lifecycle hardening: fully releases camera tracks and prevents overlapping starts/stops.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
