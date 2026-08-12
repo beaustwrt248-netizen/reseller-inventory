@@ -1,0 +1,65 @@
+name: Quality Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  javascript:
+    name: JavaScript syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          while IFS= read -r -d '' file; do
+            found=1
+            echo "Checking $file"
+            node --check "$file"
+          done < <(find . -type f -name '*.js' -not -path './node_modules/*' -print0)
+          if [ "$found" -eq 0 ]; then
+            echo 'No JavaScript files found.'
+          fi
+
+  repository-safety:
+    name: Repository safety checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check for common secret files
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden=$(git ls-files | grep -E '(^|/)(\.env|\.env\..*|.*\.pem|.*\.key|.*\.p12|.*\.pfx)$' || true)
+          if [ -n "$forbidden" ]; then
+            echo "Potential secret files are tracked:"
+            echo "$forbidden"
+            exit 1
+          fi
+          echo 'No common secret files are tracked.'
+      - name: Check for obvious credential patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -n -I -E '(BEGIN (RSA|OPENSSH|EC|PRIVATE) KEY|AIza[0-9A-Za-z_-]{20,}|sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,})' -- ':!SECURITY.md' ':!README.md'; then
+            echo 'Potential credential pattern found. Review the matching lines.'
+            exit 1
+          fi
+          echo 'No obvious credential patterns found.'
