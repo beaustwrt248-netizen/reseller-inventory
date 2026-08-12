@@ -1,9 +1,9 @@
 {
-  "version": "1.8.10",
-  "webVersion": "2026-08-12.15",
+  "version": "1.9.0",
+  "webVersion": "2026-08-12.16",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fix scanner start race and make the scanner lifecycle authoritative. Camera can be started and stopped repeatedly without competing handlers.",
+  "message": "Scanner now opens on a fresh dedicated page for every scan. Closing and reopening fully resets the camera/WebView context.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
