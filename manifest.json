@@ -1,1 +1,1 @@
-{"name":"Beau's Game Inventory","short_name":"Beau's Inventory","description":"Mobile reseller inventory, barcode, pricing and sales management.","start_url":"./dashboard.html","display":"standalone","background_color":"#111827","theme_color":"#111827","orientation":"portrait-primary"}
+{"name":"Beau's Game Inventory","short_name":"Beau's Inventory","description":"Mobile reseller inventory, barcode, pricing and sales management.","start_url":"./","scope":"./","display":"standalone","background_color":"#111827","theme_color":"#111827","orientation":"portrait-primary"}
