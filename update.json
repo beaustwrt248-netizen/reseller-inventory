@@ -4,6 +4,6 @@
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "First-launch welcome page with guided tutorial for Dashboard, Inventory, Scanner, Pricing, Sales, Settings and Admin.",
+  "message": "First-launch Welcome and step-by-step tutorial added, with sectioned navigation, Settings and Admin preserved.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
