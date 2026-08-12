@@ -1,7 +1,7 @@
 /* Beau's Game Inventory — OTA updater */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='1.8.9';
+  const CURRENT='1.8.10';
   const UPDATE_URL='./update.json';
   const OTA_URL='./ota.html';
   function compare(a,b){
