@@ -26,15 +26,27 @@ jobs:
         run: npm run prepare:web
       - name: Add Android project
         run: npx cap add android
+      - name: Add camera permission to Android manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/AndroidManifest.xml')
+          s=p.read_text()
+          permission='<uses-permission android:name="android.permission.CAMERA" />'
+          if permission not in s:
+              s=s.replace('<manifest ', '<manifest ' + '\n    ' + permission + '\n', 1)
+          p.write_text(s)
+          PY
       - name: Sync Capacitor
         run: npx cap sync android
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
       - name: Rename APK with app version
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v1.8.3-debug.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v1.8.4-debug.apk
       - name: Upload versioned APK
         uses: actions/upload-artifact@v4
         with:
-          name: beaus-game-inventory-v1.8.3-debug-apk
-          path: beaus-game-inventory-v1.8.3-debug.apk
+          name: beaus-game-inventory-v1.8.4-debug-apk
+          path: beaus-game-inventory-v1.8.4-debug.apk
