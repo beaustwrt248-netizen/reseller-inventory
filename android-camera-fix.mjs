@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
@@ -33,12 +34,20 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
 
         WebView webView = getBridge().getWebView();
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setMediaPlaybackRequiresUserGesture(false);
+
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onPermissionRequest(final PermissionRequest request) {
                 runOnUiThread(() -> handleCameraPermissionRequest(request));
             }
         });
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+        }
     }
 
     private void handleCameraPermissionRequest(final PermissionRequest request) {
@@ -89,4 +98,4 @@ public class MainActivity extends BridgeActivity {
     }
 }
 `);
-console.log('Applied compiling Android WebView camera permission handling.');
+console.log('Applied hardened Android WebView camera permission handling.');
