@@ -1,9 +1,9 @@
 {
-  "version": "1.9.1",
-  "webVersion": "2026-08-12.17",
+  "version": "1.9.2",
+  "webVersion": "2026-08-12.18",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed screen navigation, dynamic panel placement, smooth-scroll glitches, and made the Scanner tab use the fresh-page scanner.",
+  "message": "Unified all navigation routes into one app shell, removed duplicate legacy navigation, fixed Android safe-area handling, corrected stale service-worker caching, and fixed route/version inconsistencies.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
