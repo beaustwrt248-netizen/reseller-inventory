@@ -1,99 +1,25 @@
-/* Beau's Game Inventory v1.9.2 — one navigation shell for every screen */
+/* Beau's Game Inventory v1.9.3 — stable SVG navigation icons */
 (function(){
 'use strict';
-const items=[['📊','Dashboard','dashboard'],['📦','Inventory','inventory'],['📷','Scanner','scanner'],['💰','Pricing','pricing'],['🧾','Sales','sales'],['⚙️','Settings','settings']];
+const svg={
+ dashboard:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h4V9H4v10Zm6 0h4V4h-4v15Zm6 0h4v-7h-4v7Z" fill="currentColor"/></svg>',
+ inventory:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8.5 12 3 3 8.5v7L12 21l9-5.5v-7ZM12 5.35l6.55 4L12 13.35l-6.55-4L12 5.35ZM5 11.3l6 3.67v3.12l-6-3.67V11.3Zm8 6.79v-3.12l6-3.67v3.12l-6 3.67Z" fill="currentColor"/></svg>',
+ scanner:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3H5a2 2 0 0 0-2 2v2h2V5h2V3Zm10 0v2h2v2h2V5a2 2 0 0 0-2-2h-2ZM3 17v2a2 2 0 0 0 2 2h2v-2H5v-2H3Zm16 0v2h-2v2h2a2 2 0 0 0 2-2v-2h-2ZM6 11h12v2H6v-2Z" fill="currentColor"/></svg>',
+ pricing:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10.01 10.01 0 0 0 12 2Zm1 15.92V19h-2v-1.08a5.6 5.6 0 0 1-3.25-1.6l1.42-1.42A3.57 3.57 0 0 0 12 16c1.28 0 2-.54 2-1.35 0-.76-.5-1.13-2.15-1.65-1.9-.59-3.1-1.43-3.1-3.2A3.25 3.25 0 0 1 11 6.77V5h2v1.78a5.13 5.13 0 0 1 2.75 1.4l-1.4 1.45A3.34 3.34 0 0 0 12 8.7c-1.14 0-1.65.5-1.65 1.1 0 .66.5.99 2.02 1.46 2.02.63 3.23 1.55 3.23 3.36A3.37 3.37 0 0 1 13 17.92Z" fill="currentColor"/></svg>',
+ sales:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h2l1.7 10.2a2 2 0 0 0 2 1.8h7.9a2 2 0 0 0 1.95-1.56L21 7H7.1M10 20a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ settings:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19.43 12.98.04-.98-.04-.98 2.11-1.65-2-3.46-2.49 1a7.4 7.4 0 0 0-1.7-.98L15 3h-4l-.35 2.93a7.4 7.4 0 0 0-1.7.98l-2.49-1-2 3.46 2.11 1.65-.04.98.04.98-2.11 1.65 2 3.46 2.49-1c.52.4 1.09.72 1.7.98L11 21h4l.35-2.93a7.4 7.4 0 0 0 1.7-.98l2.49 1 2-3.46-2.11-1.65ZM13 15.5A3.5 3.5 0 1 1 13 8a3.5 3.5 0 0 1 0 7.5Z" fill="currentColor"/></svg>'
+};
+const items=[['Dashboard','dashboard'],['Inventory','inventory'],['Scanner','scanner'],['Pricing','pricing'],['Sales','sales'],['Settings','settings']];
 function load(id,src){if(document.getElementById(id))return;const s=document.createElement('script');s.id=id;s.src=src;document.head.appendChild(s)}
 function pageMap(){return {dashboard:'page-dashboard',inventory:'page-inventory',scanner:'page-scanner',pricing:'page-pricing',sales:'page-sales',settings:'page-settings'}}
-function pageForPanel(panel){
- const t=(panel.querySelector('h2')?.textContent||'').trim().toLowerCase();
- if(t.includes('barcode scanner')||t.includes('scanner'))return 'scanner';
- if(t.includes('quick sale')||t.includes('sales history')||t.includes('record sale')||t==='sales'||t.includes('sell inventory'))return 'sales';
- if(t.includes('price comparison')||t.includes('pricing')||t.includes('market price'))return 'pricing';
- if(t.includes('backup')||t.includes('settings')||t.includes('appearance')||t.includes('updates'))return 'settings';
- if(t.includes('add / edit item')||t==='📦 inventory'||t.includes('inventory'))return 'inventory';
- return null;
-}
+function pageForPanel(panel){const t=(panel.querySelector('h2')?.textContent||'').trim().toLowerCase();if(t.includes('barcode scanner')||t.includes('scanner'))return 'scanner';if(t.includes('quick sale')||t.includes('sales history')||t.includes('record sale')||t==='sales'||t.includes('sell inventory'))return 'sales';if(t.includes('price comparison')||t.includes('pricing')||t.includes('market price'))return 'pricing';if(t.includes('backup')||t.includes('settings')||t.includes('appearance')||t.includes('updates'))return 'settings';if(t.includes('add / edit item')||t==='📦 inventory'||t.includes('inventory'))return 'inventory';return null}
 function getContainer(){return document.querySelector('.container')}
-function buildPages(){
- const c=getContainer();if(!c)return;
- if(c.querySelector(':scope > .app-page'))return;
- const d=c.querySelector(':scope > .dashboard');
- const pages={dashboard:[],inventory:[],scanner:[],pricing:[],sales:[],settings:[]};
- if(d)pages.dashboard.push(d);
- [...c.querySelectorAll(':scope > .panel')].forEach(p=>{const k=pageForPanel(p);if(k)pages[k].push(p)});
- Object.entries(pages).forEach(([k,els])=>{
-   const p=document.createElement('main');p.className='app-page';p.id='page-'+k;
-   els.forEach(e=>p.appendChild(e));c.appendChild(p);
- });
-}
-function moveNewPanels(){
- const c=getContainer();if(!c)return;
- const pages=pageMap();
- [...c.querySelectorAll(':scope > .panel')].forEach(panel=>{
-   const k=pageForPanel(panel);if(k&&document.getElementById(pages[k]))document.getElementById(pages[k]).appendChild(panel);
- });
-}
-function watchDynamicPanels(){
- const c=getContainer();if(!c||c.dataset.navObserver)return;
- c.dataset.navObserver='1';
- const observer=new MutationObserver(()=>moveNewPanels());
- observer.observe(c,{childList:true,subtree:false});
-}
-function ensureSettings(){
- const p=document.getElementById('page-settings');if(!p)return;
- if(!document.getElementById('appSettingsPanel')){
-  const s=document.createElement('section');s.className='panel';s.id='appSettingsPanel';
-  s.innerHTML='<h2>⚙️ Settings</h2><p>Manage updates, appearance, backup and administration.</p><div class="price-box"><h3>🔄 App Updates</h3><p id="settingsVersion">Current version: checking…</p><p id="settingsUpdateStatus">Check for the latest web app version.</p><div class="actions"><button class="primary" id="settingsCheckUpdates">🔎 Check for Updates</button><button class="primary" id="settingsLoadUpdate" style="display:none">⬇️ Load Latest Version</button></div></div><div class="price-box"><h3>🎨 Appearance</h3><button class="secondary" id="settingsThemeToggle">🌙 Toggle Dark Mode</button></div><div class="price-box"><h3>📱 App Information</h3><div class="price-row"><span>App</span><strong>Beau\'s Game Inventory</strong></div><div class="price-row"><span>Version</span><strong>v1.9.2</strong></div></div>';
-  p.appendChild(s);
- }
- wireSettings();
- load('beauAdminPanel','./admin-panel.js?v=1.9.2');
- if(!document.getElementById('beauAdminCss')){const l=document.createElement('link');l.id='beauAdminCss';l.rel='stylesheet';l.href='./admin-panel.css?v=1.9.2';document.head.appendChild(l)}
-}
-function wireSettings(){
- const c=document.getElementById('settingsCheckUpdates'),l=document.getElementById('settingsLoadUpdate'),st=document.getElementById('settingsUpdateStatus'),v=document.getElementById('settingsVersion'),th=document.getElementById('settingsThemeToggle');
- if(!c||c.dataset.wired)return;c.dataset.wired='1';
- v.textContent='Current version: v'+(window.BeauUpdate?.version||'1.9.2');
- c.onclick=async()=>{st.textContent='Checking for the latest version…';l.style.display='none';try{const d=await window.BeauUpdate.check();v.textContent='Current version: v'+d.current;if(d.available){st.textContent='✨ Update available: v'+d.latest+(d.notes?' — '+d.notes:'');l.style.display='inline-block'}else st.textContent='✅ You are running the latest version.'}catch(e){st.textContent='⚠️ Could not check for updates.'}};
- l.onclick=()=>window.BeauUpdate?.reloadLatest();
- th.onclick=()=>{const on=!document.body.classList.contains('dark-mode');document.body.classList.toggle('dark-mode',on);localStorage.setItem('beauDarkMode',on?'1':'0');localStorage.setItem('resellerDarkMode',on?'1':'0')};
- if(localStorage.getItem('beauDarkMode')==='1'||localStorage.getItem('resellerDarkMode')==='1')document.body.classList.add('dark-mode');
-}
-function activate(k,transition){
- buildPages();moveNewPanels();ensureSettings();
- if(!items.some(x=>x[2]===k))k='dashboard';
- document.querySelectorAll('.mobile-nav button').forEach(b=>{const active=b.dataset.screen===k;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')});
- document.querySelectorAll('.app-page').forEach(p=>p.classList.toggle('active',p.id==='page-'+k));
- const p=document.getElementById('page-'+k);
- if(transition&&p){p.classList.remove('page-enter');void p.offsetWidth;p.classList.add('page-enter')}
- window.scrollTo({top:0,left:0,behavior:'auto'});
- try{history.replaceState(null,'','#'+k)}catch(e){}
-}
-function mount(){
- buildPages();ensureSettings();watchDynamicPanels();
- /* Remove every legacy navigation bar before mounting the single one. */
- document.querySelectorAll('.mobile-nav,.app-shell-nav,.nav').forEach(n=>n.remove());
- const n=document.createElement('nav');n.className='mobile-nav';n.setAttribute('aria-label','App navigation');
- n.innerHTML=items.map(x=>`<button type="button" data-screen="${x[2]}" aria-label="${x[1]}"><span class="icon" aria-hidden="true">${x[0]}</span><span class="label">${x[1]}</span></button>`).join('');
- document.body.appendChild(n);
- n.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-   const k=b.dataset.screen;
-   if(k==='scanner'){window.location.href='./scanner.html';return;}
-   activate(k,true);
- }));
- let k=(location.hash||'').slice(1);if(!items.some(x=>x[2]===k)||k==='scanner')k='dashboard';
- activate(k,false);
- window.addEventListener('hashchange',()=>{let h=(location.hash||'').slice(1);if(h==='scanner'){location.href='./scanner.html';return}if(items.some(x=>x[2]===h))activate(h,false)});
- window.BeauNavigation={activate};
- load('beauNavSafeArea','./nav-safe-area.js?v=1.9.2');
- load('beauSmartToolsScript','./smart-reseller.js?v=1.9.2');
- load('beauSmartScanScript','./smart-scan.js?v=1.9.2');
- load('beauSmartScanCss','./smart-scan.css?v=1.9.2');
- load('beauPriceComparisonCleanup','./price-comparison-cleanup.js?v=1.9.2');
- load('beauProToolsScript','./pro-tools.js?v=1.9.2');
- load('beauWelcomeCss','./welcome-tutorial.css?v=1.9.2');
- load('beauWelcomeTutorial','./welcome-tutorial.js?v=1.9.2');
- load('beauNavLayoutFix','./navigation-layout-fix.css?v=1.9.2');
-}
+function buildPages(){const c=getContainer();if(!c)return;if(c.querySelector(':scope > .app-page'))return;const d=c.querySelector(':scope > .dashboard');const pages={dashboard:[],inventory:[],scanner:[],pricing:[],sales:[],settings:[]};if(d)pages.dashboard.push(d);[...c.querySelectorAll(':scope > .panel')].forEach(p=>{const k=pageForPanel(p);if(k)pages[k].push(p)});Object.entries(pages).forEach(([k,els])=>{const p=document.createElement('main');p.className='app-page';p.id='page-'+k;els.forEach(e=>p.appendChild(e));c.appendChild(p)})}
+function moveNewPanels(){const c=getContainer();if(!c)return;const pages=pageMap();[...c.querySelectorAll(':scope > .panel')].forEach(panel=>{const k=pageForPanel(panel);if(k&&document.getElementById(pages[k]))document.getElementById(pages[k]).appendChild(panel)})}
+function watchDynamicPanels(){const c=getContainer();if(!c||c.dataset.navObserver)return;c.dataset.navObserver='1';new MutationObserver(()=>moveNewPanels()).observe(c,{childList:true,subtree:false})}
+function ensureSettings(){const p=document.getElementById('page-settings');if(!p)return;if(!document.getElementById('appSettingsPanel')){const s=document.createElement('section');s.className='panel';s.id='appSettingsPanel';s.innerHTML='<h2>⚙️ Settings</h2><p>Manage updates, appearance, backup and administration.</p><div class="price-box"><h3>🔄 App Updates</h3><p id="settingsVersion">Current version: checking…</p><p id="settingsUpdateStatus">Check for the latest web app version.</p><div class="actions"><button class="primary" id="settingsCheckUpdates">🔎 Check for Updates</button><button class="primary" id="settingsLoadUpdate" style="display:none">⬇️ Load Latest Version</button></div></div><div class="price-box"><h3>🎨 Appearance</h3><button class="secondary" id="settingsThemeToggle">🌙 Toggle Dark Mode</button></div><div class="price-box"><h3>📱 App Information</h3><div class="price-row"><span>App</span><strong>Beau\'s Game Inventory</strong></div><div class="price-row"><span>Version</span><strong>v1.9.3</strong></div></div>';p.appendChild(s)}wireSettings();load('beauAdminPanel','./admin-panel.js?v=1.9.3');if(!document.getElementById('beauAdminCss')){const l=document.createElement('link');l.id='beauAdminCss';l.rel='stylesheet';l.href='./admin-panel.css?v=1.9.3';document.head.appendChild(l)}}
+function wireSettings(){const c=document.getElementById('settingsCheckUpdates'),l=document.getElementById('settingsLoadUpdate'),st=document.getElementById('settingsUpdateStatus'),v=document.getElementById('settingsVersion'),th=document.getElementById('settingsThemeToggle');if(!c||c.dataset.wired)return;c.dataset.wired='1';v.textContent='Current version: v'+(window.BeauUpdate?.version||'1.9.3');c.onclick=async()=>{st.textContent='Checking for the latest version…';l.style.display='none';try{const d=await window.BeauUpdate.check();v.textContent='Current version: v'+d.current;if(d.available){st.textContent='✨ Update available: v'+d.latest+(d.notes?' — '+d.notes:'');l.style.display='inline-block'}else st.textContent='✅ You are running the latest version.'}catch(e){st.textContent='⚠️ Could not check for updates.'}};l.onclick=()=>window.BeauUpdate?.reloadLatest();th.onclick=()=>{const on=!document.body.classList.contains('dark-mode');document.body.classList.toggle('dark-mode',on);localStorage.setItem('beauDarkMode',on?'1':'0');localStorage.setItem('resellerDarkMode',on?'1':'0')};if(localStorage.getItem('beauDarkMode')==='1'||localStorage.getItem('resellerDarkMode')==='1')document.body.classList.add('dark-mode')}
+function activate(k,transition){buildPages();moveNewPanels();ensureSettings();if(!items.some(x=>x[1]===k))k='dashboard';document.querySelectorAll('.mobile-nav button').forEach(b=>{const active=b.dataset.screen===k;b.classList.toggle('active',active);b.setAttribute('aria-current',active?'page':'false')});document.querySelectorAll('.app-page').forEach(p=>p.classList.toggle('active',p.id==='page-'+k));const p=document.getElementById('page-'+k);if(transition&&p){p.classList.remove('page-enter');void p.offsetWidth;p.classList.add('page-enter')}window.scrollTo({top:0,left:0,behavior:'auto'});try{history.replaceState(null,'','#'+k)}catch(e){}}
+function mount(){buildPages();ensureSettings();watchDynamicPanels();document.querySelectorAll('.mobile-nav,.app-shell-nav,.nav').forEach(n=>n.remove());const n=document.createElement('nav');n.className='mobile-nav';n.setAttribute('aria-label','App navigation');n.innerHTML=items.map(x=>`<button type="button" data-screen="${x[1]}" aria-label="${x[0]}"><span class="icon">${svg[x[1]]}</span><span class="label">${x[0]}</span></button>`).join('');document.body.appendChild(n);n.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.screen;if(k==='scanner'){window.location.href='./scanner.html';return}activate(k,true)}));let k=(location.hash||'').slice(1);if(!items.some(x=>x[1]===k)||k==='scanner')k='dashboard';activate(k,false);window.addEventListener('hashchange',()=>{let h=(location.hash||'').slice(1);if(h==='scanner'){location.href='./scanner.html';return}if(items.some(x=>x[1]===h))activate(h,false)});window.BeauNavigation={activate};load('beauNavSafeArea','./nav-safe-area.js?v=1.9.3');load('beauSmartToolsScript','./smart-reseller.js?v=1.9.3');load('beauSmartScanScript','./smart-scan.js?v=1.9.3');load('beauSmartScanCss','./smart-scan.css?v=1.9.3');load('beauPriceComparisonCleanup','./price-comparison-cleanup.js?v=1.9.3');load('beauProToolsScript','./pro-tools.js?v=1.9.3');load('beauWelcomeCss','./welcome-tutorial.css?v=1.9.3');load('beauWelcomeTutorial','./welcome-tutorial.js?v=1.9.3');load('beauNavLayoutFix','./navigation-layout-fix.css?v=1.9.3')}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
