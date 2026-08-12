@@ -1,9 +1,9 @@
 {
-  "version": "1.8.4",
-  "webVersion": "2026-08-12.10",
+  "version": "1.8.5",
+  "webVersion": "2026-08-12.11",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Camera permission fix for the Android debug APK. Smart Scan, pricing, purchase confirmation and inventory workflow retained.",
+  "message": "Fix Android APK camera access by adding runtime CAMERA permission handling and WebView video-capture permission. Smart Scan, pricing, purchase confirmation and inventory workflow retained.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
