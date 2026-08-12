@@ -1,9 +1,9 @@
 {
-  "version": "1.8.3",
-  "webVersion": "2026-08-12.9",
+  "version": "1.8.4",
+  "webVersion": "2026-08-12.10",
   "minimumNativeVersion": "1.6.0",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Complete Smart Scan workflow: identify game, show available retail and second-hand pricing, calculate maximum buy, show BUY/MAYBE/PASS, require actual purchase price confirmation, then add to inventory. Cash Converters excluded.",
+  "message": "Camera permission fix for the Android debug APK. Smart Scan, pricing, purchase confirmation and inventory workflow retained.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
