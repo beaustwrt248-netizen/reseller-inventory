@@ -1,16 +1,1 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>Updating Beau's Game Inventory…</title></head>
-<body style="font-family:Arial,sans-serif;background:#111827;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0"><div style="text-align:center;padding:24px"><div style="font-size:42px">🔄</div><h2>Loading latest version…</h2><p id="msg">Refreshing the app.</p><button id="retry" style="display:none;border:0;border-radius:10px;padding:12px 18px;font-weight:700">Retry</button></div>
-<script>
-(function(){
-  const stamp=Date.now();
-  const hash=location.hash||localStorage.getItem('beauLastScreenHash')||'#dashboard';
-  const target='./index.html?ota='+stamp+'&build=2.4.0'+hash;
-  let done=false;
-  function go(){if(done)return;done=true;window.location.replace(target)}
-  document.getElementById('msg').textContent='Starting the latest app…';
-  setTimeout(go,150);
-  setTimeout(function(){if(done)return;document.getElementById('msg').textContent='The update is taking longer than expected.';document.getElementById('retry').style.display='inline-block'},6000);
-  document.getElementById('retry').onclick=go;
-})();
-</script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#171126"><title>Beau's Reseller Hub Update</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#171126;color:#fff;font-family:system-ui,sans-serif}.box{width:min(520px,calc(100% - 32px));padding:28px;border-radius:24px;background:#21183a;border:1px solid #3a3154;text-align:center;box-shadow:0 15px 40px #0006}button{padding:12px 18px;border:0;border-radius:12px;background:#7657ff;color:#fff;font-weight:800}p{color:#b9b1cf;line-height:1.5}</style></head><body><div class="box"><div style="font-size:42px">🔄</div><h1>Beau's Reseller Hub</h1><p id="msg">Loading the latest stable version…</p><button id="open">Open Latest Version</button></div><script>(async()=>{const b=Date.now();const btn=document.getElementById('open'),msg=document.getElementById('msg');btn.onclick=()=>location.href='./index.html?ota='+Date.now()+'#dashboard';try{const r=await fetch('./update.json?ts='+b,{cache:'no-store'});const d=await r.json();msg.textContent='Stable version '+(d.version||'latest')+' is ready. Your local inventory and library remain stored on this device.'}catch{msg.textContent='The update manifest could not be checked, but the latest web app can still be opened.'}setTimeout(()=>btn.click(),500)})();</script></body></html>
