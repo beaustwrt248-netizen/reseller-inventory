@@ -1,4 +1,4 @@
-/* Beau's Game Inventory — scanner lookup hotfix v2.0.4 */
+/* Beau's Game Inventory — scanner lookup hotfix v2.0.6 */
 (function(){
   'use strict';
   const WORKER='https://beau-reseller-pricing.beaustwrt248.workers.dev';
@@ -47,7 +47,7 @@
       try{data=await request(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({barcode:code})})}catch(e){lastErr=e}
     }
     if(!data){
-      if(result)result.innerHTML='<div class="warning"><strong>Pricing lookup is temporarily unavailable.</strong><br>The barcode was read correctly, but the online pricing service did not return a result. You can try again or enter the barcode manually.</div>';
+      if(result)result.innerHTML='<div class="warning"><strong>Pricing lookup is temporarily unavailable.</strong><br>The barcode was read correctly, but the online pricing service did not return a result. You can try again or enter the barcode manually.<br><small>Service detail: '+esc(lastErr?.message||'Unknown error')+'</small></div>';
       return null;
     }
     let g;try{g=normalise(data,code)}catch(e){if(result)result.innerHTML='<div class="warning">The pricing service responded, but no matching game was found for barcode <strong>'+esc(code)+'</strong>.</div>';return null}
@@ -67,7 +67,7 @@
     const b=document.getElementById('saveScanToLibrary');if(b){b.textContent='✅ Saved to Library';b.disabled=true}
   }
   window.lookupBarcode=lookupBarcode;
-  window.BeauSmartScan={lookup:lookupBarcode,version:'2.0.4'};
+  window.BeauSmartScan={lookup:lookupBarcode,version:'2.0.6'};
   function wire(){
     const btn=document.getElementById('lookupButton'),input=document.getElementById('barcodeSearch');
     if(btn){btn.onclick=e=>{e.preventDefault();lookupBarcode(input?.value||'')}}
