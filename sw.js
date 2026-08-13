@@ -1,20 +1,7 @@
-/* Beau's Game Inventory — cache refresh v3.2.0 */
-const CACHE='beau-game-inventory-v3.2.0';
-const ASSETS=['./','./index.html','./scanner.html','./scanner-v3.html','./library.html','./pricing.html','./settings.html','./dashboard.html','./mobile-theme.css','./app-nav.js','./app-update.js','./app-compat.js','./scanner-fix.js','./scanner-runtime-fix.js','./pricing-engine.js','./nav-safe-area.js','./navigation-layout-fix.css','./nav-icons.css','./manifest.json'];
+/* Beau's Game Inventory — cache refresh v3.3.0 */
+const CACHE='beau-game-inventory-v3.3.0';
+const ASSETS=['./','./index.html','./scanner.html','./scanner-v3.html','./library.html','./pricing.html','./settings.html','./dashboard.html','./mobile-theme.css','./app-nav.js','./app-compat.js','./app-update.js','./scanner-fix.js','./scanner-runtime-fix.js','./pricing-engine.js','./nav-safe-area.js','./navigation-layout-fix.css','./nav-icons.css','./manifest.json'];
 const timeoutFetch=(request,ms=7000)=>Promise.race([fetch(request,{cache:'no-store'}),new Promise((_,reject)=>setTimeout(()=>reject(Error('network-timeout')),ms))]);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS).catch(()=>{})).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',event=>{
- if(event.request.method!=='GET')return;
- const url=new URL(event.request.url);
- if(url.origin!==location.origin)return;
- const isHtml=event.request.mode==='navigate'||event.request.destination==='document'||/\.html?$/.test(url.pathname);
- const isCode=/\.(js|css|json)$/.test(url.pathname);
- if(isHtml||isCode){
-  event.respondWith(timeoutFetch(event.request).then(response=>{
-   if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{});}return response;
-  }).catch(()=>caches.match(event.request).then(r=>r||caches.match('./index.html'))));
-  return;
- }
- event.respondWith(caches.match(event.request).then(cached=>cached||timeoutFetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{});return response})));
-});
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;const url=new URL(event.request.url);if(url.origin!==location.origin)return;const isHtml=event.request.mode==='navigate'||event.request.destination==='document'||/\.html?$/.test(url.pathname);const isCode=/\.(js|css|json)$/.test(url.pathname);if(isHtml||isCode){event.respondWith(timeoutFetch(event.request).then(response=>{if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{});}return response}).catch(()=>caches.match(event.request).then(r=>r||caches.match('./index.html'))));return}event.respondWith(caches.match(event.request).then(cached=>cached||timeoutFetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{});return response})))});
