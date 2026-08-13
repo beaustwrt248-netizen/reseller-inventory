@@ -1,9 +1,9 @@
 {
-  "version": "9.2.0",
-  "webVersion": "2026-08-13.14",
+  "version": "9.2.1",
+  "webVersion": "2026-08-13.15",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-app-smart-buy-release",
-  "message": "Reseller Hub 9.2.0 adds the 10%-40% Smart Buy decision range while preserving the stable scanner, navigation, inventory, library, backup and OTA architecture.",
+  "type": "web-app-pricing-guide-release",
+  "message": "Reseller Hub 9.2.1 expands the visible pricing guide to 10%, 20%, 25%, 30% and 40%, shows the full range on barcode results, and requires an explicit purchase-price entry before stock can be saved.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
