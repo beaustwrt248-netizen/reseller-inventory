@@ -22,25 +22,43 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
+          import json
           import re
-          required = ['index.html', 'app.css', 'app.js', 'pricing-engine.js', 'update.json', 'ota.html']
+
+          required = [
+              'index.html', 'app.css', 'app.js', 'pricing-engine.js',
+              'smart-buy.js', 'update.json', 'ota.html'
+          ]
           for name in required:
               if not Path(name).exists():
                   raise SystemExit(f'Missing required file: {name}')
+
           index = Path('index.html').read_text(encoding='utf-8')
+          update = json.loads(Path('update.json').read_text(encoding='utf-8'))
+
           if '<iframe' in index.lower():
               raise SystemExit('index.html must not use the legacy iframe shell')
+
           checks = [
               (r'href=["\']\./app\.css(?:\?[^"\']*)?["\']', 'app.css'),
               (r'src=["\']\./app\.js(?:\?[^"\']*)?["\']', 'app.js'),
               (r'src=["\']\./pricing-engine\.js(?:\?[^"\']*)?["\']', 'pricing-engine.js'),
+              (r'src=["\']\./smart-buy\.js(?:\?[^"\']*)?["\']', 'smart-buy.js'),
           ]
           for pattern, label in checks:
               if not re.search(pattern, index, re.I):
                   raise SystemExit(f'{label} is not linked from index.html')
+
           if 'data-page="dashboard"' not in index or 'data-page="settings"' not in index:
               raise SystemExit('Main navigation is incomplete')
-          print('Standalone Reseller Hub v9 validation passed.')
+
+          if '10%–40%' not in index and '10%-40%' not in index:
+              raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
+
+          if update.get('version') != '9.2.0':
+              raise SystemExit(f"update.json version mismatch: expected 9.2.0, got {update.get('version')}")
+
+          print('Standalone Reseller Hub v9.2.0 validation passed.')
 
       - name: Validate JavaScript syntax
         uses: actions/setup-node@v4
@@ -52,4 +70,5 @@ jobs:
           set -euo pipefail
           node --check app.js
           node --check pricing-engine.js
+          node --check smart-buy.js
           echo 'JavaScript syntax validation passed.'
