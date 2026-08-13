@@ -20,11 +20,34 @@ jobs:
           from pathlib import Path
           import re
           index=Path('index.html').read_text(encoding='utf-8')
-          for f in ['app.css','app.js','pricing-engine.js','update.json','ota.html']:
+          required=['app.css','app.js','pricing-engine.js','smart-buy.js','sell-first.js','update.json','ota.html']
+          for f in required:
               if not Path(f).exists():
                   raise SystemExit(f'Missing required file: {f}')
-          if 'app.css?v=9.0.0' not in index or 'app.js?v=9.0.0' not in index:
-              raise SystemExit('Stable v9 assets are not linked from index.html')
+          for asset in ['app.css','app.js','pricing-engine.js','smart-buy.js','sell-first.js']:
+              if not re.search(rf'\./{re.escape(asset)}\?v=', index):
+                  raise SystemExit(f'{asset} is not linked from index.html with cache busting')
           if '<iframe' in index.lower():
               raise SystemExit('index.html must not use the legacy iframe shell')
-          print('Standalone Reseller Hub v9 validation passed.')
+          if "function openMenu()" not in index or 'id="drawer"' not in index:
+              raise SystemExit('Retail menu shell is missing')
+          if '10% EXCELLENT' not in index or '25% RECOMMENDED' not in index or '40% MAXIMUM' not in index:
+              raise SystemExit('Buying guide is incomplete')
+          print('Standalone Reseller Hub validation passed.')
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -e
+          for f in app.js pricing-engine.js smart-buy.js sell-first.js; do
+            node --check "$f"
+          done
+      - name: Check JavaScript
+        shell: python
+        run: |
+          from pathlib import Path
+          js='\n'.join(Path(f).read_text(encoding='utf-8') for f in ['app.js','pricing-engine.js','smart-buy.js','sell-first.js'])
+          checks=['function show(', 'startCamera', 'lookupProduct', 'exportBackup', 'BeauSmartBuy', 'Sell-First Intelligence']
+          for check in checks:
+              if check not in js:
+                  raise SystemExit(f'Missing JavaScript feature check: {check}')
+          print('JavaScript feature checks passed.')
