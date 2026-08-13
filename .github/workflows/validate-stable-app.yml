@@ -1,0 +1,55 @@
+name: Validate Stable App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-app:
+    name: Validate stable app files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate standalone app files
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          required = ['index.html', 'app.css', 'app.js', 'pricing-engine.js', 'update.json', 'ota.html']
+          for name in required:
+              if not Path(name).exists():
+                  raise SystemExit(f'Missing required file: {name}')
+          index = Path('index.html').read_text(encoding='utf-8')
+          if '<iframe' in index.lower():
+              raise SystemExit('index.html must not use the legacy iframe shell')
+          checks = [
+              (r'href=["\']\./app\.css(?:\?[^"\']*)?["\']', 'app.css'),
+              (r'src=["\']\./app\.js(?:\?[^"\']*)?["\']', 'app.js'),
+              (r'src=["\']\./pricing-engine\.js(?:\?[^"\']*)?["\']', 'pricing-engine.js'),
+          ]
+          for pattern, label in checks:
+              if not re.search(pattern, index, re.I):
+                  raise SystemExit(f'{label} is not linked from index.html')
+          if 'data-page="dashboard"' not in index or 'data-page="settings"' not in index:
+              raise SystemExit('Main navigation is incomplete')
+          print('Standalone Reseller Hub v9 validation passed.')
+
+      - name: Validate JavaScript syntax
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check app.js
+          node --check pricing-engine.js
+          echo 'JavaScript syntax validation passed.'
