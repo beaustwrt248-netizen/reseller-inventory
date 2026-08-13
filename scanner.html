@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1877f2">
 <title>Beau's Game Inventory — Scanner</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./pricing-engine.js?v=2.5.0"></script>
+<script src="./pricing-engine.js?v=2.5.1"></script>
 <link rel="stylesheet" href="./mobile-theme.css?v=2.1.0">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;padding-bottom:90px}header{background:#1877f2;color:white;padding:18px 16px}header h1{margin:0;font-size:22px}header p{margin:7px 0 0}main{max-width:700px;margin:auto;padding:14px}.panel{background:white;border-radius:18px;padding:16px;box-shadow:0 2px 10px #0002}#reader{width:100%;min-height:260px;background:#000;border-radius:14px;overflow:hidden}#reader video{width:100%!important;min-height:260px;object-fit:cover}.status{margin-top:12px;padding:12px;border-radius:10px;background:#eef2f7}.warning{background:#9a3412;color:white}.success{background:#166534;color:white}.permission{display:none;margin-top:10px;padding:12px;border-radius:10px;background:#fff7ed;color:#9a3412}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button{flex:1;padding:14px;border:0;border-radius:12px;font-size:16px;font-weight:700;touch-action:manipulation}.primary{background:#1877f2;color:white}.secondary{background:#e5e7eb;color:#111827}.manual{margin-top:18px}.manual label{display:block;font-weight:700}.manual input{width:100%;margin-top:6px;padding:14px;border:2px solid #d1d5db;border-radius:12px;font-size:18px}.result{margin-top:16px}.card{padding:16px;border-radius:16px;background:#f8fafc}.price{font-size:24px;font-weight:800}.row{display:flex;justify-content:space-between;padding:7px 0}.modal{position:fixed;inset:0;background:#000b;z-index:20;display:flex;align-items:flex-end;padding:12px}.modal-card{background:white;width:100%;max-width:520px;margin:auto;border-radius:22px;padding:20px;max-height:90vh;overflow:auto}.modal-card img{display:block;width:150px;height:150px;object-fit:contain;margin:auto;background:#f3f4f6;border-radius:12px}.dark{background:#111827;color:#f3f4f6}.dark .panel,.dark .modal-card{background:#1f2937}.dark .card{background:#111827}.dark .secondary{background:#374151;color:white}.nav{position:fixed;left:0;right:0;bottom:0;height:72px;background:#111827;display:flex;z-index:10}.nav button{background:transparent;color:white;font-size:11px;padding:6px 2px}
@@ -34,23 +34,7 @@ const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'Not available';
 function status(t,c=''){ $('status').textContent=t; $('status').className='status '+c }
 function stopTracks(){document.querySelectorAll('video').forEach(v=>{try{if(v.srcObject)v.srcObject.getTracks().forEach(t=>t.stop())}catch(e){}})}
 async function cleanup(){token++;const s=scanner;scanner=null;running=false;if(s){try{await s.stop()}catch(e){}try{await s.clear()}catch(e){}}stopTracks();$('stop').disabled=true}
-async function startCamera(){
- if(starting||running)return;
- if(typeof Html5Qrcode==='undefined'){status('Scanner library failed to load. Reload the page.','warning');return}
- await cleanup();
- starting=true;$('start').disabled=true;$('permission').style.display='none';status('Requesting camera access…');
- const my=token;
- try{
-  if(navigator.mediaDevices?.getUserMedia){const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});stream.getTracks().forEach(t=>t.stop())}
-  if(my!==token)throw Error('Cancelled');
-  const s=new Html5Qrcode('reader');scanner=s;
-  const cfg={fps:10,qrbox:{width:Math.min(300,Math.floor(innerWidth*.72)),height:150},aspectRatio:1.7778,disableFlip:false};
-  try{await s.start({facingMode:'environment'},cfg,code=>scanSuccess(code),()=>{})}
-  catch(e){await s.start({facingMode:'user'},cfg,code=>scanSuccess(code),()=>{})}
-  if(my!==token)throw Error('Cancelled');
-  running=true;starting=false;$('start').disabled=false;$('stop').disabled=false;status('Camera ready — point it at a game barcode.','success')
- }catch(e){starting=false;running=false;scanner=null;$('start').disabled=false;stopTracks();$('permission').style.display='block';status(e?.name==='NotAllowedError'?'Camera permission was denied. Allow Camera for this site, then try again.':'Camera could not be started. Tap Start Camera again.','warning')}
-}
+async function startCamera(){if(starting||running)return;if(typeof Html5Qrcode==='undefined'){status('Scanner library failed to load. Reload the page.','warning');return}await cleanup();starting=true;$('start').disabled=true;$('permission').style.display='none';status('Requesting camera access…');const my=token;try{if(navigator.mediaDevices?.getUserMedia){const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});stream.getTracks().forEach(t=>t.stop())}if(my!==token)throw Error('Cancelled');const s=new Html5Qrcode('reader');scanner=s;const cfg={fps:10,qrbox:{width:Math.min(300,Math.floor(innerWidth*.72)),height:150},aspectRatio:1.7778,disableFlip:false};try{await s.start({facingMode:'environment'},cfg,code=>scanSuccess(code),()=>{})}catch(e){await s.start({facingMode:'user'},cfg,code=>scanSuccess(code),()=>{})}if(my!==token)throw Error('Cancelled');running=true;starting=false;$('start').disabled=false;$('stop').disabled=false;status('Camera ready — point it at a game barcode.','success')}catch(e){starting=false;running=false;scanner=null;$('start').disabled=false;stopTracks();$('permission').style.display='block';status(e?.name==='NotAllowedError'?'Camera permission was denied. Allow Camera for this site, then try again.':'Camera could not be started. Tap Start Camera again.','warning')}}
 function scanSuccess(code){if(!running||starting)return;running=false;lookupBarcode(code)}
 async function stopCamera(){await cleanup();$('start').disabled=false;status('Camera stopped. Tap Start Camera to scan again.')}
 function variants(code){const c=String(code||'').replace(/\D/g,'');return [...new Set([c,c.length===13&&c[0]==='0'?c.slice(1):'',c.length>=12?c.slice(-12):''])].filter(Boolean)}
