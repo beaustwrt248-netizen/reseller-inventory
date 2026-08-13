@@ -1,9 +1,9 @@
 {
-  "version": "2.0.4",
-  "webVersion": "2026-08-13.03",
+  "version": "2.0.5",
+  "webVersion": "2026-08-13.04",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-and-library-update",
-  "message": "Scanner hotfix: refresh scanner code, improve barcode lookup diagnostics and force fresh web assets without clearing app data.",
+  "type": "scanner-lookup-hotfix",
+  "message": "Scanner hotfix: reliable barcode lookup, manual barcode lookup, result handling and library save flow.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
