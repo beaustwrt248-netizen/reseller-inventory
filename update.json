@@ -1,9 +1,9 @@
 {
-  "version": "2.0.1",
-  "webVersion": "2026-08-12.21",
+  "version": "2.0.2",
+  "webVersion": "2026-08-13.01",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-and-library-update",
-  "message": "Improved scanned-game library sync. Games found by barcode pricing lookup are now automatically saved with thumbnail, new price, second-hand price, estimated buy price, and estimated second-hand value.",
+  "message": "Improved OTA updates: changed web assets are now cache-busted and updates no longer require clearing app data.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
