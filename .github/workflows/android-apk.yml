@@ -1,51 +1,209 @@
 name: Build Android APK
+
 on:
   workflow_dispatch:
   push:
     branches: [main]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
+
       - name: Install dependencies
         run: npm install
+
       - name: Prepare web app
         run: npm run prepare:web
+
       - name: Add Android project
         run: npx cap add android
+
       - name: Apply Android camera permission and WebView handler
         run: node android-camera-fix.mjs
+
       - name: Sync Capacitor
         run: npx cap sync android
+
+      # ---------------------------------------------------------
+      # CUSTOM APP ICON
+      # ---------------------------------------------------------
+
+      - name: Install image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick file
+
       - name: Apply custom launcher icon
+        shell: bash
         run: |
-          mkdir -p android/app/src/main/res/drawable
-          base64 -d icon-data/icon.jpg.b64 > android/app/src/main/res/drawable/app_icon.jpg
-          sed -i 's/android:icon="@[^"]*"/android:icon="@drawable\/app_icon"/' android/app/src/main/AndroidManifest.xml
-          sed -i 's/android:roundIcon="@[^"]*"/android:roundIcon="@drawable\/app_icon"/' android/app/src/main/AndroidManifest.xml
-      - name: Verify custom launcher icon configuration
+          set -e
+
+          echo "Preparing custom launcher icon..."
+
+          mkdir -p /tmp/app-icon
+
+          base64 -d icon-data/icon.jpg.b64 \
+            > /tmp/app-icon/source.jpg
+
+          echo "Checking source image..."
+
+          test -s /tmp/app-icon/source.jpg
+
+          file /tmp/app-icon/source.jpg
+
+          identify /tmp/app-icon/source.jpg
+
+          echo "Generating Android launcher icons..."
+
+          for size in 48 72 96 144 192; do
+
+            case "$size" in
+              48)
+                folder="mipmap-mdpi"
+                ;;
+              72)
+                folder="mipmap-hdpi"
+                ;;
+              96)
+                folder="mipmap-xhdpi"
+                ;;
+              144)
+                folder="mipmap-xxhdpi"
+                ;;
+              192)
+                folder="mipmap-xxxhdpi"
+                ;;
+            esac
+
+            mkdir -p "android/app/src/main/res/$folder"
+
+            echo "Creating ${folder}..."
+
+            convert /tmp/app-icon/source.jpg \
+              -auto-orient \
+              -resize "${size}x${size}^" \
+              -gravity center \
+              -extent "${size}x${size}" \
+              -strip \
+              "android/app/src/main/res/$folder/ic_launcher.png"
+
+            convert /tmp/app-icon/source.jpg \
+              -auto-orient \
+              -resize "${size}x${size}^" \
+              -gravity center \
+              -extent "${size}x${size}" \
+              -strip \
+              "android/app/src/main/res/$folder/ic_launcher_round.png"
+
+          done
+
+          echo "Updating AndroidManifest.xml..."
+
+          sed -i \
+            's/android:icon="@[^"]*"/android:icon="@mipmap\/ic_launcher"/' \
+            android/app/src/main/AndroidManifest.xml
+
+          sed -i \
+            's/android:roundIcon="@[^"]*"/android:roundIcon="@mipmap\/ic_launcher_round"/' \
+            android/app/src/main/AndroidManifest.xml
+
+          echo "Custom launcher icon applied."
+
+      # ---------------------------------------------------------
+      # VERIFY ICON BEFORE BUILDING
+      # ---------------------------------------------------------
+
+      - name: Verify custom launcher icon
+        shell: bash
         run: |
-          test -s android/app/src/main/res/drawable/app_icon.jpg
-          grep -q 'android:icon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
-          grep -q 'android:roundIcon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
+          set -e
+
+          echo "Verifying launcher icons..."
+
+          for folder in \
+            mipmap-mdpi \
+            mipmap-hdpi \
+            mipmap-xhdpi \
+            mipmap-xxhdpi \
+            mipmap-xxxhdpi
+          do
+
+            ICON="android/app/src/main/res/$folder/ic_launcher.png"
+            ROUND="android/app/src/main/res/$folder/ic_launcher_round.png"
+
+            test -s "$ICON"
+            test -s "$ROUND"
+
+            file "$ICON" | grep -qi "PNG"
+            file "$ROUND" | grep -qi "PNG"
+
+            identify "$ICON"
+            identify "$ROUND"
+
+          done
+
+          echo "Checking AndroidManifest..."
+
+          grep -q \
+            'android:icon="@mipmap/ic_launcher"' \
+            android/app/src/main/AndroidManifest.xml
+
+          grep -q \
+            'android:roundIcon="@mipmap/ic_launcher_round"' \
+            android/app/src/main/AndroidManifest.xml
+
+          echo ""
+          echo "======================================"
+          echo "✅ CUSTOM ICON VERIFIED"
+          echo "======================================"
+
+      # ---------------------------------------------------------
+      # BUILD APK
+      # ---------------------------------------------------------
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
+
+      # ---------------------------------------------------------
+      # VERIFY APK
+      # ---------------------------------------------------------
+
+      - name: Verify APK exists
+        run: |
+          set -e
+
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+
+          test -s "$APK"
+
+          echo "APK successfully generated:"
+          ls -lh "$APK"
+
       - name: Rename APK with app version
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v1.9.3-debug.apk
+        run: |
+          cp \
+            android/app/build/outputs/apk/debug/app-debug.apk \
+            beaus-game-inventory-v1.9.3-debug.apk
+
       - name: Upload versioned APK
         uses: actions/upload-artifact@v4
         with:
