@@ -1,7 +1,7 @@
-/* Beau's Game Inventory — OTA updater v2.0.5 */
+/* Beau's Game Inventory — OTA updater v2.0.6 */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='2.0.5';
+  const CURRENT='2.0.6';
   const UPDATE_URL='./update.json';
   const OTA_URL='./ota.html';
   const SCANNER_FIX_URL='./scanner-fix.js';
@@ -17,11 +17,11 @@
   }
 
   function loadScannerFix(){
-    if(window.BeauSmartScan?.version==='2.0.5')return;
+    if(window.BeauSmartScan?.version==='2.0.6')return;
     const old=document.querySelector('script[data-scanner-fix]');
     if(old)old.remove();
     const s=document.createElement('script');
-    s.src=SCANNER_FIX_URL+'?v='+Date.now();
+    s.src=SCANNER_FIX_URL+'?v=2.0.6';
     s.async=false;
     s.dataset.scannerFix='1';
     document.head.appendChild(s);
