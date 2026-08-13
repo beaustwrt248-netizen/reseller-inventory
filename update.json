@@ -1,9 +1,9 @@
 {
-  "version": "2.0.2",
-  "webVersion": "2026-08-13.01",
+  "version": "2.0.3",
+  "webVersion": "2026-08-13.02",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-and-library-update",
-  "message": "Improved OTA updates: changed web assets are now cache-busted and updates no longer require clearing app data.",
+  "message": "Stable release: completed Deal Analyzer, saved purchase prices, library profit tracking, pricing labels, navigation fixes and OTA/cache improvements.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
