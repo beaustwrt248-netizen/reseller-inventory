@@ -28,13 +28,19 @@ jobs:
         run: npx cap add android
       - name: Apply Android camera permission and WebView handler
         run: node android-camera-fix.mjs
+      - name: Sync Capacitor
+        run: npx cap sync android
       - name: Apply custom launcher icon
         run: |
+          mkdir -p android/app/src/main/res/drawable
           base64 -d icon-data/icon.jpg.b64 > android/app/src/main/res/drawable/app_icon.jpg
           sed -i 's/android:icon="@[^"]*"/android:icon="@drawable\/app_icon"/' android/app/src/main/AndroidManifest.xml
           sed -i 's/android:roundIcon="@[^"]*"/android:roundIcon="@drawable\/app_icon"/' android/app/src/main/AndroidManifest.xml
-      - name: Sync Capacitor
-        run: npx cap sync android
+      - name: Verify custom launcher icon configuration
+        run: |
+          test -s android/app/src/main/res/drawable/app_icon.jpg
+          grep -q 'android:icon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
+          grep -q 'android:roundIcon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
