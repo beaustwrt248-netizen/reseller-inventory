@@ -1,9 +1,9 @@
 {
-  "version": "2.0.3",
-  "webVersion": "2026-08-13.02",
+  "version": "2.0.4",
+  "webVersion": "2026-08-13.03",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-and-library-update",
-  "message": "Stable release: completed Deal Analyzer, saved purchase prices, library profit tracking, pricing labels, navigation fixes and OTA/cache improvements.",
+  "message": "Scanner hotfix: refresh scanner code, improve barcode lookup diagnostics and force fresh web assets without clearing app data.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
