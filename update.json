@@ -1,9 +1,9 @@
 {
-  "version": "9.2.1",
-  "webVersion": "2026-08-13.15",
+  "version": "9.2.2",
+  "webVersion": "2026-08-13.16",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-app-pricing-guide-release",
-  "message": "Reseller Hub 9.2.1 expands the visible pricing guide to 10%, 20%, 25%, 30% and 40%, shows the full range on barcode results, and requires an explicit purchase-price entry before stock can be saved.",
+  "type": "web-app-deal-analytics-release",
+  "message": "Reseller Hub 9.2.2 adds buy-percentage analytics, deal labels and dashboard/inventory deal visibility while preserving the stable scanner, pricing, inventory, library, backup and OTA architecture.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
