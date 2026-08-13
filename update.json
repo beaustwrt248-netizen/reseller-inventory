@@ -1,9 +1,9 @@
 {
-  "version": "9.1.0",
-  "webVersion": "2026-08-13.13",
+  "version": "9.2.0",
+  "webVersion": "2026-08-13.14",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-app-smart-buy-release",
-  "message": "Reseller Hub stable release with Smart Buy decision workflow added without changing the core app version.",
+  "message": "Reseller Hub 9.2.0 adds the 10%-40% Smart Buy decision range while preserving the stable scanner, navigation, inventory, library, backup and OTA architecture.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
