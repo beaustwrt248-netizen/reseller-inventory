@@ -3,7 +3,7 @@
   "webVersion": "2026-08-13.04",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "scanner-lookup-hotfix",
-  "message": "Scanner hotfix: reliable barcode lookup, manual barcode lookup, result handling and library save flow.",
+  "type": "web-and-library-update",
+  "message": "Scanner hotfix: actually load the scanner lookup module, refresh its JavaScript, and keep barcode results independent of the old lookup handler.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
