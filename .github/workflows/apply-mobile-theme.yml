@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   mobile-theme:
@@ -15,25 +15,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure shared mobile theme is linked
+      - name: Verify shared mobile theme is linked
         shell: python
         run: |
           from pathlib import Path
+          import re
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
-          import re
-          text = re.sub(r'\s*<link\s+rel=["\']stylesheet["\']\s+href=["\']\./mobile-theme\.css(?:\?[^"\']*)?["\']\s*/?>', '', text, flags=re.I)
-          text = text.replace('</head>', '  <link rel="stylesheet" href="./mobile-theme.css?v=1.9.2">\n</head>', 1)
-          p.write_text(text, encoding='utf-8')
-
-      - name: Commit theme-only change if needed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          if git diff --cached --quiet; then
-            echo "No changes needed."
-          else
-            git commit -m "Keep shared mobile theme link consistent"
-            git push
-          fi
+          if not re.search(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']\./mobile-theme\.css(?:\?[^"\']*)?["\']', text, flags=re.I):
+              raise SystemExit('mobile-theme.css is not linked from index.html')
+          print('Shared mobile theme link verified.')
