@@ -1,9 +1,10 @@
-/* Beau's Game Inventory — scanner lookup hotfix v2.0.6 */
+/* Beau's Game Inventory — scanner + lookup hotfix v2.4.0 */
 (function(){
   'use strict';
   const WORKER='https://beau-reseller-pricing.beaustwrt248.workers.dev';
   const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'Not available';
   const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+
   function nums(v){
     if(Array.isArray(v))return v.flatMap(nums);
     if(typeof v==='number'&&Number.isFinite(v)&&v>0)return[v];
@@ -43,9 +44,7 @@
     const urls=[WORKER+'?barcode='+encodeURIComponent(code),WORKER+'/lookup?barcode='+encodeURIComponent(code),WORKER+'/api/lookup?barcode='+encodeURIComponent(code)];
     let data=null,lastErr=null;
     for(const u of urls){try{data=await request(u);break}catch(e){lastErr=e}}
-    if(!data){
-      try{data=await request(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({barcode:code})})}catch(e){lastErr=e}
-    }
+    if(!data){try{data=await request(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({barcode:code})})}catch(e){lastErr=e}}
     if(!data){
       if(result)result.innerHTML='<div class="warning"><strong>Pricing lookup is temporarily unavailable.</strong><br>The barcode was read correctly, but the online pricing service did not return a result. You can try again or enter the barcode manually.<br><small>Service detail: '+esc(lastErr?.message||'Unknown error')+'</small></div>';
       return null;
@@ -66,11 +65,108 @@
     const i=a.findIndex(x=>String(x.barcode||'')===String(g.barcode||''));if(i>=0)a[i]={...a[i],...item};else a.unshift(item);localStorage.setItem('beauGameLibrary',JSON.stringify(a));
     const b=document.getElementById('saveScanToLibrary');if(b){b.textContent='✅ Saved to Library';b.disabled=true}
   }
+
+  // ---------- Robust mobile camera scanner ----------
+  let scanner=null;
+  let starting=false;
+
+  function scannerMessage(html){
+    const box=document.getElementById('barcodeResult');
+    if(box)box.innerHTML=html;
+  }
+  function scannerButton(text,disabled){
+    const b=document.getElementById('startScannerButton');
+    if(b){b.textContent=text;b.disabled=!!disabled}
+  }
+  async function stopScanner(){
+    const current=scanner;
+    scanner=null;
+    starting=false;
+    if(current){try{await current.stop()}catch(e){}try{current.clear()}catch(e){}}
+    const reader=document.getElementById('reader');
+    if(reader)reader.innerHTML='';
+    const box=document.getElementById('scannerBox');
+    if(box)box.style.display='none';
+    scannerButton('📷 Start Scanner',false);
+  }
+  function scanSuccess(decodedText){
+    const code=String(decodedText||'').trim();
+    if(!code)return;
+    const search=document.getElementById('barcodeSearch');
+    const barcode=document.getElementById('barcode');
+    if(search)search.value=code;
+    if(barcode)barcode.value=code;
+    scannerMessage('<div class="loading">✅ Barcode detected: <strong>'+esc(code)+'</strong><br>Looking up product and pricing…</div>');
+    stopScanner().then(()=>lookupBarcode(code));
+  }
+  function scanFailure(_){}
+
+  async function startScanner(){
+    if(starting||scanner)return;
+    starting=true;
+    const box=document.getElementById('scannerBox');
+    const reader=document.getElementById('reader');
+    if(box)box.style.display='block';
+    if(reader)reader.innerHTML='';
+    scannerButton('⏳ Starting camera…',true);
+
+    if(!window.isSecureContext){
+      starting=false;scannerButton('📷 Start Scanner',false);
+      scannerMessage('<div class="warning"><strong>Camera needs HTTPS.</strong><br>Open the app using the GitHub Pages HTTPS address, not a downloaded HTML file.</div>');
+      return;
+    }
+    if(!window.Html5Qrcode){
+      starting=false;scannerButton('📷 Start Scanner',false);
+      scannerMessage('<div class="warning"><strong>Scanner library did not load.</strong><br>Refresh the app while connected to the internet.</div>');
+      return;
+    }
+    if(!reader){
+      starting=false;scannerButton('📷 Start Scanner',false);
+      scannerMessage('<div class="warning">Scanner area is missing. Please refresh the app.</div>');
+      return;
+    }
+
+    try{
+      // getCameras() explicitly requests permission and gives us a real camera device ID.
+      const cameras=await Html5Qrcode.getCameras();
+      if(!cameras||!cameras.length)throw Error('No camera was found on this device.');
+      const rear=cameras.find(c=>/back|rear|environment|world/i.test(c.label||''));
+      const cameraId=(rear||cameras[0]).id;
+      scanner=new Html5Qrcode('reader',{verbose:false});
+      await scanner.start(
+        cameraId,
+        {fps:10,qrbox:{width:280,height:160},aspectRatio:1.7777778,disableFlip:false},
+        scanSuccess,
+        scanFailure
+      );
+      starting=false;
+      scannerButton('📷 Scanner Running',false);
+      scannerMessage('<div class="loading">📷 Camera is running. Point the <strong>rear camera</strong> at a barcode and keep it inside the scan box.</div>');
+    }catch(error){
+      console.error('Barcode scanner error:',error);
+      await stopScanner();
+      const message=String(error?.message||error?.name||error||'Unknown error');
+      let help='Check that Chrome has camera permission for this site.';
+      if(/permission|denied|notallowed/i.test(message))help='Camera permission was denied. In Chrome, open the site controls next to the address, allow Camera, then refresh the app.';
+      else if(/secure|https/i.test(message))help='Open the app through its HTTPS GitHub Pages address.';
+      else if(/no camera|notfound|overconstrained/i.test(message))help='No usable camera was detected. Close other apps using the camera and try again.';
+      scannerMessage('<div class="warning"><strong>Camera could not be started.</strong><br>'+help+'<br><small>Error: '+esc(message)+'</small></div>');
+    }
+  }
+
   window.lookupBarcode=lookupBarcode;
-  window.BeauSmartScan={lookup:lookupBarcode,version:'2.0.6'};
+  window.startScanner=startScanner;
+  window.stopScanner=stopScanner;
+  window.BeauSmartScan={lookup:lookupBarcode,startScanner,stopScanner,version:'2.4.0'};
+
   function wire(){
-    const btn=document.getElementById('lookupButton'),input=document.getElementById('barcodeSearch');
-    if(btn){btn.onclick=e=>{e.preventDefault();lookupBarcode(input?.value||'')}}
+    const start=document.getElementById('startScannerButton');
+    const stop=document.getElementById('stopScannerButton');
+    const lookup=document.getElementById('lookupButton');
+    const input=document.getElementById('barcodeSearch');
+    if(start)start.onclick=startScanner;
+    if(stop)stop.onclick=stopScanner;
+    if(lookup)lookup.onclick=e=>{e.preventDefault();lookupBarcode(input?.value||'')};
     if(input)input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();lookupBarcode(input.value)}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
