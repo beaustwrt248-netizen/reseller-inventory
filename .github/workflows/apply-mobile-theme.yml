@@ -20,11 +20,11 @@ jobs:
           from pathlib import Path
           import re
           index=Path('index.html').read_text(encoding='utf-8')
-          required=['app.css','app.js','pricing-engine.js','smart-buy.js','sell-first.js','update.json','ota.html']
+          required=['app.css','app.js','pricing-engine.js','smart-buy.js','sell-first.js','stock-watch.js','update.json','ota.html']
           for f in required:
               if not Path(f).exists():
                   raise SystemExit(f'Missing required file: {f}')
-          for asset in ['app.css','app.js','pricing-engine.js','smart-buy.js','sell-first.js']:
+          for asset in ['app.css','app.js','pricing-engine.js','smart-buy.js','sell-first.js','stock-watch.js']:
               if not re.search(rf'\./{re.escape(asset)}\?v=', index):
                   raise SystemExit(f'{asset} is not linked from index.html with cache busting')
           if '<iframe' in index.lower():
@@ -38,15 +38,15 @@ jobs:
         shell: bash
         run: |
           set -e
-          for f in app.js pricing-engine.js smart-buy.js sell-first.js; do
+          for f in app.js pricing-engine.js smart-buy.js sell-first.js stock-watch.js; do
             node --check "$f"
           done
       - name: Check JavaScript
         shell: python
         run: |
           from pathlib import Path
-          js='\n'.join(Path(f).read_text(encoding='utf-8') for f in ['app.js','pricing-engine.js','smart-buy.js','sell-first.js'])
-          checks=['function show(', 'startCamera', 'lookupProduct', 'exportBackup', 'BeauSmartBuy', 'Sell-First Intelligence']
+          js='\n'.join(Path(f).read_text(encoding='utf-8') for f in ['app.js','pricing-engine.js','smart-buy.js','sell-first.js','stock-watch.js'])
+          checks=['function show(', 'startCamera', 'lookupProduct', 'exportBackup', 'BeauSmartBuy', 'Sell-First Intelligence', 'Stock Watch']
           for check in checks:
               if check not in js:
                   raise SystemExit(f'Missing JavaScript feature check: {check}')
