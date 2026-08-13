@@ -1,7 +1,7 @@
-/* Beau's Game Inventory — OTA updater v2.0.3 safe */
+/* Beau's Game Inventory — OTA updater v2.0.4 scanner hotfix */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='2.0.3';
+  const CURRENT='2.0.4';
   const UPDATE_URL='./update.json';
   const OTA_URL='./ota.html';
 
@@ -31,19 +31,12 @@
     window.location.replace(u.toString());
   }
 
-  function loadScript(id,src){
-    if(document.getElementById(id))return;
-    const s=document.createElement('script');
-    s.id=id;s.src=src;s.async=false;
-    document.head.appendChild(s);
-  }
-
   function handleScannerReturn(){
     const p=new URLSearchParams(location.search),code=p.get('scanned');
     if(!code)return;
     history.replaceState({},'',location.pathname+location.hash);
     setTimeout(()=>{
-      const input=document.getElementById('barcodeSearch');
+      const input=document.getElementById('barcodeSearch')||document.getElementById('manualBarcode');
       if(input)input.value=code;
       if(typeof window.lookupBarcode==='function')window.lookupBarcode(code);
       else if(window.BeauSmartScan?.lookup)window.BeauSmartScan.lookup(code);
@@ -68,9 +61,7 @@
   try{localStorage.setItem(KEY,CURRENT)}catch(e){}
 
   document.addEventListener('DOMContentLoaded',()=>{
-    loadScript('beauScannerController','./scanner-fix.js?v='+Date.now());
-    loadScript('beauLibrarySync','./library-sync.js?v='+Date.now());
     handleScannerReturn();
-    setTimeout(()=>checkAndUpdate({silent:true}),1500);
+    setTimeout(()=>checkAndUpdate({silent:true}),1200);
   });
 })();
