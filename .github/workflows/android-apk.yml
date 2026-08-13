@@ -42,161 +42,63 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # ---------------------------------------------------------
-      # CUSTOM APP ICON
-      # ---------------------------------------------------------
-
-      - name: Install image tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y imagemagick file
-
       - name: Apply custom launcher icon
         shell: bash
         run: |
           set -e
 
-          echo "Preparing custom launcher icon..."
+          echo "Installing custom launcher icon..."
 
-          mkdir -p /tmp/app-icon
+          test -f icon-data/icon.png
 
-          base64 -d icon-data/icon.jpg.b64 \
-            > /tmp/app-icon/source.jpg
+          file icon-data/icon.png
 
-          echo "Checking source image..."
+          mkdir -p android/app/src/main/res/drawable
 
-          test -s /tmp/app-icon/source.jpg
-
-          file /tmp/app-icon/source.jpg
-
-          identify /tmp/app-icon/source.jpg
-
-          echo "Generating Android launcher icons..."
-
-          for size in 48 72 96 144 192; do
-
-            case "$size" in
-              48)
-                folder="mipmap-mdpi"
-                ;;
-              72)
-                folder="mipmap-hdpi"
-                ;;
-              96)
-                folder="mipmap-xhdpi"
-                ;;
-              144)
-                folder="mipmap-xxhdpi"
-                ;;
-              192)
-                folder="mipmap-xxxhdpi"
-                ;;
-            esac
-
-            mkdir -p "android/app/src/main/res/$folder"
-
-            echo "Creating ${folder}..."
-
-            convert /tmp/app-icon/source.jpg \
-              -auto-orient \
-              -resize "${size}x${size}^" \
-              -gravity center \
-              -extent "${size}x${size}" \
-              -strip \
-              "android/app/src/main/res/$folder/ic_launcher.png"
-
-            convert /tmp/app-icon/source.jpg \
-              -auto-orient \
-              -resize "${size}x${size}^" \
-              -gravity center \
-              -extent "${size}x${size}" \
-              -strip \
-              "android/app/src/main/res/$folder/ic_launcher_round.png"
-
-          done
-
-          echo "Updating AndroidManifest.xml..."
+          cp icon-data/icon.png \
+            android/app/src/main/res/drawable/app_icon.png
 
           sed -i \
-            's/android:icon="@[^"]*"/android:icon="@mipmap\/ic_launcher"/' \
+            's/android:icon="@[^"]*"/android:icon="@drawable\/app_icon"/' \
             android/app/src/main/AndroidManifest.xml
 
           sed -i \
-            's/android:roundIcon="@[^"]*"/android:roundIcon="@mipmap\/ic_launcher_round"/' \
+            's/android:roundIcon="@[^"]*"/android:roundIcon="@drawable\/app_icon"/' \
             android/app/src/main/AndroidManifest.xml
 
-          echo "Custom launcher icon applied."
-
-      # ---------------------------------------------------------
-      # VERIFY ICON BEFORE BUILDING
-      # ---------------------------------------------------------
+          echo "Custom icon installed."
 
       - name: Verify custom launcher icon
         shell: bash
         run: |
           set -e
 
-          echo "Verifying launcher icons..."
+          echo "Verifying custom icon..."
 
-          for folder in \
-            mipmap-mdpi \
-            mipmap-hdpi \
-            mipmap-xhdpi \
-            mipmap-xxhdpi \
-            mipmap-xxxhdpi
-          do
+          test -s android/app/src/main/res/drawable/app_icon.png
 
-            ICON="android/app/src/main/res/$folder/ic_launcher.png"
-            ROUND="android/app/src/main/res/$folder/ic_launcher_round.png"
-
-            test -s "$ICON"
-            test -s "$ROUND"
-
-            file "$ICON" | grep -qi "PNG"
-            file "$ROUND" | grep -qi "PNG"
-
-            identify "$ICON"
-            identify "$ROUND"
-
-          done
-
-          echo "Checking AndroidManifest..."
+          file android/app/src/main/res/drawable/app_icon.png | grep -qi "PNG"
 
           grep -q \
-            'android:icon="@mipmap/ic_launcher"' \
+            'android:icon="@drawable/app_icon"' \
             android/app/src/main/AndroidManifest.xml
 
           grep -q \
-            'android:roundIcon="@mipmap/ic_launcher_round"' \
+            'android:roundIcon="@drawable/app_icon"' \
             android/app/src/main/AndroidManifest.xml
 
-          echo ""
           echo "======================================"
-          echo "✅ CUSTOM ICON VERIFIED"
+          echo "CUSTOM ICON VERIFIED"
           echo "======================================"
-
-      # ---------------------------------------------------------
-      # BUILD APK
-      # ---------------------------------------------------------
 
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
 
-      # ---------------------------------------------------------
-      # VERIFY APK
-      # ---------------------------------------------------------
-
       - name: Verify APK exists
         run: |
-          set -e
-
-          APK="android/app/build/outputs/apk/debug/app-debug.apk"
-
-          test -s "$APK"
-
-          echo "APK successfully generated:"
-          ls -lh "$APK"
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Rename APK with app version
         run: |
