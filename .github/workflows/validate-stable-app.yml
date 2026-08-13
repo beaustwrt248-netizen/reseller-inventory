@@ -72,7 +72,7 @@ jobs:
           print(f'Standalone Reseller Hub v{expected_version} validation passed.')
 
       - name: Validate JavaScript syntax
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
       - name: Check JavaScript
