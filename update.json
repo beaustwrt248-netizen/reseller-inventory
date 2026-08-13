@@ -1,9 +1,9 @@
 {
-  "version": "2.3.0",
-  "webVersion": "2026-08-13.06",
+  "version": "2.4.0",
+  "webVersion": "2026-08-13.07",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-and-library-update",
-  "message": "Barcode and pricing reliability release: latest scanner lookup, barcode variants, public product fallback, and cache-safe assets.",
+  "message": "Unified barcode lookup release: one scanner pipeline, fresh pricing-engine cache key, barcode variants, diagnostics, and public product fallback.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
