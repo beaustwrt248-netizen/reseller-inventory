@@ -49,8 +49,18 @@ jobs:
               if not re.search(pattern, index, re.I):
                   raise SystemExit(f'{label} is not linked from index.html')
 
-          if 'data-page="dashboard"' not in index or 'data-page="settings"' not in index:
-              raise SystemExit('Main navigation is incomplete')
+          # Settings is intentionally side-menu only. The bottom navigation
+          # contains the four primary actions: Home, Stock, Scan and Pricing.
+          if 'data-page="dashboard"' not in index:
+              raise SystemExit('Dashboard navigation is missing')
+          if 'show(\'settings\')' not in index:
+              raise SystemExit('Settings side-menu entry is missing')
+          bottom = index.split('<nav class="bottom">', 1)[1].split('</nav>', 1)[0] if '<nav class="bottom">' in index and '</nav>' in index else ''
+          if 'data-page="settings"' in bottom:
+              raise SystemExit('Settings must not appear in bottom navigation')
+          for page in ('inventory', 'scanner', 'pricing'):
+              if f'data-page="{page}"' not in bottom:
+                  raise SystemExit(f'Bottom navigation is missing {page}')
 
           if '10%–40%' not in index and '10%-40%' not in index:
               raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
@@ -72,4 +82,5 @@ jobs:
           node --check app.js
           node --check pricing-engine.js
           node --check smart-buy.js
+          node --check stock-watch.js
           echo 'JavaScript syntax validation passed.'
