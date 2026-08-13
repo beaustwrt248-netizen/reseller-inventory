@@ -1,4 +1,4 @@
-/* Beau's Game Inventory — multi-source pricing engine v2.2.1 */
+/* Beau's Game Inventory — multi-source pricing engine v2.2.2 */
 (function(){
   'use strict';
   function nums(value){
@@ -31,13 +31,24 @@
     return median(kept.length?kept:v);
   }
   function sourceName(s){return s?.source||s?.store||s?.storeName||s?.retailer||s?.name||'';}
+
+  function findProduct(data){
+    if(!data||typeof data!=='object') return null;
+    const direct=[data.product,data.products?.[0],data.result?.product,data.result?.products?.[0],data.data?.product,data.data?.products?.[0],data.data?.result?.product,data.data?.result?.products?.[0]];
+    for(const p of direct) if(p&&typeof p==='object'&&!Array.isArray(p)) return p;
+    return null;
+  }
+
   function normalise(data,barcode){
-    const p=data?.product||data?.products?.[0]||data?.data?.products?.[0]||data?.data?.product||data?.result?.products?.[0]||data?.result?.product;
-    if(!p) throw Error('No matching game was found for that barcode.');
-    const pricing=data?.pricing||{};
+    const p=findProduct(data);
+    if(!p) {
+      const message=data?.error||data?.message||data?.data?.error||data?.data?.message||'No matching game was found for that barcode.';
+      throw Error(String(message));
+    }
+    const pricing=data?.pricing||data?.data?.pricing||p?.pricing||{};
     const stores=Array.isArray(data?.stores)?data.stores:(Array.isArray(pricing?.stores)?pricing.stores:[]);
     const productStores=Array.isArray(p?.stores)?p.stores:[];
-    const all=[p,data,pricing,...stores,...productStores];
+    const all=[p,data,data?.data,pricing,...stores,...productStores].filter(Boolean);
     const retailKeys=['retailPrice','newPrice','brandNewPrice','retail_price','rrp','current_price','new_price','priceNew','new'];
     const secondKeys=['secondHandPrice','usedPrice','marketPrice','market_price','used_price','second_hand_price','secondHand','used','priceUsed','preownedPrice','preOwnedPrice','secondHandValue'];
     const retailValues=all.flatMap(o=>collect(o,retailKeys));
@@ -49,9 +60,9 @@
     const secondEstimated=!second&&retail>0;
     const resale=nums(pricing.suggestedResale)[0]||second||(retail>0?retail*.75:0);
     const buy=nums(pricing.maximumBuy)[0]||nums(pricing.suggestedBuy)[0]||(resale>0?resale*.70:0);
-    const title=p.title||p.name||p.product_name||'Unknown game';
-    const image=p.image||p.image_url||p.thumbnail||p.images?.[0]||'';
-    const platform=p.platform||p.console||p.system||'';
+    const title=p.title||p.name||p.product_name||p.productName||'Unknown game';
+    const image=p.image||p.image_url||p.imageUrl||p.thumbnail||p.thumbnail_url||(Array.isArray(p.images)?p.images[0]:'')||'';
+    const platform=p.platform||p.console||p.system||p.consoleName||'';
     const sourcePool=[...stores,...productStores];
     const sourceNames=[...new Set(sourcePool.map(sourceName).filter(Boolean))];
     if(!sourceNames.length&&p.source) sourceNames.push(String(p.source));
@@ -60,30 +71,37 @@
     return {title,image,platform,retail,second,resale,buy,barcode,sources:sourcePool,sourceNames,confidence,sampleCount:count,secondEstimated};
   }
 
-  // Compatibility bridge: the current scanner page historically called /price.
-  // Redirect that legacy request through the working lookup routes without changing the UI.
   const nativeFetch=window.fetch.bind(window);
+  async function getJson(url,init){
+    const r=await nativeFetch(url,{...init,cache:'no-store',headers:{Accept:'application/json',...(init?.headers||{})}});
+    const text=await r.text();
+    let data;try{data=JSON.parse(text)}catch(_){throw Error('Pricing service returned invalid JSON (HTTP '+r.status+').')}
+    if(!r.ok||data?.success===false) throw Error(data?.error||data?.message||'Pricing service returned HTTP '+r.status);
+    return {data,status:r.status};
+  }
   async function bridgedFetch(input,init){
     try{
       const url=typeof input==='string'?input:(input&&input.url)||'';
       if(url.includes('/beau-reseller-pricing.beaustwrt248.workers.dev/price?barcode=')){
         const barcode=new URL(url).searchParams.get('barcode')||'';
-        const urls=[
-          `https://beau-reseller-pricing.beaustwrt248.workers.dev/lookup?barcode=${encodeURIComponent(barcode)}`,
-          `https://beau-reseller-pricing.beaustwrt248.workers.dev/api/lookup?barcode=${encodeURIComponent(barcode)}`,
-          `https://beau-reseller-pricing.beaustwrt248.workers.dev/?barcode=${encodeURIComponent(barcode)}`
+        const base='https://beau-reseller-pricing.beaustwrt248.workers.dev';
+        const attempts=[
+          {url:base+'/lookup?barcode='+encodeURIComponent(barcode)},
+          {url:base+'/api/lookup?barcode='+encodeURIComponent(barcode)},
+          {url:base+'/?barcode='+encodeURIComponent(barcode)},
+          {url:base+'/price?barcode='+encodeURIComponent(barcode)}
         ];
         let lastErr=null;
-        for(const u of urls){
+        for(const a of attempts){
           try{
-            const r=await nativeFetch(u,{cache:'no-store',headers:{Accept:'application/json',...(init?.headers||{})}});
-            if(!r.ok){lastErr=Error('HTTP '+r.status);continue;}
-            const text=await r.text();
-            let data;try{data=JSON.parse(text)}catch(_){lastErr=Error('Invalid JSON from pricing service');continue;}
-            if(data?.success===false){lastErr=Error(data.error||data.message||'Barcode lookup failed');continue;}
-            return new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+            const result=await getJson(a.url);
+            return new Response(JSON.stringify(result.data),{status:200,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
           }catch(e){lastErr=e}
         }
+        try{
+          const result=await getJson(base,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({barcode})});
+          return new Response(JSON.stringify(result.data),{status:200,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+        }catch(e){lastErr=e}
         return new Response(JSON.stringify({success:false,error:lastErr?.message||'Barcode lookup failed'}),{status:502,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
       }
     }catch(e){
@@ -92,5 +110,5 @@
     return nativeFetch(input,init);
   }
   window.fetch=bridgedFetch;
-  window.BeauPricingEngine={normalise,median,robust};
+  window.BeauPricingEngine={normalise,median,robust,version:'2.2.2'};
 })();
