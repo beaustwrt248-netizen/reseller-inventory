@@ -1,4 +1,4 @@
-/* Beau's Game Inventory — multi-source pricing engine v2.2.0 */
+/* Beau's Game Inventory — multi-source pricing engine v2.2.1 */
 (function(){
   'use strict';
   function nums(value){
@@ -59,5 +59,38 @@
     const confidence=count>=4?'High':count>=2?'Medium':'Low';
     return {title,image,platform,retail,second,resale,buy,barcode,sources:sourcePool,sourceNames,confidence,sampleCount:count,secondEstimated};
   }
+
+  // Compatibility bridge: the current scanner page historically called /price.
+  // Redirect that legacy request through the working lookup routes without changing the UI.
+  const nativeFetch=window.fetch.bind(window);
+  async function bridgedFetch(input,init){
+    try{
+      const url=typeof input==='string'?input:(input&&input.url)||'';
+      if(url.includes('/beau-reseller-pricing.beaustwrt248.workers.dev/price?barcode=')){
+        const barcode=new URL(url).searchParams.get('barcode')||'';
+        const urls=[
+          `https://beau-reseller-pricing.beaustwrt248.workers.dev/lookup?barcode=${encodeURIComponent(barcode)}`,
+          `https://beau-reseller-pricing.beaustwrt248.workers.dev/api/lookup?barcode=${encodeURIComponent(barcode)}`,
+          `https://beau-reseller-pricing.beaustwrt248.workers.dev/?barcode=${encodeURIComponent(barcode)}`
+        ];
+        let lastErr=null;
+        for(const u of urls){
+          try{
+            const r=await nativeFetch(u,{cache:'no-store',headers:{Accept:'application/json',...(init?.headers||{})}});
+            if(!r.ok){lastErr=Error('HTTP '+r.status);continue;}
+            const text=await r.text();
+            let data;try{data=JSON.parse(text)}catch(_){lastErr=Error('Invalid JSON from pricing service');continue;}
+            if(data?.success===false){lastErr=Error(data.error||data.message||'Barcode lookup failed');continue;}
+            return new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+          }catch(e){lastErr=e}
+        }
+        return new Response(JSON.stringify({success:false,error:lastErr?.message||'Barcode lookup failed'}),{status:502,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+      }
+    }catch(e){
+      return new Response(JSON.stringify({success:false,error:e?.message||'Barcode lookup failed'}),{status:500,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+    }
+    return nativeFetch(input,init);
+  }
+  window.fetch=bridgedFetch;
   window.BeauPricingEngine={normalise,median,robust};
 })();
