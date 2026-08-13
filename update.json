@@ -1,9 +1,9 @@
 {
-  "version": "9.0.2",
-  "webVersion": "2026-08-13.10",
+  "version": "9.1.0",
+  "webVersion": "2026-08-13.11",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-app-stability-release",
-  "message": "Stable Reseller Hub release: dashboard-only shortcuts, reliable navigation, camera, pricing, library, backups and corrected OTA version reporting.",
+  "type": "web-app-polish-release",
+  "message": "Reseller Hub 9.1.0: improved global search, safer unknown-barcode handling and version checking.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
