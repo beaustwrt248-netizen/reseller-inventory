@@ -1,9 +1,9 @@
 {
-  "version": "9.0.0",
-  "webVersion": "2026-08-13.09",
+  "version": "9.0.2",
+  "webVersion": "2026-08-13.10",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-app-stability-release",
-  "message": "Stable standalone release: one app shell, working navigation, camera, pricing, library, backups and OTA updater.",
-  "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
+  "message": "Stable Reseller Hub release: dashboard-only shortcuts, reliable navigation, camera, pricing, library, backups and corrected OTA version reporting.",
+  "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
