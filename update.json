@@ -1,9 +1,9 @@
 {
-  "version": "2.4.0",
-  "webVersion": "2026-08-13.08",
+  "version": "9.0.0",
+  "webVersion": "2026-08-13.09",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-and-library-update",
-  "message": "OTA stability release: prevents update hangs, fixes updater loops, and preserves local data.",
+  "type": "web-app-stability-release",
+  "message": "Stable standalone release: one app shell, working navigation, camera, pricing, library, backups and OTA updater.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/ota.html"
 }
