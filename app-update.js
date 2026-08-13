@@ -1,7 +1,7 @@
-/* Beau's Game Inventory — OTA updater v2.0.2 safe */
+/* Beau's Game Inventory — OTA updater v2.0.3 safe */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='2.0.2';
+  const CURRENT='2.0.3';
   const UPDATE_URL='./update.json';
   const OTA_URL='./ota.html';
 
@@ -16,21 +16,11 @@
   }
 
   async function check(){
-    const r=await fetch(UPDATE_URL+'?t='+Date.now(),{
-      cache:'no-store',
-      headers:{'Cache-Control':'no-cache'}
-    });
+    const r=await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
     if(!r.ok)throw Error('Update information unavailable');
     const d=await r.json();
     const latest=String(d.version||CURRENT);
-    return {
-      current:CURRENT,
-      latest,
-      webVersion:String(d.webVersion||latest),
-      available:compare(latest,CURRENT)>0,
-      notes:d.message||'',
-      url:d.url||OTA_URL
-    };
+    return {current:CURRENT,latest,webVersion:String(d.webVersion||latest),available:compare(latest,CURRENT)>0,notes:d.message||'',url:d.url||OTA_URL};
   }
 
   function reloadLatest(){
@@ -44,9 +34,7 @@
   function loadScript(id,src){
     if(document.getElementById(id))return;
     const s=document.createElement('script');
-    s.id=id;
-    s.src=src;
-    s.async=false;
+    s.id=id;s.src=src;s.async=false;
     document.head.appendChild(s);
   }
 
@@ -66,14 +54,9 @@
     try{
       const result=await check();
       if(result.available){
-        const ok=options.silent?true:confirm(
-          'A new version of Beau Game Inventory is available.\\n\\nVersion '+
-          result.latest+'\\n'+(result.notes||'')+'\\n\\nUpdate now?'
-        );
+        const ok=options.silent?true:confirm('A new version of Beau Game Inventory is available.\n\nVersion '+result.latest+'\n'+(result.notes||'')+'\n\nUpdate now?');
         if(ok)reloadLatest();
-      }else if(!options.silent){
-        alert('You are up to date (v'+CURRENT+').');
-      }
+      }else if(!options.silent){alert('You are up to date (v'+CURRENT+').');}
       return result;
     }catch(e){
       if(!options.silent)alert('Could not check for updates right now.');
