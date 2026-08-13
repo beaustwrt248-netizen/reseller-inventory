@@ -1,7 +1,7 @@
-/* Beau's Game Inventory — OTA updater v2.0.6 */
+/* Beau's Game Inventory — OTA updater v2.4.0 */
 (function(){
   const KEY='beauGameInventoryBuild';
-  const CURRENT='2.0.6';
+  const CURRENT='2.4.0';
   const UPDATE_URL='./update.json';
   const OTA_URL='./ota.html';
   const SCANNER_FIX_URL='./scanner-fix.js';
@@ -17,22 +17,26 @@
   }
 
   function loadScannerFix(){
-    if(window.BeauSmartScan?.version==='2.0.6')return;
+    if(window.BeauSmartScan?.version==='2.4.0')return;
     const old=document.querySelector('script[data-scanner-fix]');
     if(old)old.remove();
     const s=document.createElement('script');
-    s.src=SCANNER_FIX_URL+'?v=2.0.6';
+    s.src=SCANNER_FIX_URL+'?v=2.4.0';
     s.async=false;
     s.dataset.scannerFix='1';
     document.head.appendChild(s);
   }
 
   async function check(){
-    const r=await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
-    if(!r.ok)throw Error('Update information unavailable');
-    const d=await r.json();
-    const latest=String(d.version||CURRENT);
-    return {current:CURRENT,latest,webVersion:String(d.webVersion||latest),available:compare(latest,CURRENT)>0,notes:d.message||'',url:d.url||OTA_URL};
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),8000);
+    try{
+      const r=await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'},signal:controller.signal});
+      if(!r.ok)throw Error('Update information unavailable');
+      const d=await r.json();
+      const latest=String(d.version||CURRENT);
+      return {current:CURRENT,latest,webVersion:String(d.webVersion||latest),available:compare(latest,CURRENT)>0,notes:d.message||'',url:d.url||OTA_URL};
+    }finally{clearTimeout(timer)}
   }
 
   function reloadLatest(){
@@ -41,18 +45,6 @@
     u.searchParams.set('v',Date.now());
     u.hash=hash;
     window.location.replace(u.toString());
-  }
-
-  function handleScannerReturn(){
-    const p=new URLSearchParams(location.search),code=p.get('scanned');
-    if(!code)return;
-    history.replaceState({},'',location.pathname+location.hash);
-    setTimeout(()=>{
-      const input=document.getElementById('barcodeSearch')||document.getElementById('manualBarcode');
-      if(input)input.value=code;
-      if(typeof window.lookupBarcode==='function')window.lookupBarcode(code);
-      else if(window.BeauSmartScan?.lookup)window.BeauSmartScan.lookup(code);
-    },700);
   }
 
   async function checkAndUpdate(options={}){
@@ -64,7 +56,7 @@
       }else if(!options.silent){alert('You are up to date (v'+CURRENT+').');}
       return result;
     }catch(e){
-      if(!options.silent)alert('Could not check for updates right now.');
+      if(!options.silent)alert(e.name==='AbortError'?'Update check timed out. You can keep using the current app.':'Could not check for updates right now.');
       return {current:CURRENT,latest:CURRENT,available:false,error:e.message};
     }
   }
@@ -74,7 +66,6 @@
 
   document.addEventListener('DOMContentLoaded',()=>{
     loadScannerFix();
-    handleScannerReturn();
     setTimeout(()=>checkAndUpdate({silent:true}),1200);
   });
 })();
