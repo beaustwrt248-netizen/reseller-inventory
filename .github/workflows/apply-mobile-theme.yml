@@ -1,4 +1,4 @@
-name: Apply Mobile App Theme
+name: Validate Stable App
 
 on:
   push:
@@ -9,19 +9,22 @@ permissions:
   contents: read
 
 jobs:
-  mobile-theme:
+  validate-app:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Verify shared mobile theme is linked
+      - name: Validate standalone app files
         shell: python
         run: |
           from pathlib import Path
           import re
-          p = Path('index.html')
-          text = p.read_text(encoding='utf-8')
-          if not re.search(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']\./mobile-theme\.css(?:\?[^"\']*)?["\']', text, flags=re.I):
-              raise SystemExit('mobile-theme.css is not linked from index.html')
-          print('Shared mobile theme link verified.')
+          index=Path('index.html').read_text(encoding='utf-8')
+          for f in ['app.css','app.js','pricing-engine.js','update.json','ota.html']:
+              if not Path(f).exists():
+                  raise SystemExit(f'Missing required file: {f}')
+          if 'app.css?v=9.0.0' not in index or 'app.js?v=9.0.0' not in index:
+              raise SystemExit('Stable v9 assets are not linked from index.html')
+          if '<iframe' in index.lower():
+              raise SystemExit('index.html must not use the legacy iframe shell')
+          print('Standalone Reseller Hub v9 validation passed.')
