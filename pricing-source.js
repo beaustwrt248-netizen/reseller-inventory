@@ -1,0 +1,5 @@
+/* Pricing source details — adds an audit trail to scan results. */
+(function(){'use strict';
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+window.renderPricingSourceDetails=function(info){const host=document.getElementById('scanResult');if(!host)return;let box=document.getElementById('pricingSourceDetails');if(!box){box=document.createElement('div');box.id='pricingSourceDetails';box.className='result pricing-source-details';host.appendChild(box)}const checked=new Date(info.checkedAt||Date.now());box.innerHTML='<h3>🔎 Pricing Source Details</h3><div class="list-item"><span>Source</span><b>'+esc(info.source||'Lookup')+'</b></div><div class="list-item"><span>Barcode checked</span><b>'+esc(info.barcode||'—')+'</b></div><div class="list-item"><span>Price checked</span><b>'+esc(checked.toLocaleString('en-AU'))+'</b></div><div class="list-item"><span>Resale estimate</span><b>$'+Math.round(Number(info.resale)||0)+'</b></div><div class="muted">This figure is the returned market/resale estimate used by the app for the buying guide. It is not a guaranteed sale price.</div>'}}
+})();
