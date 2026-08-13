@@ -55,15 +55,16 @@ jobs:
           if '10%–40%' not in index and '10%-40%' not in index:
               raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
 
-          if update.get('version') != '9.2.0':
-              raise SystemExit(f"update.json version mismatch: expected 9.2.0, got {update.get('version')}")
+          expected_version = '9.2.2'
+          if update.get('version') != expected_version:
+              raise SystemExit(f"update.json version mismatch: expected {expected_version}, got {update.get('version')}")
 
-          print('Standalone Reseller Hub v9.2.0 validation passed.')
+          print(f'Standalone Reseller Hub v{expected_version} validation passed.')
 
       - name: Validate JavaScript syntax
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Check JavaScript
         shell: bash
         run: |
