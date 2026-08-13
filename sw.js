@@ -1,5 +1,5 @@
-/* Beau's Game Inventory — cache refresh v3.3.0 */
-const CACHE='beau-game-inventory-v3.3.0';
+/* Beau's Game Inventory — cache refresh v3.4.0 */
+const CACHE='beau-game-inventory-v3.4.0';
 const ASSETS=['./','./index.html','./scanner.html','./scanner-v3.html','./library.html','./pricing.html','./settings.html','./dashboard.html','./mobile-theme.css','./app-nav.js','./app-compat.js','./app-update.js','./scanner-fix.js','./scanner-runtime-fix.js','./pricing-engine.js','./nav-safe-area.js','./navigation-layout-fix.css','./nav-icons.css','./manifest.json'];
 const timeoutFetch=(request,ms=7000)=>Promise.race([fetch(request,{cache:'no-store'}),new Promise((_,reject)=>setTimeout(()=>reject(Error('network-timeout')),ms))]);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS).catch(()=>{})).then(()=>self.skipWaiting())));
