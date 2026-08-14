@@ -21,11 +21,13 @@ if (fs.existsSync(indexPath)) {
   const bundleTag = '<script src="./bundle-profit.js?v=1.0.0"></script>';
   const intelligenceTag = '<script src="./reseller-intelligence.js?v=1.0.0"></script>';
   const salesTag = '<script src="./sales-intelligence.js?v=1.0.0"></script>';
+  const listingTag = '<script src="./listing-assistant.js?v=1.0.0"></script>';
   if (!html.includes('dashboard-performance.css')) html = html.replace('</head>', `${cssTag}</head>`);
   if (!html.includes('dashboard-performance.js')) html = html.replace('</body>', `${jsTag}</body>`);
   if (!html.includes('bundle-profit.js')) html = html.replace('</body>', `${bundleTag}</body>`);
   if (!html.includes('reseller-intelligence.js')) html = html.replace('</body>', `${intelligenceTag}</body>`);
   if (!html.includes('sales-intelligence.js')) html = html.replace('</body>', `${salesTag}</body>`);
+  if (!html.includes('listing-assistant.js')) html = html.replace('</body>', `${listingTag}</body>`);
   fs.writeFileSync(indexPath, html);
 }
 
@@ -37,4 +39,4 @@ if (fs.existsSync(scannerPath)) {
   fs.writeFileSync(scannerPath, html);
 }
 
-console.log(`Prepared ${files.length} web files with dashboard/performance, scanner deal-analysis, bundle-profit, reseller-intelligence and sales-intelligence enhancements.`);
+console.log(`Prepared ${files.length} web files with dashboard/performance, scanner deal-analysis, bundle-profit, reseller-intelligence, sales-intelligence and listing-assistant enhancements.`);
