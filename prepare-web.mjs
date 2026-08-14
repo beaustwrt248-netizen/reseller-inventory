@@ -11,23 +11,20 @@ const files = fs
   .readdirSync(root)
   .filter((f) => /\.(html|css|js|json)$/.test(f) && !['package.json', 'capacitor.config.ts'].includes(f));
 
-for (const file of files) {
-  fs.copyFileSync(path.join(root, file), path.join(out, file));
-}
+for (const file of files) fs.copyFileSync(path.join(root, file), path.join(out, file));
 
-// Inject the lightweight dashboard/performance layer into the main app at build time.
 const indexPath = path.join(out, 'index.html');
 if (fs.existsSync(indexPath)) {
   let html = fs.readFileSync(indexPath, 'utf8');
   const cssTag = '<link rel="stylesheet" href="./dashboard-performance.css?v=1.0.0">';
   const jsTag = '<script src="./dashboard-performance.js?v=1.0.0"></script>';
-
+  const bundleTag = '<script src="./bundle-profit.js?v=1.0.0"></script>';
   if (!html.includes('dashboard-performance.css')) html = html.replace('</head>', `${cssTag}</head>`);
   if (!html.includes('dashboard-performance.js')) html = html.replace('</body>', `${jsTag}</body>`);
+  if (!html.includes('bundle-profit.js')) html = html.replace('</body>', `${bundleTag}</body>`);
   fs.writeFileSync(indexPath, html);
 }
 
-// Add the bundle-aware Deal Analyser to the dedicated scanner page.
 const scannerPath = path.join(out, 'scanner-v3.html');
 if (fs.existsSync(scannerPath)) {
   let html = fs.readFileSync(scannerPath, 'utf8');
@@ -36,4 +33,4 @@ if (fs.existsSync(scannerPath)) {
   fs.writeFileSync(scannerPath, html);
 }
 
-console.log(`Prepared ${files.length} web files with dashboard/performance and scanner deal-analysis enhancements.`);
+console.log(`Prepared ${files.length} web files with dashboard/performance, scanner deal-analysis and bundle-profit enhancements.`);
