@@ -22,14 +22,18 @@ if (fs.existsSync(indexPath)) {
   const cssTag = '<link rel="stylesheet" href="./dashboard-performance.css?v=1.0.0">';
   const jsTag = '<script src="./dashboard-performance.js?v=1.0.0"></script>';
 
-  if (!html.includes('dashboard-performance.css')) {
-    html = html.replace('</head>', `${cssTag}</head>`);
-  }
-  if (!html.includes('dashboard-performance.js')) {
-    html = html.replace('</body>', `${jsTag}</body>`);
-  }
-
+  if (!html.includes('dashboard-performance.css')) html = html.replace('</head>', `${cssTag}</head>`);
+  if (!html.includes('dashboard-performance.js')) html = html.replace('</body>', `${jsTag}</body>`);
   fs.writeFileSync(indexPath, html);
 }
 
-console.log(`Prepared ${files.length} web files in www/ with dashboard/performance enhancements.`);
+// Add the bundle-aware Deal Analyser to the dedicated scanner page.
+const scannerPath = path.join(out, 'scanner-v3.html');
+if (fs.existsSync(scannerPath)) {
+  let html = fs.readFileSync(scannerPath, 'utf8');
+  const tag = '<script src="./scanner-deal-analyser.js?v=1.0.0"></script>';
+  if (!html.includes('scanner-deal-analyser.js')) html = html.replace('</body>', `${tag}</body>`);
+  fs.writeFileSync(scannerPath, html);
+}
+
+console.log(`Prepared ${files.length} web files with dashboard/performance and scanner deal-analysis enhancements.`);
