@@ -1,9 +1,9 @@
 {
-  "version": "9.2.2",
-  "webVersion": "2026-08-13.16",
+  "version": "9.3.0",
+  "webVersion": "2026-08-15.07",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
-  "type": "web-app-deal-analytics-release",
-  "message": "Reseller Hub 9.2.2 adds buy-percentage analytics, deal labels and dashboard/inventory deal visibility while preserving the stable scanner, pricing, inventory, library, backup and OTA architecture.",
+  "type": "web-ota",
+  "message": "Reseller Hub 9.3.0 enables the stable web OTA update flow. New web features can now be delivered without reinstalling the APK.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
