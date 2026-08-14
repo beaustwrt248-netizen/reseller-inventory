@@ -17,9 +17,11 @@ const indexPath = path.join(out, 'index.html');
 if (fs.existsSync(indexPath)) {
   let html = fs.readFileSync(indexPath, 'utf8');
   const cssTag = '<link rel="stylesheet" href="./dashboard-performance.css?v=1.0.0">';
+  const bundleCssTag = '<link rel="stylesheet" href="./bundle-profit.css?v=1.0.0">';
   const jsTag = '<script src="./dashboard-performance.js?v=1.0.0"></script>';
   const bundleTag = '<script src="./bundle-profit.js?v=1.0.0"></script>';
   if (!html.includes('dashboard-performance.css')) html = html.replace('</head>', `${cssTag}</head>`);
+  if (!html.includes('bundle-profit.css')) html = html.replace('</head>', `${bundleCssTag}</head>`);
   if (!html.includes('dashboard-performance.js')) html = html.replace('</body>', `${jsTag}</body>`);
   if (!html.includes('bundle-profit.js')) html = html.replace('</body>', `${bundleTag}</body>`);
   fs.writeFileSync(indexPath, html);
