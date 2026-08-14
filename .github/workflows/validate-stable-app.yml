@@ -49,8 +49,6 @@ jobs:
               if not re.search(pattern, index, re.I):
                   raise SystemExit(f'{label} is not linked from index.html')
 
-          # Settings is intentionally side-menu only. The bottom navigation
-          # contains the four primary actions: Home, Stock, Scan and Pricing.
           if 'data-page="dashboard"' not in index:
               raise SystemExit('Dashboard navigation is missing')
           if 'show(\'settings\')' not in index:
@@ -65,7 +63,7 @@ jobs:
           if '10%–40%' not in index and '10%-40%' not in index:
               raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
 
-          expected_version = '9.2.2'
+          expected_version = '9.3.0'
           if update.get('version') != expected_version:
               raise SystemExit(f"update.json version mismatch: expected {expected_version}, got {update.get('version')}")
 
