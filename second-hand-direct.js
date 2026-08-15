@@ -1,5 +1,13 @@
-/* Direct second-hand panel bridge. Runs independently of lookup hook load order. */
+/* Direct second-hand panel bridge + fast lookup bootstrap. */
 (function(){'use strict';
+  // Load the fast barcode layer before the user can normally perform a scan.
+  if(!window.BeauPricingFastLoader){
+    window.BeauPricingFastLoader=true;
+    const s=document.createElement('script');
+    s.src='./fast-lookup.js?v=1.0.0&r=9.3.3-ota24';
+    s.async=false;
+    document.head.appendChild(s);
+  }
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'Not available';
   const query=(title,platform)=>[title,platform].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
@@ -54,8 +62,8 @@
     panel.dataset.query=q; panel.dataset.source='direct-bridge'; host.appendChild(panel); return true;
   }
   function attempt(){if(render())return true;return false}
-  let tries=0;const timer=setInterval(()=>{tries++;if(attempt()||tries>60)clearInterval(timer)},500);
-  document.addEventListener('click',()=>setTimeout(attempt,50));
-  document.addEventListener('keyup',()=>setTimeout(attempt,50));
-  window.addEventListener('load',()=>setTimeout(attempt,100));
+  let tries=0;const timer=setInterval(()=>{tries++;if(attempt()||tries>60)clearInterval(timer)},300);
+  document.addEventListener('click',()=>setTimeout(attempt,25));
+  document.addEventListener('keyup',()=>setTimeout(attempt,25));
+  window.addEventListener('load',()=>setTimeout(attempt,50));
 })();
