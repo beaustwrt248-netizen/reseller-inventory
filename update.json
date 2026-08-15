@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.15",
+  "webVersion": "2026.08.15.16",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub OTA revision 15: fixed stale desktop updater code and removed the OTA redirect loop.",
+  "message": "Reseller Hub manual OTA is now non-automatic and safe: check and apply updates from Settings without redirect loops.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
