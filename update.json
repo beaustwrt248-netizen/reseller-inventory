@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.17",
+  "webVersion": "2026.08.15.18",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub second-hand pricing now resolves game name and console, searches by name + console, shows 10%–40% buy targets, and gives BUY / MAYBE / PASS guidance.",
+  "message": "Second-hand searches now use game name + console and eBay is filtered to completed/sold listings where supported. BUY / MAYBE / PASS remains available.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
