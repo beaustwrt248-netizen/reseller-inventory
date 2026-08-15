@@ -1,4 +1,4 @@
-/* Direct second-hand panel — compact site result cards, robust result parsing. */
+/* Direct second-hand panel — compact site result cards, robust search identity. */
 (function(){'use strict';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'—';
@@ -6,6 +6,29 @@
   const urls=q=>({cash:'https://www.cashconverters.com.au/search-results?query='+encodeURIComponent(q),ebay:'https://www.ebay.com.au/sch/i.html?_nkw='+encodeURIComponent(q)+'&LH_Sold=1&LH_Complete=1',superRetro:'https://superretro.com.au/search?q='+encodeURIComponent(q)});
   const verified={'5016488130837':{title:'Extinction',platform:'Xbox One',sites:{'Cash Converters':{average:10,count:1},'eBay Sold':{average:11.35,count:1},'Super Retro':null}}};
   const siteMeta={'Cash Converters':{icon:'💵'},'eBay Sold':{icon:'🏷️'},'Super Retro':{icon:'🕹️'}};
+
+  function normaliseSearchIdentity(title,platform){
+    let t=String(title||'').replace(/\s+/g,' ').trim();
+    let p=String(platform||'').replace(/\s+/g,' ').trim();
+
+    // Clean common retail/edition noise from the search phrase.
+    const explicit=t.match(/\((PS[2345]|PSP|PS\s*Vita|Xbox(?:\s+One|\s+360|\s+Series(?:\s+[XS])?)?|Nintendo\s+Switch|Wii(?:\s+U)?|3DS|DS)\)/i);
+    const inferred=explicit?.[1]?.replace(/\s+/g,' ').trim();
+    if(inferred && (!p || /^other$/i.test(p)))p=inferred;
+
+    // Known title cleanup: remove duplicate subtitle/brand text and Platinum edition label.
+    if(/simpsons/i.test(t)&&/hit\s*(?:&|and)\s*run/i.test(t)){
+      t='The Simpsons Hit and Run';
+      p=/ps\s*2/i.test(inferred||p)?'PS2':(p&&!/^other$/i.test(p)?p:'PS2');
+    }else{
+      t=t.replace(/\s*\((?:Platinum|Classics|Essentials|Greatest Hits|Special Edition|Limited Edition)[^)]*\)\s*$/i,'');
+      t=t.replace(/\s+Platinum(?:\s+Edition)?\b/ig,'');
+      t=t.replace(/\s*\(([^)]*)\)\s*$/g,(m,inside)=>/^(PS[2345]|PSP|PS\s*Vita|Xbox|Nintendo|Wii|3DS|DS)/i.test(inside.trim())?'':m);
+    }
+    if(/^other$/i.test(p))p='';
+    return{title:t,platform:p};
+  }
+
   function parseResult(){
     const host=document.getElementById('scanResult');
     if(!host)return null;
@@ -23,10 +46,14 @@
     const title=titleLines.join(' ').replace(/^🎮\s*/,'').replace(/\s+/g,' ').trim();
     return {host,title,platform,barcode};
   }
+
   function render(){
     const p=parseResult();if(!p||!p.title)return false;
     const host=p.host;const old=document.getElementById('secondHandDirectPanel');if(old)old.remove();
-    const v=verified[p.barcode],title=v?.title||p.title,platform=v?.platform||p.platform,q=query(title,platform),links=urls(q);
+    const v=verified[p.barcode];
+    const rawTitle=v?.title||p.title,rawPlatform=v?.platform||p.platform;
+    const identity=normaliseSearchIdentity(rawTitle,rawPlatform);
+    const title=identity.title,platform=identity.platform,q=query(title,platform),links=urls(q);
     const sites=v?.sites||{'Cash Converters':null,'eBay Sold':null,'Super Retro':null};
     const values=Object.values(sites).filter(Boolean).map(x=>Number(x.average)).filter(n=>Number.isFinite(n)&&n>0);
     const overall=values.length?values.reduce((a,b)=>a+b,0)/values.length:0;
