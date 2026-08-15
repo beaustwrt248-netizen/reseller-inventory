@@ -59,5 +59,13 @@
     const wrapped=async function(code){const b=norm(code),result=await originalLookup.apply(this,arguments);if(b)try{await guardedSecondHand(b)}catch(_){}return result};
     wrapped.__secondHandHook=true;window.lookupProduct=wrapped;return true;
   };
-  if(!install())document.addEventListener('DOMContentLoaded',()=>install(),{once:true});
+  function boot(){
+    if(install())return;
+    let attempts=0;
+    const retry=()=>{if(install()||++attempts>=20)return;setTimeout(retry,100)};
+    retry();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+  setTimeout(boot,250);
 })();
