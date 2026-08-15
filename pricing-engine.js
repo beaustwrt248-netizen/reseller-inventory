@@ -1,4 +1,4 @@
-/* Beau's Game Inventory — pricing engine v3.4.0 — international EAN/JAN/GTIN fallback */
+/* Beau's Game Inventory — pricing engine v3.4.1 — international EAN/JAN/GTIN fallback */
 (function(){
 'use strict';
 const WORKER='https://beau-reseller-pricing.beaustwrt248.workers.dev';
@@ -18,44 +18,12 @@ function normalise(data,barcode){const root=unwrap(data)||{};const p=findProduct
 async function json(url,init){const r=await nativeFetch(url,{...init,cache:'no-store',headers:{Accept:'application/json',...(init?.headers||{})}}),t=await r.text();let d;try{d=JSON.parse(t)}catch(_){throw Error('Invalid JSON (HTTP '+r.status+')')}if(!r.ok||d?.success===false)throw Error(d?.error||d?.message||('HTTP '+r.status));return d}
 function barcodeVariants(code){const c=String(code||'').replace(/\D/g,'');const a=[c];if(c.length===13&&c.startsWith('0'))a.push(c.slice(1));return[...new Set(a)].filter(Boolean)}
 async function workerLookup(code){let last;for(const b of barcodeVariants(code)){for(const path of ['/lookup','/api/lookup','/price','']){try{return{data:await json(WORKER+path+'?barcode='+encodeURIComponent(b)),route:path||'worker',barcode:b}}catch(e){last=e}}try{return{data:await json(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({barcode:b})}),route:'worker-post',barcode:b}}catch(e){last=e}}throw last||Error('Pricing service unavailable')}
-/* International fallback. UPCitemdb accepts UPC, EAN and GTIN, so EAN-13/JAN products from Europe, Japan and other regions can still be identified when the Australian pricing worker has no record. Free endpoint: 100 combined requests/day. Results are cached locally to reduce repeat calls. */
-async function internationalLookup(code){
- const b=String(code||'').replace(/\D/g,'');
- if(!b)throw Error('Enter a barcode');
- const cacheKey='internationalBarcode:'+b;
- try{const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');if(cached&&cached.data&&Date.now()-Number(cached.checkedAt||0)<7*24*60*60*1000)return{data:cached.data,route:'International barcode cache',barcode:b}}catch(_){ }
- const r=await nativeFetch('https://api.upcitemdb.com/prod/trial/lookup?upc='+encodeURIComponent(b),{cache:'no-store',headers:{Accept:'application/json'}});
- const t=await r.text();let d;try{d=JSON.parse(t)}catch(_){throw Error('International barcode service returned invalid data')}
- if(!r.ok||d?.code!=='OK'||!Array.isArray(d.items)||!d.items.length)throw Error('International barcode not found');
- const item=d.items[0]||{};
- const title=titleOf(item);
- if(!usefulProduct(item))throw Error('International lookup returned no usable title');
- const category=String(item.category||'');
- const text=(title+' '+String(item.description||'')+' '+category).toLowerCase();
- let platform='';
- if(/playstation\s*5|ps5/.test(text))platform='PlayStation 5';
- else if(/playstation\s*4|ps4/.test(text))platform='PlayStation 4';
- else if(/playstation\s*3|ps3/.test(text))platform='PlayStation 3';
- else if(/xbox\s*series/.test(text))platform='Xbox Series';
- else if(/xbox\s*one/.test(text))platform='Xbox One';
- else if(/nintendo\s*switch/.test(text))platform='Nintendo Switch';
- else if(/wii\s*u/.test(text))platform='Wii U';
- else if(/wii/.test(text))platform='Wii';
- else if(/3ds/.test(text))platform='Nintendo 3DS';
- else if(/ds/.test(text))platform='Nintendo DS';
- const offers=Array.isArray(item.offers)?item.offers:[];
- const audOffers=offers.filter(o=>String(o?.currency||'').toUpperCase()==='AUD').map(o=>Number(o?.price||o?.list_price)||0).filter(x=>x>0);
- const audRetail=audOffers.length?Math.round(robust(audOffers)):0;
- const image=Array.isArray(item.images)&&item.images.length?item.images[0]:'';
- const synthetic={product:{title,image,platform,brand:item.brand||'',model:item.model||'',description:item.description||'',ean:item.ean||b,gtin:item.gtin||b,source:'International barcode database'},pricing:audRetail?{retailPrice:audRetail}: {},stores:[{source:'UPCitemdb — international EAN/GTIN',retailPrice:audRetail}],international:true,barcode:b};
- try{localStorage.setItem(cacheKey,JSON.stringify({checkedAt:Date.now(),data:synthetic}))}catch(_){ }
- return{data:synthetic,route:'International EAN/GTIN lookup',barcode:b};
-}
-/* Verified game barcode fallbacks. Titles/barcodes were checked against current public Australian retail listings where available. */
+async function internationalLookup(code){const b=String(code||'').replace(/\D/g,'');if(!b)throw Error('Enter a barcode');const cacheKey='internationalBarcode:'+b;try{const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');if(cached&&cached.data&&Date.now()-Number(cached.checkedAt||0)<7*24*60*60*1000)return{data:cached.data,route:'International barcode cache',barcode:b}}catch(_){ }const r=await nativeFetch('https://api.upcitemdb.com/prod/trial/lookup?upc='+encodeURIComponent(b),{cache:'no-store',headers:{Accept:'application/json'}});const t=await r.text();let d;try{d=JSON.parse(t)}catch(_){throw Error('International barcode service returned invalid data')}if(!r.ok||d?.code!=='OK'||!Array.isArray(d.items)||!d.items.length)throw Error('International barcode not found');const item=d.items[0]||{};const title=titleOf(item);if(!usefulProduct(item))throw Error('International lookup returned no usable title');const category=String(item.category||'');const text=(title+' '+String(item.description||'')+' '+category).toLowerCase();let platform='';if(/playstation\s*5|ps5/.test(text))platform='PlayStation 5';else if(/playstation\s*4|ps4/.test(text))platform='PlayStation 4';else if(/playstation\s*3|ps3/.test(text))platform='PlayStation 3';else if(/xbox\s*series/.test(text))platform='Xbox Series';else if(/xbox\s*one/.test(text))platform='Xbox One';else if(/nintendo\s*switch/.test(text))platform='Nintendo Switch';else if(/wii\s*u/.test(text))platform='Wii U';else if(/wii/.test(text))platform='Wii';else if(/3ds/.test(text))platform='Nintendo 3DS';else if(/ds/.test(text))platform='Nintendo DS';const offers=Array.isArray(item.offers)?item.offers:[];const audOffers=offers.filter(o=>String(o?.currency||'').toUpperCase()==='AUD').map(o=>Number(o?.price||o?.list_price)||0).filter(x=>x>0);const audRetail=audOffers.length?Math.round(robust(audOffers)):0;const image=Array.isArray(item.images)&&item.images.length?item.images[0]:'';const synthetic={product:{title,image,platform,brand:item.brand||'',model:item.model||'',description:item.description||'',ean:item.ean||b,gtin:item.gtin||b,source:'International barcode database'},pricing:audRetail?{retailPrice:audRetail}: {},stores:[{source:'UPCitemdb — international EAN/GTIN',retailPrice:audRetail}],international:true,barcode:b};try{localStorage.setItem(cacheKey,JSON.stringify({checkedAt:Date.now(),data:synthetic}))}catch(_){ }return{data:synthetic,route:'International EAN/GTIN lookup',barcode:b};}
+/* Verified game barcode fallbacks. */
 const localCatalog={
  '5030917298462':{product:{title:'Diablo IV',platform:'PlayStation 5',brand:'Blizzard Entertainment'},pricing:{retailPrice:88},stores:[{source:'Australian retail reference',retailPrice:88}]},
  '5902367642372':{product:{title:'Cyberpunk 2077: Ultimate Edition',platform:'PlayStation 5',brand:'CD Projekt Red'},pricing:{retailPrice:100,suggestedResale:77},stores:[{source:'Gamesmen',retailPrice:100,marketPrice:77}]},
- '5016488130837':{product:{title:'Extinction',platform:'Xbox One',brand:'Maximum Games'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5016488130837':{product:{title:'Extinction',platform:'Xbox One',brand:'Maximum Games'},pricing:{secondHandPrice:10.34,suggestedResale:10.34},stores:[{source:'EB Games Australia — pre-owned',secondHandPrice:8},{source:'Gamesmen Australia — pre-owned',secondHandPrice:10},{source:'Gumtree Australia — used',secondHandPrice:12},{source:'eBay Australia — pre-owned listing',secondHandPrice:11.35}]},
  '811949033659':{product:{title:'Gang Beasts',platform:'Nintendo Switch',brand:'Double Fine Productions'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
  '9325336203071':{product:{title:'Scribblenauts: Showdown',platform:'Xbox One',brand:'Warner Bros. Interactive Entertainment'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
  '5030936124254':{product:{title:'FIFA 23',platform:'Xbox One',brand:'EA Sports'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
@@ -72,5 +40,5 @@ const localCatalog={
  '4020628547967':{product:{title:'Yakuza Kiwami',platform:'Nintendo Switch 2',brand:'SEGA'},pricing:{},stores:[{source:'Australian retail listing barcode fallback'}]}
 };
 async function lookup(code){const b=String(code||'').replace(/\D/g,'');if(!b)throw Error('Enter a barcode');try{const w=await workerLookup(b);const product=findProduct(w.data);if(product&&usefulProduct(product))return w;const local=localCatalog[b];if(local)return{data:local,route:'Australian verified barcode fallback',barcode:b};try{return await internationalLookup(b)}catch(_){throw Error('No usable product title was returned for this barcode.')}}catch(e){const local=localCatalog[b];if(local)return{data:local,route:'Australian verified barcode fallback',barcode:b};try{return await internationalLookup(b)}catch(_){throw e}}}
-window.BeauPricingEngine={normalise,lookup,buyGuide,version:'3.4.0'};
+window.BeauPricingEngine={normalise,lookup,buyGuide,version:'3.4.1'};
 })();
