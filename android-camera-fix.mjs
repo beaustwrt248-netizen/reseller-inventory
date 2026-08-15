@@ -28,6 +28,8 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     private PermissionRequest pendingPermissionRequest;
     private static final int CAMERA_PERMISSION_REQUEST = 4001;
+    private static final String WEB_RELEASE = "9.3.4";
+    private static final String PREFS = "beau_release";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,14 @@ public class MainActivity extends BridgeActivity {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
+
+        android.content.SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        String previousRelease = prefs.getString("webRelease", "");
+        if (!WEB_RELEASE.equals(previousRelease)) {
+            webView.clearCache(true);
+            webView.clearHistory();
+            prefs.edit().putString("webRelease", WEB_RELEASE).apply();
+        }
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -98,4 +108,4 @@ public class MainActivity extends BridgeActivity {
     }
 }
 `);
-console.log('Applied hardened Android WebView camera permission handling.');
+console.log('Applied Android camera permission handling and one-time WebView cache reset for release 9.3.4.');
