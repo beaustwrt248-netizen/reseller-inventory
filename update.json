@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.11",
+  "webVersion": "2026.08.15.12",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub web OTA: verified local market pricing now takes priority over zero-price cloud results, with revision-based automatic updates.",
+  "message": "Reseller Hub OTA revision 12: verified local used-market pricing now overrides zero-price cloud library results for supported barcodes.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
