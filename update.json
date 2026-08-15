@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.30",
+  "webVersion": "2026.08.15.31",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Populate compact second-hand site cards with verified price samples for supported barcodes while keeping unavailable sources honest.",
+  "message": "Added dynamic site price averaging from returned pricing data, verified fallbacks, cleaner live states, and bug hardening.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
