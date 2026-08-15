@@ -63,7 +63,7 @@ jobs:
           if '10%–40%' not in index and '10%-40%' not in index:
               raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
 
-          expected_version = '9.3.0'
+          expected_version = '9.3.1'
           if update.get('version') != expected_version:
               raise SystemExit(f"update.json version mismatch: expected {expected_version}, got {update.get('version')}")
 
