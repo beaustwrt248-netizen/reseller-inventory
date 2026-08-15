@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.26",
+  "webVersion": "2026.08.15.27",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Removed the blocking second-hand hooks entirely. The stable panel now waits only for the normal barcode result and then renders immediately.",
+  "message": "Polished second-hand results into compact price cards with site icons, site averages, an overall average, and a tighter buying guide layout.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
