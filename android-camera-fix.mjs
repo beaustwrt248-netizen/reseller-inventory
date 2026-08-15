@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
+const release = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version;
 const manifest = path.join(root, 'android', 'app', 'src', 'main', 'AndroidManifest.xml');
 const activity = path.join(root, 'android', 'app', 'src', 'main', 'java', 'com', 'beausgames', 'inventory', 'MainActivity.java');
 
@@ -28,7 +30,7 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     private PermissionRequest pendingPermissionRequest;
     private static final int CAMERA_PERMISSION_REQUEST = 4001;
-    private static final String WEB_RELEASE = "9.3.4";
+    private static final String WEB_RELEASE = "${release}";
     private static final String PREFS = "beau_release";
 
     @Override
@@ -108,4 +110,6 @@ public class MainActivity extends BridgeActivity {
     }
 }
 `);
-console.log('Applied Android camera permission handling and one-time WebView cache reset for release 9.3.4.');
+
+execFileSync(process.execPath, ['release-version-check.mjs'], { cwd: root, stdio: 'inherit' });
+console.log(`Applied Android camera permission handling and release ${release} WebView cache reset.`);
