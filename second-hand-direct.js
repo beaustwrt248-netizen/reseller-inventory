@@ -1,22 +1,21 @@
-/* Direct second-hand panel — compact site result cards, robust search identity. */
+/* Direct second-hand panel — compact site result cards with verified price samples. */
 (function(){'use strict';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'—';
   const query=(title,platform)=>[title,platform].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
   const urls=q=>({cash:'https://www.cashconverters.com.au/search-results?query='+encodeURIComponent(q),ebay:'https://www.ebay.com.au/sch/i.html?_nkw='+encodeURIComponent(q)+'&LH_Sold=1&LH_Complete=1',superRetro:'https://superretro.com.au/search?q='+encodeURIComponent(q)});
-  const verified={'5016488130837':{title:'Extinction',platform:'Xbox One',sites:{'Cash Converters':{average:10,count:1},'eBay Sold':{average:11.35,count:1},'Super Retro':null}}};
+  const verified={
+    '5016488130837':{title:'Extinction',platform:'Xbox One',sites:{'Cash Converters':{average:10,count:1},'eBay Sold':{average:11.35,count:1},'Super Retro':null}},
+    '3348542190917':{title:'The Simpsons Hit and Run',platform:'PS2',sites:{'Cash Converters':{average:59,count:1},'eBay Sold':{average:101.63,count:3},'Super Retro':null}}
+  };
   const siteMeta={'Cash Converters':{icon:'💵'},'eBay Sold':{icon:'🏷️'},'Super Retro':{icon:'🕹️'}};
 
   function normaliseSearchIdentity(title,platform){
     let t=String(title||'').replace(/\s+/g,' ').trim();
     let p=String(platform||'').replace(/\s+/g,' ').trim();
-
-    // Clean common retail/edition noise from the search phrase.
     const explicit=t.match(/\((PS[2345]|PSP|PS\s*Vita|Xbox(?:\s+One|\s+360|\s+Series(?:\s+[XS])?)?|Nintendo\s+Switch|Wii(?:\s+U)?|3DS|DS)\)/i);
     const inferred=explicit?.[1]?.replace(/\s+/g,' ').trim();
     if(inferred && (!p || /^other$/i.test(p)))p=inferred;
-
-    // Known title cleanup: remove duplicate subtitle/brand text and Platinum edition label.
     if(/simpsons/i.test(t)&&/hit\s*(?:&|and)\s*run/i.test(t)){
       t='The Simpsons Hit and Run';
       p=/ps\s*2/i.test(inferred||p)?'PS2':(p&&!/^other$/i.test(p)?p:'PS2');
@@ -57,8 +56,8 @@
     const sites=v?.sites||{'Cash Converters':null,'eBay Sold':null,'Super Retro':null};
     const values=Object.values(sites).filter(Boolean).map(x=>Number(x.average)).filter(n=>Number.isFinite(n)&&n>0);
     const overall=values.length?values.reduce((a,b)=>a+b,0)/values.length:0;
-    const buy10=overall*.10,buy20=overall*.20,buy25=overall*.25,buy30=overall*.30,buy40=overall*.40;
-    const siteCard=(name,data)=>{const m=siteMeta[name]||{icon:'🔎'};const href=name==='Cash Converters'?links.cash:name==='eBay Sold'?links.ebay:links.superRetro;return '<a class="sh-site" href="'+href+'" target="_blank" rel="noopener"><div class="sh-site-icon">'+m.icon+'</div><div class="sh-site-main"><div class="sh-site-name">'+esc(name)+'</div><div class="sh-site-label">Site average</div></div><div class="sh-site-value">'+(data?money(data.average):'—')+'</div></a>'};
+    const buy10=Math.round(overall*.10),buy20=Math.round(overall*.20),buy25=Math.round(overall*.25),buy30=Math.round(overall*.30),buy40=Math.round(overall*.40);
+    const siteCard=(name,data)=>{const m=siteMeta[name]||{icon:'🔎'};const href=name==='Cash Converters'?links.cash:name==='eBay Sold'?links.ebay:links.superRetro;return '<a class="sh-site" href="'+href+'" target="_blank" rel="noopener"><div class="sh-site-icon">'+m.icon+'</div><div class="sh-site-main"><div class="sh-site-name">'+esc(name)+'</div><div class="sh-site-label">Site average'+(data?.count?' · '+data.count+' sample'+(data.count===1?'':'s'):'')+'</div></div><div class="sh-site-value">'+(data?money(data.average):'—')+'</div></a>'};
     const panel=document.createElement('div');panel.id='secondHandDirectPanel';panel.className='result';
     panel.innerHTML='<div class="sh-head"><div><h3>♻️ Second-Hand Pricing</h3><div class="sh-sub">'+esc(title)+' · '+esc(platform||'Unknown console')+'</div></div><div class="sh-query">🔎 '+esc(q||title)+'</div></div>'+ 
       '<div class="sh-sites">'+siteCard('Cash Converters',sites['Cash Converters'])+siteCard('eBay Sold',sites['eBay Sold'])+siteCard('Super Retro',sites['Super Retro'])+'</div>'+ 
