@@ -1,13 +1,14 @@
-/* Beau's Reseller Hub — OTA compatibility patch 9.3.0 */
+/* Beau's Reseller Hub — OTA compatibility patch. Web OTA only; never pretends to replace the Android APK. */
 (function () {
   'use strict';
-  const WEB_VERSION = '9.3.0';
+  const WEB_VERSION = '9.3.3';
+  const WEB_REVISION = '2026.08.15.33';
   window.RESELLER_WEB_VERSION = WEB_VERSION;
 
   function applyVersionLabel() {
     const el = document.getElementById('appVersion');
     if (el) el.textContent = WEB_VERSION;
-    document.documentElement.dataset.webVersion = WEB_VERSION;
+    document.documentElement.dataset.webVersion = WEB_REVISION;
   }
 
   function compareVersions(a, b) {
@@ -42,15 +43,24 @@
     if (!box) return;
     box.innerHTML = 'Checking for updates…';
     try {
-      const r = await fetch('./update.json?ota=' + Date.now(), { cache: 'no-store' });
+      const r = await fetch('./update.json?otaCheck=' + Date.now(), { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
+      if (!r.ok) throw new Error('manifest unavailable');
       const d = await r.json();
-      const available = String(d.version || WEB_VERSION);
+      const available = String(d.webVersion || WEB_VERSION);
       const cmp = compareVersions(available, WEB_VERSION);
-      box.innerHTML = '<b>Current app:</b> ' + WEB_VERSION + '<br><b>Available:</b> ' + available +
-        '<br><span class="muted">' + (cmp > 0 ? (d.message || 'A newer stable release is available.') :
-        cmp === 0 ? 'You are on the latest stable web version.' : 'The update service reported an older release, so it has been ignored.') + '</span>' +
-        (cmp > 0 ? '<div class="toolbar"><button class="btn primary" onclick="location.href=\'./ota.html?ts=' + Date.now() + '\'">Install latest update</button></div>' :
+      box.innerHTML = '<b>Current web app:</b> ' + WEB_VERSION + '<br><b>Web revision:</b> ' + WEB_REVISION + '<br><span class="muted">' +
+        (cmp > 0 ? (d.message || 'A newer web update is available.') :
+        cmp === 0 ? 'You are on the latest stable web update.' : 'The update service reported an older web revision, so it has been ignored.') +
+        '</span>' +
+        (cmp > 0 ? '<div class="toolbar"><button class="btn primary" id="installWebOta">Install latest web update</button></div><div class="muted">This updates the web layer only. It does not replace the Android APK.</div>' :
         '<div class="toolbar"><button class="btn success" disabled>✓ Up to date</button></div>');
+      const btn = document.getElementById('installWebOta');
+      if (btn) btn.onclick = function () {
+        btn.disabled = true;
+        btn.textContent = 'Installing…';
+        const url = './index.html?ota=' + encodeURIComponent(available) + '&t=' + Date.now() + '#dashboard';
+        window.location.replace(url);
+      };
     } catch (_) {
       box.textContent = 'Update service unavailable. The app will continue working normally.';
     }
