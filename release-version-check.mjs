@@ -26,7 +26,7 @@ if (!cameraFix.includes('release-version-check.mjs')) fail('android-camera-fix.m
 const versionCode = (() => {
   const m = version.match(/^(\d+)\.(\d+)\.(\d+)/);
   if (!m) fail(`unsupported semantic version: ${version}`);
-  return Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]);
+  return Number(m[1]) * 100 + Number(m[2]) * 10 + Number(m[3]);
 })();
 
 const config = `window.BEAU_RELEASE={appVersion:${JSON.stringify(version)},webVersion:${JSON.stringify(webVersion)},versionCode:${versionCode}};`;
