@@ -21,7 +21,8 @@ if(fs.existsSync(indexPath)){
  '<script src="./sales-intelligence.js?v=1.0.0"></script>',
  '<script src="./listing-assistant.js?v=1.0.0"></script>',
  '<script src="./marketplace-sales.js?v=1.0.0"></script>',
- '<script src="./international-verified-fallback.js?v=1.0.0"></script>'
+ '<script src="./international-verified-fallback.js?v=1.0.0"></script>',
+ '<script src="./release-stamp.js?v=9.3.4&r=2026.08.15.34"></script>'
  ];
  if(!html.includes('dashboard-performance.css'))html=html.replace('</head>',`${tags[0]}</head>`);
  for(const tag of tags.slice(1)){const key=tag.match(/\.\/(.*?)(?:\?|\"|')/)[1];if(!html.includes(key))html=html.replace('</body>',`${tag}</body>`)}
@@ -37,4 +38,4 @@ if(fs.existsSync(scannerPath)){
  for(const tag of tags){const key=tag.match(/\.\/(.*?)(?:\?|\"|')/)[1];if(!html.includes(key))html=html.replace('</body>',`${tag}</body>`)}
  fs.writeFileSync(scannerPath,html)
 }
-console.log(`Prepared ${files.length} web files with marketplace, dashboard, scanner, bundle, intelligence, listing and international barcode enhancements.`);
+console.log(`Prepared ${files.length} web files with marketplace, dashboard, scanner, bundle, intelligence, listing and release synchronization enhancements.`);
