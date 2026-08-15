@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026-08-15.10",
+  "webVersion": "2026.08.15.11",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub 9.3.3 improves private inventory cloud sync with owner-scoped writes and automatic background synchronisation while preserving offline local storage.",
+  "message": "Reseller Hub web OTA: verified local market pricing now takes priority over zero-price cloud results, with revision-based automatic updates.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
