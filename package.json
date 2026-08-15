@@ -1,6 +1,6 @@
 {
   "name": "beaus-game-inventory",
-  "version": "9.3.3",
+  "version": "9.3.4",
   "private": true,
   "scripts": {
     "prepare:web": "node prepare-web.mjs",
