@@ -46,50 +46,21 @@ jobs:
         shell: bash
         run: |
           set -e
-
-          echo "Installing custom launcher icon..."
-
           test -f icon-data/icon.png
-
           file icon-data/icon.png
-
           mkdir -p android/app/src/main/res/drawable
-
-          cp icon-data/icon.png \
-            android/app/src/main/res/drawable/app_icon.png
-
-          sed -i \
-            's/android:icon="@[^"]*"/android:icon="@drawable\/app_icon"/' \
-            android/app/src/main/AndroidManifest.xml
-
-          sed -i \
-            's/android:roundIcon="@[^"]*"/android:roundIcon="@drawable\/app_icon"/' \
-            android/app/src/main/AndroidManifest.xml
-
-          echo "Custom icon installed."
+          cp icon-data/icon.png android/app/src/main/res/drawable/app_icon.png
+          sed -i 's/android:icon="@[^"]*"/android:icon="@drawable\/app_icon"/' android/app/src/main/AndroidManifest.xml
+          sed -i 's/android:roundIcon="@[^"]*"/android:roundIcon="@drawable\/app_icon"/' android/app/src/main/AndroidManifest.xml
 
       - name: Verify custom launcher icon
         shell: bash
         run: |
           set -e
-
-          echo "Verifying custom icon..."
-
           test -s android/app/src/main/res/drawable/app_icon.png
-
           file android/app/src/main/res/drawable/app_icon.png | grep -qi "PNG"
-
-          grep -q \
-            'android:icon="@drawable/app_icon"' \
-            android/app/src/main/AndroidManifest.xml
-
-          grep -q \
-            'android:roundIcon="@drawable/app_icon"' \
-            android/app/src/main/AndroidManifest.xml
-
-          echo "======================================"
-          echo "CUSTOM ICON VERIFIED"
-          echo "======================================"
+          grep -q 'android:icon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
+          grep -q 'android:roundIcon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
 
       - name: Build debug APK
         working-directory: android
@@ -102,12 +73,10 @@ jobs:
 
       - name: Rename APK with app version
         run: |
-          cp \
-            android/app/build/outputs/apk/debug/app-debug.apk \
-            beaus-game-inventory-v1.9.3-debug.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v1.9.4-debug.apk
 
       - name: Upload versioned APK
         uses: actions/upload-artifact@v4
         with:
-          name: beaus-game-inventory-v1.9.3-debug-apk
-          path: beaus-game-inventory-v1.9.3-debug.apk
+          name: beaus-game-inventory-v1.9.4-debug-apk
+          path: beaus-game-inventory-v1.9.4-debug.apk
