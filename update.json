@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.19",
+  "webVersion": "2026.08.15.20",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Added Super Retro game-price search and per-site second-hand averaging. Each site's returned price samples are averaged first, then available site averages are combined into the overall market figure.",
+  "message": "Fixed second-hand panel load order; added name + console searches, Super Retro, per-site averages, and BUY / MAYBE / PASS.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
