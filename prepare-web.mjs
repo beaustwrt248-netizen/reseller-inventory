@@ -7,7 +7,8 @@ const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'))
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'update.json'), 'utf8'));
 const appVersion = String(pkg.version);
 const webVersion = String(manifest.webVersion);
-const versionCode = Number(appVersion.split('.').slice(0, 3).map(Number).reduce((a, n, i) => a + n * [10000, 100, 1][i], 0));
+const parts = appVersion.split('.').slice(0, 3).map(Number);
+const versionCode = parts[0] * 100 + parts[1] * 10 + parts[2];
 
 fs.writeFileSync(
   path.join(root, 'release-config.js'),
