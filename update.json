@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.31",
+  "webVersion": "2026.08.15.32",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Add protected live second-hand site averages for Cash Converters, eBay Sold and Super Retro, with verified fallbacks and bug hardening.",
+  "message": "Fixed live second-hand pricing authentication, switched to the public origin-restricted pricing service, and deduplicated repeated site-price requests.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
