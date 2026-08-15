@@ -16,10 +16,12 @@ if (!webVersion) fail('update.json has no webVersion');
 const releaseStamp = fs.readFileSync('release-stamp.js', 'utf8');
 const manualOta = fs.readFileSync('manual-ota.js', 'utf8');
 const prepareWeb = fs.readFileSync('prepare-web.mjs', 'utf8');
+const cameraFix = fs.readFileSync('android-camera-fix.mjs', 'utf8');
 
 if (!releaseStamp.includes('window.BEAU_RELEASE')) fail('release-stamp.js is not using the generated release config');
 if (!manualOta.includes('window.BEAU_RELEASE')) fail('manual-ota.js is not using the generated release config');
 if (!prepareWeb.includes('release-config.js')) fail('prepare-web.mjs does not generate/package release-config.js');
+if (!cameraFix.includes('release-version-check.mjs')) fail('android-camera-fix.mjs does not run the release check');
 
 const versionCode = (() => {
   const m = version.match(/^(\d+)\.(\d+)\.(\d+)/);
@@ -40,4 +42,11 @@ if (www) {
   if (!packagedIndex.includes(`id="appVersion">${version}`)) fail('packaged Settings version is stale');
 }
 
-console.log(`Release check passed: app=${version} web=${webVersion} versionCode=${versionCode}${www ? ' packaged=verified' : ''}`);
+const gradle = 'android/app/build.gradle';
+if (fs.existsSync(gradle)) {
+  const text = fs.readFileSync(gradle, 'utf8');
+  if (!text.includes(`versionCode ${versionCode}`)) fail(`Android Gradle versionCode does not match ${versionCode}`);
+  if (!text.includes(`versionName "${version}"`)) fail(`Android Gradle versionName does not match ${version}`);
+}
+
+console.log(`Release check passed: app=${version} web=${webVersion} versionCode=${versionCode}${www ? ' packaged=verified' : ''}${fs.existsSync(gradle) ? ' android=verified' : ''}`);
