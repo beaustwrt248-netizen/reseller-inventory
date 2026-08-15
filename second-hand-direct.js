@@ -1,4 +1,4 @@
-/* Direct second-hand panel — compact site result cards. */
+/* Direct second-hand panel — compact site result cards, robust result parsing. */
 (function(){'use strict';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'—';
@@ -6,7 +6,23 @@
   const urls=q=>({cash:'https://www.cashconverters.com.au/search-results?query='+encodeURIComponent(q),ebay:'https://www.ebay.com.au/sch/i.html?_nkw='+encodeURIComponent(q)+'&LH_Sold=1&LH_Complete=1',superRetro:'https://superretro.com.au/search?q='+encodeURIComponent(q)});
   const verified={'5016488130837':{title:'Extinction',platform:'Xbox One',sites:{'Cash Converters':{average:10,count:1},'eBay Sold':{average:11.35,count:1},'Super Retro':null}}};
   const siteMeta={'Cash Converters':{icon:'💵'},'eBay Sold':{icon:'🏷️'},'Super Retro':{icon:'🕹️'}};
-  function parseResult(){const host=document.getElementById('scanResult');if(!host)return null;const text=host.innerText||host.textContent||'';const m=text.match(/(?:🎮\s*)?([^\n]+)\n((?:Xbox|PlayStation|Nintendo|Wii)[^\n]*)\s*·\s*Barcode\s*(\d{8,14})/i);if(!m)return null;return{host,title:(m[1]||'').trim(),platform:(m[2]||'').trim(),barcode:(m[3]||'').replace(/\D/g,'')}}
+  function parseResult(){
+    const host=document.getElementById('scanResult');
+    if(!host)return null;
+    const text=(host.innerText||host.textContent||'').replace(/\u00a0/g,' ');
+    const marker=text.match(/(?:·|•)\s*Barcode\s*(\d{8,14})/i);
+    if(!marker)return null;
+    const barcode=marker[1].replace(/\D/g,'');
+    const before=text.slice(0,marker.index).replace(/\r/g,'');
+    const lines=before.split(/\n+/).map(s=>s.trim()).filter(Boolean).filter(s=>!/^🎮?\s*Result$/i.test(s));
+    if(!lines.length)return null;
+    const platformMatch=before.match(/(?:^|\n)([^\n]+?)\s*$/);
+    const platform=(platformMatch?.[1]||'').replace(/^🎮\s*/,'').trim();
+    let titleLines=lines.slice();
+    if(titleLines.length>1 && titleLines[titleLines.length-1]===platform)titleLines=titleLines.slice(0,-1);
+    const title=titleLines.join(' ').replace(/^🎮\s*/,'').replace(/\s+/g,' ').trim();
+    return {host,title,platform,barcode};
+  }
   function render(){
     const p=parseResult();if(!p||!p.title)return false;
     const host=p.host;const old=document.getElementById('secondHandDirectPanel');if(old)old.remove();
