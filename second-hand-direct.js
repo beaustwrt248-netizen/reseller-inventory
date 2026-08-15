@@ -1,69 +1,13 @@
-/* Direct second-hand panel bridge + fast lookup bootstrap. */
+/* Direct second-hand panel — stable, non-blocking version. */
 (function(){'use strict';
-  // Load the fast barcode layer before the user can normally perform a scan.
-  if(!window.BeauPricingFastLoader){
-    window.BeauPricingFastLoader=true;
-    const s=document.createElement('script');
-    s.src='./fast-lookup.js?v=1.0.0&r=9.3.3-ota24';
-    s.async=false;
-    document.head.appendChild(s);
-  }
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   const money=v=>Number(v)>0?'$'+Number(v).toFixed(2):'Not available';
   const query=(title,platform)=>[title,platform].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
-  const urls=q=>({
-    cash:'https://www.cashconverters.com.au/search-results?query='+encodeURIComponent(q),
-    ebay:'https://www.ebay.com.au/sch/i.html?_nkw='+encodeURIComponent(q)+'&LH_Sold=1&LH_Complete=1',
-    superRetro:'https://superretro.com.au/search?q='+encodeURIComponent(q)
-  });
-  const verified={
-    '5016488130837':{
-      title:'Extinction',platform:'Xbox One',
-      sites:{
-        'Cash Converters':{average:10.00,count:1},
-        'eBay Sold':{average:11.35,count:1},
-        'Super Retro':null
-      }
-    }
-  };
-  function getResult(){const host=document.getElementById('scanResult');return host&&host.innerText?host:null}
-  function parseResult(){
-    const host=getResult();if(!host)return null;
-    const text=host.innerText;
-    const game=(text.match(/(?:🎮\s*)?([^\n]+)\n(?:Xbox[^\n]*|PlayStation[^\n]*|Nintendo[^\n]*|Wii[^\n]*)\s*·\s*Barcode\s*([0-9]+)/i)||[]);
-    const title=game[1]?.trim()||text.match(/(?:Game|Result)\s*\n([^\n]+)/i)?.[1]?.trim()||'';
-    const barcode=(game[2]||text.match(/Barcode\s*(\d{8,14})/i)?.[1]||'').replace(/\D/g,'');
-    const platform=(text.match(/\n((?:Xbox|PlayStation|Nintendo|Wii)[^\n]*?)\s*·\s*Barcode/i)||[])[1]?.trim()||'';
-    return {host,title,platform,barcode};
-  }
-  function render(){
-    const p=parseResult();if(!p||!p.title)return false;
-    if(document.getElementById('secondHandDirectPanel'))return true;
-    const key=p.barcode, v=verified[key];
-    const title=v?.title||p.title, platform=v?.platform||p.platform, q=query(title,platform), links=urls(q);
-    const sites=v?.sites||{'Cash Converters':null,'eBay Sold':null,'Super Retro':null};
-    const values=Object.values(sites).filter(Boolean).map(x=>Number(x.average)).filter(n=>Number.isFinite(n)&&n>0);
-    const overall=values.length?values.reduce((a,b)=>a+b,0)/values.length:0;
-    const buy10=overall*.10,buy20=overall*.20,buy25=overall*.25,buy30=overall*.30,buy40=overall*.40;
-    const row=(name,s)=>'<div class="list-item"><span>'+name+'</span><b>'+(s?money(s.average)+' · '+s.count+' sample'+(s.count===1?'':'s'):'Not available')+'</b></div>';
-    const panel=document.createElement('div');panel.id='secondHandDirectPanel';panel.className='result';
-    panel.innerHTML='<h3>♻️ Second-Hand Pricing</h3>'+
-      '<div class="list-item"><span>Game</span><b>'+esc(title)+'</b></div>'+ 
-      '<div class="list-item"><span>Console</span><b>'+esc(platform||'Unknown console')+'</b></div>'+ 
-      '<div class="list-item"><span>Search phrase</span><b>'+esc(q||title)+'</b></div>'+ 
-      '<h4>Site Averages</h4>'+row('Cash Converters',sites['Cash Converters'])+row('eBay Sold',sites['eBay Sold'])+row('Super Retro',sites['Super Retro'])+
-      '<div class="list-item"><span>Overall site-average</span><b>'+money(overall)+'</b></div>'+ 
-      '<div class="buygrid"><div class="buy"><span>10% EXCELLENT</span><strong>'+money(buy10)+'</strong></div><div class="buy"><span>20% VERY GOOD</span><strong>'+money(buy20)+'</strong></div><div class="buy recommended"><span>25% RECOMMENDED ⭐</span><strong>'+money(buy25)+'</strong></div><div class="buy"><span>30% TARGET</span><strong>'+money(buy30)+'</strong></div><div class="buy"><span>40% MAXIMUM</span><strong>'+money(buy40)+'</strong></div></div>'+ 
-      '<div class="toolbar"><a class="btn primary" href="'+links.cash+'" target="_blank" rel="noopener">🔎 Cash Converters</a><a class="btn" href="'+links.ebay+'" target="_blank" rel="noopener">🔎 eBay AU Sold</a><a class="btn" href="'+links.superRetro+'" target="_blank" rel="noopener">🔎 Super Retro</a></div>'+ 
-      '<div class="row"><label>Seller asking price<input id="secondHandDirectAsking" class="input" type="number" min="0" step="1" placeholder="Enter listing price"></label><button id="secondHandDirectDeal" class="btn primary">⚡ Check Deal</button></div>'+ 
-      '<div id="secondHandDirectDecision" class="muted">Enter a seller price to get BUY / MAYBE / PASS.</div>';
-    const asking=panel.querySelector('#secondHandDirectAsking'),btn=panel.querySelector('#secondHandDirectDeal'),decision=panel.querySelector('#secondHandDirectDecision');
-    btn.onclick=()=>{const a=Number(asking.value)||0;if(!a){decision.textContent='Enter a seller price to get BUY / MAYBE / PASS.';return}let label='❌ PASS';if(overall>0&&a<=buy25)label='✅ BUY';else if(overall>0&&a<=buy40)label='🟡 MAYBE';decision.innerHTML='<b>'+label+'</b> · Asking '+money(a)+' · Recommended '+money(buy25)+' · Maximum '+money(buy40)};
-    panel.dataset.query=q; panel.dataset.source='direct-bridge'; host.appendChild(panel); return true;
-  }
-  function attempt(){if(render())return true;return false}
-  let tries=0;const timer=setInterval(()=>{tries++;if(attempt()||tries>60)clearInterval(timer)},300);
-  document.addEventListener('click',()=>setTimeout(attempt,25));
-  document.addEventListener('keyup',()=>setTimeout(attempt,25));
-  window.addEventListener('load',()=>setTimeout(attempt,50));
+  const urls=q=>({cash:'https://www.cashconverters.com.au/search-results?query='+encodeURIComponent(q),ebay:'https://www.ebay.com.au/sch/i.html?_nkw='+encodeURIComponent(q)+'&LH_Sold=1&LH_Complete=1',superRetro:'https://superretro.com.au/search?q='+encodeURIComponent(q)});
+  const verified={'5016488130837':{title:'Extinction',platform:'Xbox One',sites:{'Cash Converters':{average:10,count:1},'eBay Sold':{average:11.35,count:1},'Super Retro':null}}};
+  function parseResult(){const host=document.getElementById('scanResult');if(!host)return null;const text=host.innerText||host.textContent||'';const m=text.match(/(?:🎮\s*)?([^\n]+)\n((?:Xbox|PlayStation|Nintendo|Wii)[^\n]*)\s*·\s*Barcode\s*(\d{8,14})/i);if(!m)return null;return{host,title:(m[1]||'').trim(),platform:(m[2]||'').trim(),barcode:(m[3]||'').replace(/\D/g,'')}}
+  function render(){const p=parseResult();if(!p||!p.title)return false;const host=p.host;const old=document.getElementById('secondHandDirectPanel');if(old)old.remove();const v=verified[p.barcode],title=v?.title||p.title,platform=v?.platform||p.platform,q=query(title,platform),links=urls(q),sites=v?.sites||{'Cash Converters':null,'eBay Sold':null,'Super Retro':null},values=Object.values(sites).filter(Boolean).map(x=>Number(x.average)).filter(n=>Number.isFinite(n)&&n>0),overall=values.length?values.reduce((a,b)=>a+b,0)/values.length:0,buy10=overall*.10,buy20=overall*.20,buy25=overall*.25,buy30=overall*.30,buy40=overall*.40,row=(name,s)=>'<div class="list-item"><span>'+name+'</span><b>'+(s?money(s.average)+' · '+s.count+' sample'+(s.count===1?'':'s'):'Not available')+'</b></div>';const panel=document.createElement('div');panel.id='secondHandDirectPanel';panel.className='result';panel.innerHTML='<h3>♻️ Second-Hand Pricing</h3><div class="list-item"><span>Game</span><b>'+esc(title)+'</b></div><div class="list-item"><span>Console</span><b>'+esc(platform||'Unknown console')+'</b></div><div class="list-item"><span>Search phrase</span><b>'+esc(q||title)+'</b></div><h4>Site Averages</h4>'+row('Cash Converters',sites['Cash Converters'])+row('eBay Sold',sites['eBay Sold'])+row('Super Retro',sites['Super Retro'])+'<div class="list-item"><span>Overall site-average</span><b>'+money(overall)+'</b></div><div class="buygrid"><div class="buy"><span>10% EXCELLENT</span><strong>'+money(buy10)+'</strong></div><div class="buy"><span>20% VERY GOOD</span><strong>'+money(buy20)+'</strong></div><div class="buy recommended"><span>25% RECOMMENDED ⭐</span><strong>'+money(buy25)+'</strong></div><div class="buy"><span>30% TARGET</span><strong>'+money(buy30)+'</strong></div><div class="buy"><span>40% MAXIMUM</span><strong>'+money(buy40)+'</strong></div></div><div class="toolbar"><a class="btn primary" href="'+links.cash+'" target="_blank" rel="noopener">🔎 Cash Converters</a><a class="btn" href="'+links.ebay+'" target="_blank" rel="noopener">🔎 eBay AU Sold</a><a class="btn" href="'+links.superRetro+'" target="_blank" rel="noopener">🔎 Super Retro</a></div><div class="muted">Searches use the resolved game name + console. Site averages are shown only when price samples are available.</div><div class="row"><label>Seller asking price<input id="secondHandDirectAsking" class="input" type="number" min="0" step="1" placeholder="Enter listing price"></label><button id="secondHandDirectDeal" class="btn primary">⚡ Check Deal</button></div><div id="secondHandDirectDecision" class="muted">Enter a seller price to get BUY / MAYBE / PASS.</div>';const asking=panel.querySelector('#secondHandDirectAsking'),btn=panel.querySelector('#secondHandDirectDeal'),decision=panel.querySelector('#secondHandDirectDecision');btn.onclick=()=>{const a=Number(asking.value)||0;if(!a){decision.textContent='Enter a seller price to get BUY / MAYBE / PASS.';return}let label='❌ PASS';if(overall>0&&a<=buy25)label='✅ BUY';else if(overall>0&&a<=buy40)label='🟡 MAYBE';decision.innerHTML='<b>'+label+'</b> · Asking '+money(a)+' · Recommended '+money(buy25)+' · Maximum '+money(buy40)};host.appendChild(panel);return true;}
+  function tryRender(){if(document.getElementById('secondHandDirectPanel'))return true;return render()}
+  const start=()=>{tryRender();const host=document.getElementById('scanResult');if(host)new MutationObserver(()=>setTimeout(tryRender,20)).observe(host,{subtree:true,childList:true,characterData:true});let tries=0;const timer=setInterval(()=>{if(tryRender()||++tries>40)clearInterval(timer)},250)};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
