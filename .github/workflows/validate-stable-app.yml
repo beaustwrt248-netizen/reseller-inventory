@@ -63,7 +63,7 @@ jobs:
           if '10%–40%' not in index and '10%-40%' not in index:
               raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
 
-          expected_version = '9.3.1'
+          expected_version = '9.3.3'
           if update.get('version') != expected_version:
               raise SystemExit(f"update.json version mismatch: expected {expected_version}, got {update.get('version')}")
 
@@ -83,4 +83,4 @@ jobs:
           node --check stock-watch.js
           echo 'JavaScript syntax validation passed.'
 
-      # CI trigger: validate the current 9.3.1 OTA manifest and app together.
+      # CI trigger: validate the current 9.3.3 OTA manifest and app together.
