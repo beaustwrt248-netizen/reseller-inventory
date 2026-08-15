@@ -4,6 +4,6 @@
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Added dynamic site price averaging from returned pricing data, verified fallbacks, cleaner live states, and bug hardening.",
+  "message": "Add protected live second-hand site averages for Cash Converters, eBay Sold and Super Retro, with verified fallbacks and bug hardening.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
