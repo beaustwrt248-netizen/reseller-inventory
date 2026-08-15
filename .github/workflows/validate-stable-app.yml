@@ -82,3 +82,5 @@ jobs:
           node --check smart-buy.js
           node --check stock-watch.js
           echo 'JavaScript syntax validation passed.'
+
+      # CI trigger: validate the current 9.3.1 OTA manifest and app together.
