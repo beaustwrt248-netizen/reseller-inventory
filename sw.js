@@ -1,6 +1,6 @@
-/* Beau's Game Inventory — stable cache v5.1.0 */
-const CACHE='beau-game-inventory-v5.1.0';
-const ASSETS=['./','./index.html','./scanner.html','./scanner-v3.html','./library.html','./library-v2.html','./library-v3.html','./pricing.html','./settings.html','./dashboard.html','./mobile-theme.css','./app-nav.js','./app-compat.js','./app-update.js','./scanner-fix.js','./scanner-runtime-fix.js','./pricing-engine.js','./nav-safe-area.js','./navigation-layout-fix.css','./nav-icons.css','./manifest.json'];
+/* Beau's Game Inventory — stable cache v5.2.0 */
+const CACHE='beau-game-inventory-v5.2.0';
+const ASSETS=['./','./index.html','./scanner.html','./scanner-v3.html','./library.html','./library-v2.html','./library-v3.html','./pricing.html','./settings.html','./dashboard.html','./mobile-theme.css','./app-nav.js','./app-compat.js','./app-update.js','./scanner-fix.js','./scanner-runtime-fix.js','./pricing-engine.js','./ota-patch.js','./nav-safe-area.js','./navigation-layout-fix.css','./nav-icons.css','./manifest.json','./update.json'];
 const timeoutFetch=(request,ms=7000)=>Promise.race([fetch(request,{cache:'no-store'}),new Promise((_,reject)=>setTimeout(()=>reject(Error('network-timeout')),ms))]);
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS).catch(()=>{})).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
