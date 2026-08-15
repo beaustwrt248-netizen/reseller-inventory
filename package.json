@@ -3,7 +3,8 @@
   "version": "9.3.4",
   "private": true,
   "scripts": {
-    "prepare:web": "node prepare-web.mjs",
+    "check:release": "node release-version-check.mjs",
+    "prepare:web": "npm run check:release && node prepare-web.mjs",
     "android:build": "npm run prepare:web && npx cap add android && node android-camera-fix.mjs && npx cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
