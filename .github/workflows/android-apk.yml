@@ -36,6 +36,23 @@ jobs:
       - name: Add Android project
         run: npx cap add android
 
+      - name: Set explicit Android version
+        shell: bash
+        run: |
+          set -e
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('android/app/build.gradle')
+          s = p.read_text()
+          s, n1 = re.subn(r'versionCode\s+\d+', 'versionCode 933', s, count=1)
+          s, n2 = re.subn(r'versionName\s+[^\n]+', 'versionName "9.3.3"', s, count=1)
+          if n1 != 1 or n2 != 1:
+              raise SystemExit(f'Could not set Android version: versionCode matches={n1}, versionName matches={n2}')
+          p.write_text(s)
+          print('Android versionCode=933 versionName=9.3.3')
+          PY
+
       - name: Apply Android camera permission and WebView handler
         run: node android-camera-fix.mjs
 
@@ -62,6 +79,13 @@ jobs:
           grep -q 'android:icon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
           grep -q 'android:roundIcon="@drawable/app_icon"' android/app/src/main/AndroidManifest.xml
 
+      - name: Verify Android version
+        shell: bash
+        run: |
+          set -e
+          grep -q 'versionCode 933' android/app/build.gradle
+          grep -q 'versionName "9.3.3"' android/app/build.gradle
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
@@ -73,10 +97,10 @@ jobs:
 
       - name: Rename APK with app version
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v1.9.4-debug.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v9.3.3-debug.apk
 
       - name: Upload versioned APK
         uses: actions/upload-artifact@v4
         with:
-          name: beaus-game-inventory-v1.9.4-debug-apk
-          path: beaus-game-inventory-v1.9.4-debug.apk
+          name: beaus-game-inventory-v9.3.3-debug-apk
+          path: beaus-game-inventory-v9.3.3-debug.apk
