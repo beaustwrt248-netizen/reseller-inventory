@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.23",
+  "webVersion": "2026.08.15.24",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Direct second-hand panel bridge now runs after all app scripts, ensuring desktop and mobile show the same name + console searches, site averages, Super Retro, and BUY / MAYBE / PASS.",
+  "message": "Faster barcode lookups: repeat scans use a 30-day local cache and first-time lookups race the pricing worker endpoints in parallel, while name + console resolution stays unchanged.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
