@@ -1,9 +1,9 @@
 {
-  "version": "9.3.0",
-  "webVersion": "2026-08-15.07",
+  "version": "9.3.1",
+  "webVersion": "2026-08-15.08",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub 9.3.0 enables the stable web OTA update flow. New web features can now be delivered without reinstalling the APK.",
+  "message": "Reseller Hub 9.3.1 adds the international barcode fallback for EU/UK EAN-13, Japanese JAN, UPC/GTIN and global game identification. This is a web OTA update and does not require APK reinstallation.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
