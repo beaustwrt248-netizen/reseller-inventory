@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.25",
+  "webVersion": "2026.08.15.26",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed the second-hand pricing loading hang. The panel is now non-blocking and appears after the resolved game name + console are available.",
+  "message": "Removed the blocking second-hand hooks entirely. The stable panel now waits only for the normal barcode result and then renders immediately.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
