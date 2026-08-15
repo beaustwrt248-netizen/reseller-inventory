@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.20",
+  "webVersion": "2026.08.15.21",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed second-hand panel load order; added name + console searches, Super Retro, per-site averages, and BUY / MAYBE / PASS.",
+  "message": "Cache-busted the second-hand pricing layer and latest app assets so the new panel, site averages, Super Retro search, and BUY / MAYBE / PASS logic load reliably.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
