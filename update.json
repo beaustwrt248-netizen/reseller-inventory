@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.27",
+  "webVersion": "2026.08.15.28",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Polished second-hand results into compact price cards with site icons, site averages, an overall average, and a tighter buying guide layout.",
+  "message": "Fixed compact second-hand result cards so all game titles and console formats render the site search cards and averages correctly.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
