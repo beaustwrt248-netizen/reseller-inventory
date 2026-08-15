@@ -1,9 +1,9 @@
 {
-  "version": "9.3.3",
-  "webVersion": "2026.08.15.33",
-  "minimumNativeVersion": "1.9.3",
+  "version": "9.3.4",
+  "webVersion": "2026.08.15.34",
+  "minimumNativeVersion": "1.9.4",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Clean game and console search identity for live second-hand site averages.",
+  "message": "Stabilised native/web release with fresh asset revision and WebView cache reset.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
