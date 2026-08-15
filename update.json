@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.24",
+  "webVersion": "2026.08.15.25",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Faster barcode lookups: repeat scans use a 30-day local cache and first-time lookups race the pricing worker endpoints in parallel, while name + console resolution stays unchanged.",
+  "message": "Fixed the second-hand pricing loading hang. The panel is now non-blocking and appears after the resolved game name + console are available.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
