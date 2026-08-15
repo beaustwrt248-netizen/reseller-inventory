@@ -1,4 +1,4 @@
-const APP_VERSION='9.2.2';
+const APP_VERSION='9.3.0';
 const $=id=>document.getElementById(id);
 const money=v=>'$'+Math.round(Number(v)||0);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
