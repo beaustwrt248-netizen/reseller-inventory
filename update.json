@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.14",
+  "webVersion": "2026.08.15.15",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub OTA fix: updater now reloads the live app directly instead of looping through the OTA page.",
+  "message": "Reseller Hub OTA revision 15: fixed stale desktop updater code and removed the OTA redirect loop.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
