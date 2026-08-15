@@ -1,9 +1,9 @@
 {
-  "version": "9.3.1",
-  "webVersion": "2026-08-15.08",
+  "version": "9.3.2",
+  "webVersion": "2026-08-15.09",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Reseller Hub 9.3.1 adds the international barcode fallback for EU/UK EAN-13, Japanese JAN, UPC/GTIN and global game identification. This is a web OTA update and does not require APK reinstallation.",
+  "message": "Reseller Hub 9.3.2 adds Supabase email account login and private inventory cloud sync while preserving offline local storage.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
