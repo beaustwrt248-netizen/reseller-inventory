@@ -1,29 +1,11 @@
 const CLOUD_LIBRARY={
  url:'https://ccdqmncjpywhpnrajfit.supabase.co',
  key:'sb_publishable_VNuSfZizVdNhbHAPkbBPbw_YYWoqVFH',
- async find(barcode){
-  const b=String(barcode||'').replace(/\D/g,'');
-  if(!b)return null;
-  const r=await fetch(`${this.url}/rest/v1/game_library?select=*&barcode=eq.${encodeURIComponent(b)}&limit=1`,{headers:{apikey:this.key,Authorization:`Bearer ${this.key}`} ,cache:'no-store'});
-  if(!r.ok)return null;
-  const rows=await r.json();
-  return rows[0]||null;
- },
- async learn(game){
-  if(!game?.barcode||!game?.title)return false;
-  const body={barcode:String(game.barcode).replace(/\D/g,''),title:String(game.title),platform:game.platform||'',region:game.region||'',resale:Number(game.resale)||0,retail:Number(game.retail)||0,image_url:game.image_url||null,source:game.source||'App learned'};
-  if(body.barcode.length<8||body.barcode.length>14)return false;
-  const r=await fetch(`${this.url}/rest/v1/game_library?on_conflict=barcode`,{method:'POST',headers:{apikey:this.key,Authorization:`Bearer ${this.key}`,'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify(body)});
-  return r.ok;
- },
- async syncLocal(){
-  const local=Array.isArray(window.library)?window.library:[];
-  for(const game of local)try{await this.learn(game)}catch{}
-  return local.length;
- }
+ async find(barcode){const b=String(barcode||'').replace(/\D/g,'');if(!b)return null;const r=await fetch(`${this.url}/rest/v1/game_library?select=*&barcode=eq.${encodeURIComponent(b)}&limit=1`,{headers:{apikey:this.key,Authorization:`Bearer ${this.key}`},cache:'no-store'});if(!r.ok)return null;const rows=await r.json();return rows[0]||null},
+ async learn(game){if(!game?.barcode||!game?.title)return false;const body={barcode:String(game.barcode).replace(/\D/g,''),title:String(game.title),platform:game.platform||'',region:game.region||'',resale:Number(game.resale)||0,retail:Number(game.retail)||0,image_url:game.image_url||null,source:game.source||'App learned'};if(body.barcode.length<8||body.barcode.length>14)return false;const r=await fetch(`${this.url}/rest/v1/game_library?on_conflict=barcode`,{method:'POST',headers:{apikey:this.key,Authorization:`Bearer ${this.key}`,'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify(body)});return r.ok},
+ async syncLocal(){const local=Array.isArray(window.library)?window.library:[];for(const game of local)try{await this.learn(game)}catch{}return local.length}
 };
 window.CloudLibrary=CLOUD_LIBRARY;
-async function cloudLibraryLookup(barcode){try{return await CLOUD_LIBRARY.find(barcode)}catch{return null}}
-async function cloudLibraryLearn(game){try{return await CLOUD_LIBRARY.learn(game)}catch{return false}}
-window.cloudLibraryLookup=cloudLibraryLookup;
-window.cloudLibraryLearn=cloudLibraryLearn;
+if(window.saveLibrary&&!window.saveLibrary._cloudWrapped){const save=window.saveLibrary;window.saveLibrary=function(p){save(p);CLOUD_LIBRARY.learn(p).catch(()=>{})};window.saveLibrary._cloudWrapped=true}
+if(window.lookupProduct&&!window.lookupProduct._cloudWrapped){const lookup=window.lookupProduct;window.lookupProduct=async function(code){const found=await CLOUD_LIBRARY.find(code);if(!found)return lookup(code);const p={title:found.title,barcode:String(found.barcode),platform:found.platform||'',region:found.region||'',resale:Number(found.resale)||0,retail:Number(found.retail)||0,source:'Cloud Game Library'};window.saveLibrary?.(p);const r=p.resale||p.retail*.75,money=v=>'$'+Math.round(Number(v)||0),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));const status=document.getElementById('scanStatus'),box=document.getElementById('scanResult');if(status){status.textContent='Found in cloud library';status.className='status ok'}if(box)box.innerHTML=`<div><h3>🎮 ${esc(p.title)}</h3><div class="muted">${esc(p.platform||'Unknown platform')} · ${esc(p.region||'')} · Barcode ${esc(p.barcode)}</div><div class="buygrid"><div class="buy"><span>10% EXCELLENT</span><strong>${money(r*.10)}</strong></div><div class="buy"><span>20% VERY GOOD</span><strong>${money(r*.20)}</strong></div><div class="buy recommended"><span>25% RECOMMENDED ⭐</span><strong>${money(r*.25)}</strong></div><div class="buy"><span>30% TARGET</span><strong>${money(r*.30)}</strong></div><div class="buy"><span>40% MAXIMUM</span><strong>${money(r*.40)}</strong></div></div><div class="result"><div class="list-item"><span>Expected resale</span><b>${money(r)}</b></div><div class="list-item"><span>Pricing source</span><b>☁️ Cloud Game Library</b></div></div><div class="toolbar"><button class="btn success" onclick="addScannedToStock(${JSON.stringify(p).replace(/"/g,'&quot;')})">＋ Add to Stock</button><button class="btn" onclick="show('inventory')">📚 View Library</button></div></div>`;window.toast?.('Found in cloud library')};window.lookupProduct._cloudWrapped=true}
+CLOUD_LIBRARY.syncLocal().catch(()=>{});
