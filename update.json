@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.18",
+  "webVersion": "2026.08.15.19",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Second-hand searches now use game name + console and eBay is filtered to completed/sold listings where supported. BUY / MAYBE / PASS remains available.",
+  "message": "Added Super Retro game-price search and per-site second-hand averaging. Each site's returned price samples are averaged first, then available site averages are combined into the overall market figure.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
