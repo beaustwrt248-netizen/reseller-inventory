@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.21",
+  "webVersion": "2026.08.15.22",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Cache-busted the second-hand pricing layer and latest app assets so the new panel, site averages, Super Retro search, and BUY / MAYBE / PASS logic load reliably.",
+  "message": "Added a desktop-safe second-hand bridge so the same name + console pricing panel appears on desktop and mobile, with site averages, Super Retro, and BUY / MAYBE / PASS.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
