@@ -1,9 +1,9 @@
 {
   "version": "9.3.3",
-  "webVersion": "2026.08.15.28",
+  "webVersion": "2026.08.15.29",
   "minimumNativeVersion": "1.9.3",
   "channel": "stable",
   "type": "web-ota",
-  "message": "Fixed compact second-hand result cards so all game titles and console formats render the site search cards and averages correctly.",
+  "message": "Normalize barcode results into clean game name + console search terms, including PS2 edition cleanup such as The Simpsons Hit and Run PS2.",
   "url": "https://beaustwrt248-netizen.github.io/reseller-inventory/"
 }
