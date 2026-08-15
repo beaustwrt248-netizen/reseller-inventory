@@ -45,12 +45,12 @@ jobs:
           import re
           p = Path('android/app/build.gradle')
           s = p.read_text()
-          s, n1 = re.subn(r'versionCode\s+\d+', 'versionCode 933', s, count=1)
-          s, n2 = re.subn(r'versionName\s+[^\n]+', 'versionName "9.3.3"', s, count=1)
+          s, n1 = re.subn(r'versionCode\s+\d+', 'versionCode 934', s, count=1)
+          s, n2 = re.subn(r'versionName\s+[^\n]+', 'versionName "9.3.4"', s, count=1)
           if n1 != 1 or n2 != 1:
               raise SystemExit(f'Could not set Android version: versionCode matches={n1}, versionName matches={n2}')
           p.write_text(s)
-          print('Android versionCode=933 versionName=9.3.3')
+          print('Android versionCode=934 versionName=9.3.4')
           PY
 
       - name: Apply Android camera permission and WebView handler
@@ -83,8 +83,8 @@ jobs:
         shell: bash
         run: |
           set -e
-          grep -q 'versionCode 933' android/app/build.gradle
-          grep -q 'versionName "9.3.3"' android/app/build.gradle
+          grep -q 'versionCode 934' android/app/build.gradle
+          grep -q 'versionName "9.3.4"' android/app/build.gradle
 
       - name: Build debug APK
         working-directory: android
@@ -97,10 +97,10 @@ jobs:
 
       - name: Rename APK with app version
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v9.3.3-debug.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk beaus-game-inventory-v9.3.4-debug.apk
 
       - name: Upload versioned APK
         uses: actions/upload-artifact@v4
         with:
-          name: beaus-game-inventory-v9.3.3-debug-apk
-          path: beaus-game-inventory-v9.3.3-debug.apk
+          name: beaus-game-inventory-v9.3.4-debug-apk
+          path: beaus-game-inventory-v9.3.4-debug.apk
