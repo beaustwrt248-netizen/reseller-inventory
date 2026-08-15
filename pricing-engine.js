@@ -51,10 +51,25 @@ async function internationalLookup(code){
  try{localStorage.setItem(cacheKey,JSON.stringify({checkedAt:Date.now(),data:synthetic}))}catch(_){ }
  return{data:synthetic,route:'International EAN/GTIN lookup',barcode:b};
 }
-/* Known Australian game barcode fallbacks. Used only when the worker does not return a usable title. */
+/* Verified game barcode fallbacks. Titles/barcodes were checked against current public Australian retail listings where available. */
 const localCatalog={
  '5030917298462':{product:{title:'Diablo IV',platform:'PlayStation 5',brand:'Blizzard Entertainment'},pricing:{retailPrice:88},stores:[{source:'Australian retail reference',retailPrice:88}]},
- '5902367642372':{product:{title:'Cyberpunk 2077: Ultimate Edition',platform:'PlayStation 5',brand:'CD Projekt Red'},pricing:{retailPrice:100,suggestedResale:77},stores:[{source:'Gamesmen',retailPrice:100,marketPrice:77}]}
+ '5902367642372':{product:{title:'Cyberpunk 2077: Ultimate Edition',platform:'PlayStation 5',brand:'CD Projekt Red'},pricing:{retailPrice:100,suggestedResale:77},stores:[{source:'Gamesmen',retailPrice:100,marketPrice:77}]},
+ '5016488130837':{product:{title:'Extinction',platform:'Xbox One',brand:'Maximum Games'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '811949033659':{product:{title:'Gang Beasts',platform:'Nintendo Switch',brand:'Double Fine Productions'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '9325336203071':{product:{title:'Scribblenauts: Showdown',platform:'Xbox One',brand:'Warner Bros. Interactive Entertainment'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5030936124254':{product:{title:'FIFA 23',platform:'Xbox One',brand:'EA Sports'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '9312590131578':{product:{title:'Rugby League Raw',platform:'Nintendo Switch',brand:'Tru Blu Entertainment'},pricing:{},stores:[{source:'Australian retail listing barcode fallback'}]},
+ '5030941059381':{product:{title:'Need for Speed: Pro Street',platform:'Nintendo Wii',brand:'Electronic Arts'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5060760887803':{product:{title:'Arcadegeddon',platform:'PlayStation 4',brand:'U&I Entertainment'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5060760887889':{product:{title:'Arcadegeddon',platform:'PlayStation 5',brand:'U&I Entertainment'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '711719591801':{product:{title:'Astro Bot',platform:'PlayStation 5',brand:'Sony Interactive Entertainment'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5056208825421':{product:{title:'Atomfall',platform:'PlayStation 5',brand:'Rebellion'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5056635600776':{product:{title:'Omori',platform:'PlayStation 4',brand:'Fangamer'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '5902367641184':{product:{title:'Cyberpunk 2077',platform:'PlayStation 4',brand:'CD Projekt'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '196388432097':{product:{title:'Call of Duty: Black Ops 6',platform:'PlayStation 5',brand:'Call of Duty'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '711719592754':{product:{title:'Horizon Zero Dawn Remastered',platform:'PlayStation 5',brand:'Sony Interactive Entertainment'},pricing:{},stores:[{source:'Gamesmen barcode fallback'}]},
+ '4020628547967':{product:{title:'Yakuza Kiwami',platform:'Nintendo Switch 2',brand:'SEGA'},pricing:{},stores:[{source:'Australian retail listing barcode fallback'}]}
 };
 async function lookup(code){const b=String(code||'').replace(/\D/g,'');if(!b)throw Error('Enter a barcode');try{const w=await workerLookup(b);const product=findProduct(w.data);if(product&&usefulProduct(product))return w;const local=localCatalog[b];if(local)return{data:local,route:'Australian verified barcode fallback',barcode:b};try{return await internationalLookup(b)}catch(_){throw Error('No usable product title was returned for this barcode.')}}catch(e){const local=localCatalog[b];if(local)return{data:local,route:'Australian verified barcode fallback',barcode:b};try{return await internationalLookup(b)}catch(_){throw e}}}
 window.BeauPricingEngine={normalise,lookup,buyGuide,version:'3.4.0'};
