@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate standalone app files
         shell: python
@@ -27,7 +27,7 @@ jobs:
 
           required = [
               'index.html', 'app.css', 'app.js', 'pricing-engine.js',
-              'smart-buy.js', 'update.json', 'ota.html'
+              'smart-buy.js', 'update.json', 'ota.html', 'package.json'
           ]
           for name in required:
               if not Path(name).exists():
@@ -35,6 +35,7 @@ jobs:
 
           index = Path('index.html').read_text(encoding='utf-8')
           update = json.loads(Path('update.json').read_text(encoding='utf-8'))
+          package = json.loads(Path('package.json').read_text(encoding='utf-8'))
 
           if '<iframe' in index.lower():
               raise SystemExit('index.html must not use the legacy iframe shell')
@@ -63,8 +64,10 @@ jobs:
           if '10%–40%' not in index and '10%-40%' not in index:
               raise SystemExit('Smart Buy 10%-40% range is not present in the app shell')
 
-          expected_version = '9.3.3'
-          if update.get('version') != expected_version:
+          expected_version = str(package.get('version') or '').strip()
+          if not expected_version:
+              raise SystemExit('package.json version is missing')
+          if str(update.get('version') or '').strip() != expected_version:
               raise SystemExit(f"update.json version mismatch: expected {expected_version}, got {update.get('version')}")
 
           print(f'Standalone Reseller Hub v{expected_version} validation passed.')
@@ -81,6 +84,7 @@ jobs:
           node --check pricing-engine.js
           node --check smart-buy.js
           node --check stock-watch.js
-          echo 'JavaScript syntax validation passed.'
+          npm run check:release
+          echo 'JavaScript syntax and release validation passed.'
 
-      # CI trigger: validate the current 9.3.3 OTA manifest and app together.
+      # Version is derived from package.json and cross-checked against update.json.
